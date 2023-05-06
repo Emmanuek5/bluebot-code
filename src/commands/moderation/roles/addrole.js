@@ -15,7 +15,7 @@ module.exports = {
     .addStringOption((option) => option.setName('emoji').setDescription('The emoji to react with').setRequired(true)),
 
   async execute(interaction, client) {
-await interaction.deferReply();
+
     const ReactionRoleSchema = require('../../../models/roles.js');
     const { options, guildId, member } = interaction;
     const role = options.getRole('role');
@@ -24,7 +24,7 @@ await interaction.deferReply();
 
     try {
       if (role.position >= member.roles.highest.position)
-        return await interaction.editReply({
+        return await interaction.reply({
           content: 'I Dont Have The Permisions for that ',
           ephemeral: true,
         });
@@ -53,10 +53,10 @@ await interaction.deferReply();
           roles: [newRole],
         }).save();
       }
-      await interaction.editReply({
+      await interaction.reply({
         content: `Added ${role.name} to the reaction roles`,
         ephemeral: true,
       });
-    } catch (error) {}
+    } catch (error) { }
   },
 };
