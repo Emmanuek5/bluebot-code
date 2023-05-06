@@ -57,6 +57,6 @@ module.exports = {
         content: `Added ${role.name} to the reaction roles`,
         ephemeral: true,
       });
-    } catch (error) {}
+    } catch (error) { }
   },
 };
