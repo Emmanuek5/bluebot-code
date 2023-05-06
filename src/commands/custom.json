@@ -1,0 +1,19 @@
+[
+  {
+    "name": "Report",
+    "type": 2
+  },
+  {
+    "name": "Rank",
+    "type": 2
+  },
+  {
+    "name": "Show Avatar",
+    "type": 2
+  },
+  {
+    "name": "Ban",
+    "type": 2,
+    "default_member_permissions": "8"
+  }
+]
