@@ -17,7 +17,6 @@ module.exports = {
     .setDescription('Create a reaction role panel')
     .setDMPermission(),
   async execute(interaction, client) {
-    await interaction.deferReply();
     const { guildId, member, guild, channel } = interaction;
     try {
       const data = await ReactionRoleSchema.findOne({
@@ -25,7 +24,7 @@ module.exports = {
       });
 
       if (!data.roles.length > 0) {
-        return await interaction.editReply({
+        return await interaction.reply({
           content: 'This Server has no data',
           ephemeral: true,
         });
@@ -57,7 +56,7 @@ module.exports = {
         embeds: [embed],
         components: menuComponent,
       });
-   await    interaction.editReply({ content: 'Created the panel', ephemeral: true });
+   await    interaction.reply({ content: 'Created the panel', ephemeral: true });
     } catch (error) {}
   },
 };
