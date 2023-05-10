@@ -31,6 +31,8 @@ module.exports = {
       const filtered = roles.filter((x) => x.role !== role.id);
       data.roles = filtered;
       data.save();
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   },
 };

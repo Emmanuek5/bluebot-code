@@ -56,6 +56,8 @@ await    interaction.deferReply();
       await interaction.editReply({
         content: `Added ${role.name} to the reaction roles`
       });
-    } catch (error) { }
+    } catch (error) { 
+      console.log(error);
+    }
   },
 };
