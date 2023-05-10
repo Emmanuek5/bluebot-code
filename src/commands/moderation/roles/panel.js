@@ -53,11 +53,9 @@ module.exports = {
             .addOptions(options)
         ),
       ];
-      const msg = await channel.send({
-        embeds: [embed],
-        components: menuComponent,
-      });
-   await    interaction.reply({ content: 'Created the panel'});
+    
+   await    interaction.reply({ embeds: [embed],
+        components: menuComponent});
     } catch (error) {}
   },
 };
