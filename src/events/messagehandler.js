@@ -112,7 +112,7 @@ console.log(process.env.OPENAI_API_KEY);
 
       return;
     }
-   message.reply('The Blue  Bot is Thinking ... ').then(async (msg) => {
+   channel.send('The Blue  Bot is Thinking ... ').then(async (msg) => {
       try {
        const a =  humanFilter(message,msg)
         if (a) return;
