@@ -56,6 +56,8 @@ module.exports = {
     
    await    interaction.reply({ embeds: [embed],
         components: menuComponent});
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   },
 };
