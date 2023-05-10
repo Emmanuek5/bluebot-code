@@ -77,7 +77,7 @@ require("dotenv").config()
     const { Configuration, OpenAIApi } = require('openai');
 
     const configureration = new Configuration({
-      apiKey: process.env.OPENAI_API_KEY,
+      apiKey: "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",
     });
 console.log(process.env.KEY);
     const openai = new OpenAIApi(configureration);
