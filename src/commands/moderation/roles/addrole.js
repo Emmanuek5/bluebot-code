@@ -5,6 +5,7 @@ module.exports = {
   usage: 'addrole',
   data: new SlashCommandBuilder()
     .setName('addrole')
+    .setDefaultMemberPermissions(PermissionsBitField.Administrator)
     .setDescription('Add a reaction role')
     .setDMPermission()
    

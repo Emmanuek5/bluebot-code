@@ -6,8 +6,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('removerole')
     .setDescription('Remove a reaction role')
-    .setDMPermission()
-
+    .setDefaultMemberPermissions(PermissionsBitField.Administrator)
     .addRoleOption((option) => option.setName('role').setDescription('The role to remove').setRequired(true)),
   async execute(interaction, client) {
     const { options, guildId, member } = interaction;
