@@ -58,7 +58,7 @@ module.exports = {
 
 
       channel.send({ embeds: [embed], components: menuComponent });
-   await  interaction.editReply({ content: 'Done' });
+   await  interaction.editReply({ content: 'Created the panel' });
     } catch (error) {
       console.log(error);
     }
