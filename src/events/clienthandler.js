@@ -118,7 +118,7 @@ function client(client) {
     process.env.CHANNEL_COUNT = channelCount;
     const options = {
       type: ActivityType.Watching,
-      name: `${process.env.SERVER_COUNT} servers >help`,
+      name: `${process.env.SERVER_COUNT} servers and >help`,
       status: 'idle',
     };
     client.user.setPresence({ activities: [options] });
