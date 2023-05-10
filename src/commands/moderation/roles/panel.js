@@ -4,7 +4,7 @@ const {
   PermissionFlagsBits,
   ActionRowBuilder,
   SelectMenuBuilder,
-  StringSelectMenuBuilde,
+  StringSelectMenuBuilder,
   PermissionsBitField,
 } = require('discord.js');
     
