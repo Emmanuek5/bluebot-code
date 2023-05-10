@@ -10,7 +10,6 @@ module.exports = {
 
     .addRoleOption((option) => option.setName('role').setDescription('The role to remove').setRequired(true)),
   async execute(interaction, client) {
-    await interaction.deferReply();
     const { options, guildId, member } = interaction;
     const role = options.getRole('role');
     const ReactionRoleSchema = require('../../../models/roles.js');
@@ -20,13 +19,14 @@ module.exports = {
       });
 
       if (!data) {
-        return await interaction.editReply({ content: 'This Server has no data' });
+        return await interaction.reply({ content: 'This Server has no data' });
       }
 
       const roles = data.roles;
       const findRole = roles.find((x) => x.role === role.id);
       if (!findRole) {
-        return await interaction.editReply({ content: 'This role is not in the reaction roles' });
+        console.log('This role is not in the reaction roles');
+        return await interaction.reply({ content: 'This role is not in the reaction roles' });
       }
 
       const filtered = roles.filter((x) => x.role !== role.id);
