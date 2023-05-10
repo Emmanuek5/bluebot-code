@@ -12,7 +12,7 @@ const {
 module.exports = {
   usage: 'Usgae: /planel  ',
   data: new SlashCommandBuilder()
-    .setName('panel')
+    .setName('roles-panel')
     .setDescription('Create a reaction role panel')
     .setDMPermission(),
   async execute(interaction, client) {
