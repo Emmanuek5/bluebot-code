@@ -7,7 +7,7 @@ const {
   StringSelectMenuBuilde,
   PermissionsBitField,
 } = require('discord.js');
-    const ReactionRoleSchema = require('../../../models/roles.js');
+    
 
 module.exports = {
   usage: 'Usgae: /planel  ',
@@ -16,20 +16,21 @@ module.exports = {
     .setDescription('Create a reaction role panel')
     .setDMPermission(),
   async execute(interaction, client) {
-    await interaction.deferReply();
     const { guildId, member, guild, channel } = interaction;
     try {
+      const ReactionRoleSchema = require('../../../models/roles.js');
       const data = await ReactionRoleSchema.findOne({
         GuildId: guildId,
       });
 
       if (!data.roles.length > 0) {
-        return await interaction.editReply({
+        return await interaction.reply({
           content: 'This Server has no data',
          
         });
       }
       const roles = data.roles;
+      console.log(roles);
       const embed = new EmbedBuilder()
         .setTitle('Reaction Roles')
         .setDescription('Select a role to get it')
@@ -56,7 +57,7 @@ module.exports = {
         embeds: [embed],
         components: menuComponent,
       });
-   await    interaction.editReply({ content: 'Created the panel'});
+   await    interaction.reply({ content: 'Created the panel'});
     } catch (error) {}
   },
 };
