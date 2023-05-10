@@ -13,7 +13,6 @@ module.exports = {
   usage: 'Usgae: /planel  ',
   data: new SlashCommandBuilder()
     .setName('panel')
-    .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
     .setDescription('Create a reaction role panel')
     .setDMPermission(),
   async execute(interaction, client) {

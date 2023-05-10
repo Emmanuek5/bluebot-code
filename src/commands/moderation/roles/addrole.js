@@ -7,7 +7,7 @@ module.exports = {
     .setName('addrole')
     .setDescription('Add a reaction role')
     .setDMPermission()
-    .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
+   
     .addRoleOption((option) => option.setName('role').setDescription('The role to add').setRequired(true))
     .addStringOption((option) =>
       option.setName('description').setDescription('The description of the role').setRequired(true)
