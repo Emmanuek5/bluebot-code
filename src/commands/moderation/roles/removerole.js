@@ -20,13 +20,13 @@ module.exports = {
       });
 
       if (!data) {
-        return await interaction.editReply({ content: 'This Server has no data', ephemeral: true });
+        return await interaction.editReply({ content: 'This Server has no data' });
       }
 
       const roles = data.roles;
       const findRole = roles.find((x) => x.role === role.id);
       if (!findRole) {
-        return await interaction.editReply({ content: 'This role is not in the reaction roles', ephemeral: true });
+        return await interaction.editReply({ content: 'This role is not in the reaction roles' });
       }
 
       const filtered = roles.filter((x) => x.role !== role.id);
