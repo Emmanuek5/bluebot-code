@@ -41,7 +41,6 @@ module.exports = {
           label: x.name,
           description: x.description,
           value: x.role,
-          emoji: x.emoji,
         };
       });
 
