@@ -20,18 +20,15 @@ module.exports = {
     .addSubcommand((subcommand) =>
       subcommand
         .setName('load')
-        .setDescription('Load A Users Playlist Into The Queue')
-        .addStringOption((option) => option.setName('yt-url').setDescription('Playlist').setRequired(true))
+        .setDescription('Load A Users Playlist Into The Queue or Playist From Youtube')
+        .addStringOption((option) => option.setName('yt-url').setDescription('Playlist'))
     )
     .addSubcommand((subcommand) =>
       subcommand
         .setName('add-song')
         .setDescription('Add A Song To a PLaylist')
         .addStringOption((option) =>
-          option.setName('playlist').setDescription('The Playlist To Add The Song To').setRequired(true)
-        )
-        .addStringOption((option) =>
-          option.setName('song').setDescription('The Song Or Playlist You Want To Add').setRequired(true)
+          option.setName('song or yt-url').setDescription('The Song Or Playlist You Want To Add').setRequired(true)
         )
     ),
 
@@ -51,49 +48,81 @@ module.exports = {
     console.log(option);
 
     if (subcommand == 'create') {
-      let user = await playlistSchema.findOne({
+      const  user = await playlistSchema.findOne({
         userId: interaction.user.id,
       });
       if (!user) {
-        const newUser = new playlistSchema({
+        const options = {
+          name: option,
           userId: interaction.user.id,
-          playlists: [],
-        });
+          songs: []
+        };
+        const newUser= new playlistSchema(options);
         await newUser.save();
 
-        user = newUser;
-      }
-      const playlist = {
-        id: rand(0, 999999),
-        name: option,
-        duration: 1,
-        songs: [],
-      };
-      user.playlist.push(playlist);
-      await user.save();
-
-      const embed = new EmbedBuilder()
-        .setDescription(`New Playlist Added :${option}`)
-        .setTimestamp()
-        .setColor(serverInfo.serverColor);
-
-      await interaction.editReply({ embeds: [embed] });
-    }
-    if (subcommand == 'list') {
-
-      if (!member.voice.channel) {
         embed
-          .setTitle('You need to be in a voice channel to use this command')
-          .setColor('Red')
-          .setAuthor({ name: 'The Blue Bot', iconURL: process.env.BOT_AVATAR })
+          .setTitle('Playlist Created')
+          .setColor('Green')
+          .setAuthor({ 
+            name: 'The Blue Bot',
+            iconURL: process.env.BOT_AVATAR
+          })
           .setTimestamp();
 
-        await interaction.editReply({ embeds: [embed] });
-        return;
-      }
-    
+          return await interaction.editReply({ embeds: [embed] });
 
+        
+      }
+     
+    }
+    if (subcommand == 'list') {
+      const user = await playlistSchema.findOne({
+        userId: interaction.user.id,
+      })
+      if (!user) {
+        embed
+          .setTitle('You have no songs in your playlist')
+          .setColor('Red')
+          .setAuthor({
+            name: 'The Blue Bot',
+            iconURL: process.env.BOT_AVATAR
+          })
+          .setTimestamp();
+          return await interaction.editReply({ embeds: [embed] });
+      }
+
+      embed.setTitle(`${interaction.user.username}'s Playlist`)
+
+      const queue = user.songs;
+      if (queue.length > 24) {
+      const songList = queue.slice(0, 24);
+      songList.forEach((song, index) => {
+        embed.addFields({
+          name: `${index + 1}. ${song.title}`,
+          value: `${song.author} | ${new Date(song.duration).toISOString().slice(11, 19)}`,
+        });
+      });
+      return interaction.reply({
+        embeds: [embed],
+        components: [
+          new ActionRowBuilder().addComponents(
+            new ButtonBuilder().setCustomId('playlist-next').setLabel('Next >').setStyle('Primary')
+          ),
+        ],
+      });
+    } else {
+      queue.forEach((song, index) => {
+        embed.addFields({
+          name: `${index + 1}. ${song.title}`,
+          value: `${song.author} | ${new Date(song.duration).toISOString().slice(11, 19)}`,
+        });
+      });
+      return await interaction.editReply({ embeds: [embed] });
+    }
+      
+    
      }
+     
       if (subcommand == 'load') {
         if (member.voice.channel) {
           if (member.voice.channel.full) {
