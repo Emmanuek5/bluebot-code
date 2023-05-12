@@ -28,7 +28,7 @@ module.exports = {
         .setName('add-song')
         .setDescription('Add A Song To a PLaylist')
         .addStringOption((option) =>
-          option.setName('song or yt-url').setDescription('The Song Or Playlist You Want To Add').setRequired(true)
+          option.setName('song-or-yt-url').setDescription('The Song Or Playlist You Want To Add').setRequired(true)
         )
     ),
 
@@ -122,7 +122,7 @@ module.exports = {
       
     
      }
-     
+
       if (subcommand == 'load') {
         if (member.voice.channel) {
           if (member.voice.channel.full) {
