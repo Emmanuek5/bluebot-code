@@ -18,16 +18,17 @@ module.exports = {
 
             const posN = [negative,positive];
 
-            const amount = posN[Math.floor(Math.random() * posN.length)]; 
+            const amount = Math.floor(Math.random() * posN.length);
+            const value = posN[amount] 
 
-            if (!amount) return interaction.reply({content: 'No Money For You Today', ephemeral: true})
+            if (!value) return interaction.reply({content: 'No Money For You Today', ephemeral: true})
 
             if (Data) {
-                Data.Wallet += amount;
+                Data.Wallet += value;
                 Data.save();
             }
 
-            if(amount > 0) {
+            if(value > 0) {
 
                 const positiveChoices = [
                     "You Got Money!",
@@ -43,7 +44,7 @@ module.exports = {
                 const embed= new EmbedBuilder()
                 .setTitle("Beggar")
                 .setColor(Colors.Blue)
-                .setDescription(`${positiveChoice}\n\nYou Got ${amount} Coins`)
+                .setDescription(`**${positiveChoice}\n\nYou Got ${value} Coins**`)
 
             await  interaction.reply({embeds: [embed]})
             
@@ -62,7 +63,7 @@ module.exports = {
                 const embed= new EmbedBuilder()
                 .setTitle("Beggar")
                 .setColor(Colors.Red)
-                .setDescription(`**${negativeChoice}**\n\n You Lost ${amount} Coins`)
+                .setDescription(`**${negativeChoice}**\n\n You Lost ${value} Coins`)
 
             await  interaction.reply({embeds: [embed]})
             

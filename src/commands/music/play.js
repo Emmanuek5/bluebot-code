@@ -63,7 +63,12 @@ module.exports = {
 
     player.queue.add(songs.tracks[0]);
     //get the duration of the song and convert it to a string
-    const dur = new Date(songs.tracks[0].duration).toISOString().slice(11, 19);
+    let dur;
+    if (songs.tracks[0].duration < Number.MAX_SAFE_INTEGER) {
+      dur = new Date(songs.tracks[0].duration).toISOString().slice(11, 19);
+    } else {
+      dur = "00000";
+    }
 
     const { title, author, duration, uri } = songs.tracks[0];
 
