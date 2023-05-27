@@ -20,7 +20,7 @@ function createcommands(client) {
   }
 
 
-    const economyPath = path.join(__dirname, "../economy");
+    const economyPath = path.join(__dirname, "../commands/economy");
     const economyFiles = fs.readdirSync(economyPath).filter(file => file.endsWith(".js"));
 
     for (const file of economyFiles) {
