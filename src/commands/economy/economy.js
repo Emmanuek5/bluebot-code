@@ -7,7 +7,7 @@ const {
   EmbedBuilder,
 } = require("discord.js");
 const ecoSChema = require("../../models/economy.js");
-import * as f from 'util';
+
 
 module.exports = {
   data: new SlashCommandBuilder().setName("economy").setDescription("Create Your Economy Account"),

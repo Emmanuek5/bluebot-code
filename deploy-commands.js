@@ -16,6 +16,12 @@ for (const file of xpFiles) {
   const command = require(`./src/commands/xp/${file}`);
   commands.push(command.data.toJSON());
 }
+
+const economyFiles = fs.readdirSync("src/commands/economy").filter(file => file.endsWith(".js"));
+for (const file of economyFiles) {
+  const command = require(`./src/commands/economy/${file}`);
+  commands.push(command.data.toJSON());
+}
 const commandFiles = fs.readdirSync('src/commands').filter((file) => file.endsWith('.js'));
 for (const file of commandFiles) {
   const command = require(`./src/commands/${file}`);

@@ -4,7 +4,7 @@ const Levels = require('discord.js-leveling');
 
 module.exports = {
   usage: 'Leaderboard',
-  data: new SlashCommandBuilder().setName('leaderboard').setDescription('Shows the leaderboard'),
+  data: new SlashCommandBuilder().setName('xp-leaderboard').setDescription('Shows the leaderboard'),
   async execute(interaction, client) {
     const { option, user, guildId } = interaction;
 

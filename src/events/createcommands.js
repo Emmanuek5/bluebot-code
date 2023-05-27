@@ -19,6 +19,23 @@ function createcommands(client) {
     }
   }
 
+
+    const economyPath = path.join(__dirname, "../economy");
+    const economyFiles = fs.readdirSync(economyPath).filter(file => file.endsWith(".js"));
+
+    for (const file of economyFiles) {
+      const filePath = path.join(economyPath, file);
+      const command = require(filePath);
+      // Set a new item in the Collection with the key as the command name and the value as the exported module
+      if ("data" in command && "execute" in command) {
+        client.commands.set(command.data.name, command);
+      } else {
+        console.log(
+          `[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`
+        );
+      }
+    }
+
   const musicPath = path.join(__dirname, '../commands/music');
   const musicFiles = fs.readdirSync(musicPath).filter((file) => file.endsWith('.js'));
   for (const file of musicFiles) {
