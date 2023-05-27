@@ -7,8 +7,8 @@ class Authentication extends Api {
     }
 
     async create(id){
-        const user = this.client.users.cache.get(id);
-        const tokenw = await tokenSchema.findOne({user: user.id});
+      
+        const tokenw = await tokenSchema.findOne({userid: id});
         if (tokenw)  return tokenw.token;
           let usertoken = crypto.randomBytes(32).toString('hex');
         const token = new tokenSchema({
