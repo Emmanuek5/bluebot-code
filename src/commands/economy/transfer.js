@@ -20,6 +20,7 @@ module.exports = {
     if (command === "user") {
       const target = interaction.options.getUser("user");
       const amount = interaction.options.getNumber("amount");
+      if (target == interaction.user) return interaction.reply({ content: "You can't transfer to yourself", ephemeral: true })
 
       if (amount > Data.Wallet) return interaction.reply({ content: "You don't have enough money", ephemeral: true })
 
