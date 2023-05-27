@@ -21,10 +21,10 @@ class Api {
     });
 
     //checking the api for information
-    this.app.get("/api/v1/auth/user", async (req, res) => {
+    this.app.post("/api/v1/user", async (req, res) => {
       const { Authentication } = require("./Authentication/Auth");
       const token = req.headers.authorization;
-      const validate = new Authentication().check(token)
+      const validate = new Authentication().validate(token)
       if (!validate) res.send("Please provide a valid token").status(401) 
     
 
