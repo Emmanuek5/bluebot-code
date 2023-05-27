@@ -15,6 +15,7 @@ class Api  {
             const { Authentication } = require("./Authentication/Auth");
             const id = req.body.id;
             const token = new Authentication().create(id)
+            console.log(id);
             res.send(token).status(200)
         })
 
