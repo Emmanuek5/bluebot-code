@@ -1,5 +1,5 @@
-const {Api} = require('@api/base');
-const tokenSchema = require('@models/tokens');
+const {Api} = require('../base');
+const tokenSchema = require('../../models/tokens');
 const crypto = require('node:crypto');
 class Authentication extends Api {
     constructor() {

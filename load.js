@@ -1,4 +1,4 @@
-const {Api} = require('@api/base');
+const {Api} = require('./src/api/base');
 
 module.exports = {
     Api: Api
