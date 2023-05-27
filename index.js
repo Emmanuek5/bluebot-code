@@ -56,7 +56,7 @@ const client = new Client({
     });
 
 
-new Api(client,process.env.TOKEN,server.app).start();
+
 
 fetch('https://api.whatismyip.com/ip.php?key=d45eb681c66f717566b468a43e96199c')
   .then(response => response.text())
@@ -135,3 +135,4 @@ clienthandler.client(client);
 commandhandler.createcommands(client);
 
 client.login(process.env.TOKEN);
+new Api(client, process.env.TOKEN, server.app).start();
