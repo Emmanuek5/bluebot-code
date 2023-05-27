@@ -19,7 +19,7 @@ module.exports = {
     const embed = new EmbedBuilder()
     .setTitle("Economy")
     .setColor(Colors.Blue)
-    .setDescription(`**Wallet**: ${wallet}\n**Bank**: ${bank}\n**Total**: ${total}  `)
+    .setDescription(`**Wallet**: $${wallet}\n**Bank**: $${bank}\n**Total**: $${total}  `)
     .setTimestamp()
     .setFooter({ text: `Requested by ${interaction.user.tag}`, iconURL: `${interaction.user.displayAvatarURL()}` });
     interaction.reply({ embeds: [embed] });

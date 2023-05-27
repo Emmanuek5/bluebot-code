@@ -44,7 +44,7 @@ module.exports = {
                 const embed= new EmbedBuilder()
                 .setTitle("Beggar")
                 .setColor(Colors.Blue)
-                .setDescription(`**${positiveChoice}\n\nYou Got ${value} Coins**`)
+                .setDescription(`**${positiveChoice}\n\nYou Got $${value} Coins**`)
 
             await  interaction.reply({embeds: [embed]})
             
@@ -63,7 +63,7 @@ module.exports = {
                 const embed= new EmbedBuilder()
                 .setTitle("Beggar")
                 .setColor(Colors.Red)
-                .setDescription(`**${negativeChoice}**\n\n You Lost ${value} Coins`)
+                .setDescription(`**${negativeChoice}**\n\n You Lost $${value} Coins`)
 
             await  interaction.reply({embeds: [embed]})
             

@@ -33,12 +33,12 @@ module.exports = {
       await Data.save();
       await targetData.save();
       const user = client.users.cache.get(target.id);
-      await user.send(`You have been transfered **${amount}** from your ${interaction.user}`)
+      await user.send(`You have been transfered **$${amount}** from your ${interaction.user}`)
 
 
       const embed = new EmbedBuilder()
       .setColor(Colors.Green)
-      .setDescription(`You transfered ${amount} to ${target}`)
+      .setDescription(`You transfered **$${amount}** to ${target}`)
 
       interaction.reply({ embeds: [embed] })
     } 
@@ -55,7 +55,7 @@ module.exports = {
 
       const embed = new EmbedBuilder()
       .setColor(Colors.Green)
-      .setDescription(`You transfered **${amount}** to your bank`)
+      .setDescription(`You transfered **$${amount}** to your bank`)
 
       interaction.reply({ embeds: [embed] })
     } 
