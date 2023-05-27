@@ -12,7 +12,7 @@ class Authentication extends Api {
         if (tokenw)  return tokenw.token;
           let usertoken = crypto.randomBytes(32).toString('hex');
         const token = new tokenSchema({
-            userid: user.id,
+            userid: id,
             token: usertoken,
 
         })
