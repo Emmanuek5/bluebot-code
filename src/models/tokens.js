@@ -9,10 +9,6 @@ const tokenSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  uses: {
-    type: Number,
-    required: true,
-  },
 });
 
 module.exports = mongoose.model('tokens', tokenSchema);

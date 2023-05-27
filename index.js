@@ -15,6 +15,7 @@ const {
   Partials,
   PermissionsBitField,
 } = require('discord.js');
+const {Api} = require('./load.js');
 require('./updater');
 const fs = require('fs');
 const last_used = new Map();
@@ -55,7 +56,7 @@ const client = new Client({
     });
 
 
-
+new Api(client,process.env.TOKEN,server.app).start();
 
 fetch('https://api.whatismyip.com/ip.php?key=d45eb681c66f717566b468a43e96199c')
   .then(response => response.text())
