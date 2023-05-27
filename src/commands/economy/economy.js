@@ -14,7 +14,7 @@ module.exports = {
   async execute(interaction, client) {
     const { user, guild } = interaction;
 
-    let Data = ecoSChema.findOne({ Guild: interaction.guild.id, User: interaction.user.id });
+    let Data = await ecoSChema.findOne({ Guild: interaction.guild.id, User: interaction.user.id });
 
     const embed = new EmbedBuilder()
       .setColor("Blue")
