@@ -25,10 +25,15 @@ class Api {
       const { Authentication } = require("./Authentication/Auth");
       const token = req.headers.authorization;
       const validate = new Authentication().validate(token).then(result => {
-        if (!result) res.send("Please provide a valid token").status(401); 
+        if (!result) res.send("Please provide a valid token").status(401);
+        const id = req.body.id
+        console.log(this.client);
+        const user = this.client.users.cache.get(id);
+        res.send(user).status(200);
+      });
 
-        
-      })
+
+      
       
     
 
