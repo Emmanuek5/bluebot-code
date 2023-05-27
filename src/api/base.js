@@ -8,6 +8,7 @@ class Api {
   }
 
   async start() {
+    //creating the token
     this.app.post("/api/v1/auth/create", async (req, res) => {
       const { Authentication } = require("./Authentication/Auth");
       const id = req.body.id;
@@ -18,7 +19,19 @@ class Api {
         });
       
     });
-  }
+
+    //checking the api for information
+    this.app.get("/api/v1/auth/user", async (req, res) => {
+      const { Authentication } = require("./Authentication/Auth");
+      const token = req.headers.authorization;
+      const validate = new Authentication().check(token)
+      if (!validate) res.send("Please provide a valid token").status(401) 
+    
+
+    
+  })
+
+}
 }
 
 module.exports = { Api };
