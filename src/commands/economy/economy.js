@@ -67,7 +67,7 @@ module.exports = {
         if (i.user.id !== interaction.user.id) interaction.reply({ content: `Only ${interaction.user.tag} can use this button`, ephemeral: true });
 
         if (i.customId === "page1") {
-            if (Data) return i.reply({ content: "You already have an account", ephemeral: true }); 
+         
 
             Data = new ecoSChema({
                 Guild: interaction.guild.id,
