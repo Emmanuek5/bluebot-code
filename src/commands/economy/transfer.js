@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders");
 const ecoSChema = require("../../models/economy.js");
 const { Colors } = require("discord.js");
-
+const { dmhandler } = require("../../events/dmhandler.js");
 module.exports = {
   data: new SlashCommandBuilder().setName("transfer").setDescription("Transfer to your bank or a user")
   .addSubcommand((subcommand) => subcommand.setName("user").setDescription("Transfer to a user").addUserOption((option) => option.setName("user").setDescription("User to transfer").setRequired(true))
@@ -9,7 +9,7 @@ module.exports = {
     .addSubcommand((subcommand) => subcommand.setName("bank").setDescription("Transfer to your bank").addNumberOption((option) => option.setName("amount").setDescription("Amount to transfer").setRequired(true)))
     ,
    
-  async execute(interaction) {
+  async execute(interaction,client) {
     const { user, guild } = interaction;
     const command = interaction.options.getSubcommand();
 
@@ -32,6 +32,9 @@ module.exports = {
 
       await Data.save();
       await targetData.save();
+      const user = client.users.cache.get(target.id);
+      await user.send(`You have been transfered **${amount}** from your ${interaction.user}`)
+
 
       const embed = new EmbedBuilder()
       .setColor(Colors.Green)
