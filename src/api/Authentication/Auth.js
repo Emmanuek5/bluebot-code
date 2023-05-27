@@ -18,7 +18,7 @@ class Authentication extends Api {
         })
 
         await token.save();
-         return usertoken;
+         return token.token;
     }
 
     async validate(token){
