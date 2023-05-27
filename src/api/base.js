@@ -14,10 +14,12 @@ class Api  {
         this.app.post("/api/v1/auth/create", async (req, res) => {
             const { Authentication } = require("./Authentication/Auth");
             const id = req.body.id;
-            const token = new Authentication()
-            await token.create(id)
+            const token = new Authentication().create(id).then(token => {
+                (token => {
             console.log(id,token);
             res.send(token).status(200)
+        })
+            })
         })
 
 
