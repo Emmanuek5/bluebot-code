@@ -53,5 +53,9 @@
     "serve-favicon": "^2.5.0",
     "undici": "^5.20.0",
     "ws": "^8.12.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.22.1",
+    "@babel/preset-env": "^7.22.2"
   }
 }

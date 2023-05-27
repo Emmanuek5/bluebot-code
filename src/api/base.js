@@ -1,4 +1,4 @@
-const { Authentication } = require("./Authentication/Auth");
+
 
 
 class Api  {
@@ -12,6 +12,7 @@ class Api  {
 
     start(){
         this.app.post("/api/v1/auth/create", (req, res) => {
+            const { Authentication } = require("./Authentication/Auth");
             const id = req.body.id;
             const token = new Authentication().create(id)
             res.send(token).status(200)
