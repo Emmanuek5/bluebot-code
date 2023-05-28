@@ -38,7 +38,8 @@ class Api {
         res.send(user).status(200);
       });
 
-      this.app.post("/api/v1/user/economy", async (req,res)=>{
+// retrive user economy      
+    this.app.post("/api/v1/user/economy", async (req,res)=>{
         const { Authentication } = require("./Authentication/Auth");
         const ecoSChema = require("../models/economy");
       const tokenraw = req.headers.authorization;
@@ -58,8 +59,9 @@ class Api {
          }
          res.json(data).status(200);
         });
-    })    
+    })
 
+    //retrive user xp
           this.app.post("/api/v1/user/xp", async (req, res) => {
             const { Authentication } = require("./Authentication/Auth");
           const Levels = require("discord.js-leveling");
@@ -79,10 +81,7 @@ class Api {
             });
           });    
 
-
-
-
-
+//retrive bots guilds
       this.app.post("/api/v1/guilds", async (req, res) => {
         const { Authentication } = require("./Authentication/Auth");
     const tokenraw = req.headers.authorization;
