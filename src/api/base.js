@@ -111,7 +111,6 @@ class Api {
                 name: guild.name,
                 icon: guild.iconURL(),
                 icon: guild.iconURL(),
-                owner: guild.owner.usertag,
                 membercount: guild.memberCount,
             }
             guilds.push(data);
