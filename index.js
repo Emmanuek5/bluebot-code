@@ -131,6 +131,7 @@ client.on('guildMemberRemove', (member) => {
   leaveandjoinhandler.leave(client, member);
 });
 
+
 clienthandler.client(client);
 commandhandler.createcommands(client);
 

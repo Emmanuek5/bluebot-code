@@ -56,7 +56,7 @@ class Api {
          const user =   this.economy.findUser(id)
          if (!user) return res.send("User does not have an economy profile").status(401);
          const data = {
-            balance: user.Bank + User.Wallet,
+            balance: user.Bank + user.Wallet,
             bank: user.Bank,
             wallet: user.Wallet,
             Guild : user.Guild
@@ -92,7 +92,12 @@ class Api {
     const token = tokenraw.replace("Bearer ", "").replace("Bot ", "");
         const validate = new Authentication().validate(token).then(result => {
           if (!result)return res.send("Please provide a valid token").status(401);
-          const guilds= this.client.guilds.cache.find();
+          const guilds = []
+         this.client.guilds.cache.forEach(async guild => {
+           const data = await serverSchema.findOne({ guildId: guild.id });
+           guilds.push(data)
+         });
+
           res.send(guilds).status(200);
         });
 
