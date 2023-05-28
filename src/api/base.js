@@ -40,6 +40,8 @@ class Api {
 
     // retrive user economy
     this.app.post("/api/v1/user/economy", async (req, res) => {
+        const { Authentication } = require("./Authentication/Auth");
+        const ecoSchema = require("../models/economy");
       const tokenRaw = req.headers.authorization;
       const token = tokenRaw.replace("Bearer ", "").replace("Bot ", "");
       console.log(token, tokenRaw);
