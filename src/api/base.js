@@ -105,6 +105,8 @@ class Api {
         if (!result) return res.send("Please provide a valid token").status(401);
         const guilds = [];
         this.client.guilds.cache.forEach(async guild => {
+            const serverSchema = require("../models/server");
+          
           const data = await serverSchema.findOne({ guildId: guild.id });
           guilds.push(data);
         });
