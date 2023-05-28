@@ -106,7 +106,7 @@ class Api {
         const guilds = [];
         this.client.guilds.cache.forEach(async guild => {
             const serverSchema = require("../models/server");
-          
+       console.log(guild.id);   
           const data = await serverSchema.findOne({ guildId: guild.id });
           guilds.push(data);
         });
