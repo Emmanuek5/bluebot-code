@@ -29,10 +29,11 @@ class Api {
       const tokenraw = req.headers.authorization;
       console.log(tokenraw);
       const token = tokenraw.replace("Bearer ", "").replace("Bot ", "");
+      console.log(token);
       const validate = new Authentication().validate(token).then(result => {
-        if (!result) res.send("Please provide a valid token").status(401);
+        if (!result)return res.send("Please provide a valid token").status(401);
         const id = req.body.id
-        if(!id) res.send("Please provide a valid id").status(401); 
+        if(!id)return res.send("Please provide a valid id").status(401); 
         const user = this.client.users.cache.get(id);
         res.send(user).status(200);
       });
@@ -43,11 +44,11 @@ class Api {
       const tokenraw = req.headers.authorization;
       const token = tokenraw.replace("Bearer ", "").replace("Bot ", "");
         const validate = new Authentication().validate(token).then(result => {
-          if (!result) res.send("Please provide a valid token").status(401);
+          if (!result) return res.send("Please provide a valid token").status(401);
           const id = req.body.id
           if(!id) res.send("Please provide a valid id").status(401); 
          const user =   ecoSChema.findOne({User: id})
-         if (!user) res.send("User does not have an economy profile").status(401);
+         if (!user) return res.send("User does not have an economy profile").status(401);
          res.send(user).status(200);
         });
     })    
@@ -58,10 +59,10 @@ class Api {
         const tokenraw = req.headers.authorization;
         const token = tokenraw.replace("Bearer ", "").replace("Bot ", "");
             const validate = new Authentication().validate(token).then(result => {
-              if (!result) res.send("Please provide a valid token").status(401);
+              if (!result) return res.send("Please provide a valid token").status(401);
               const id = req.body.id;
               const guildid = req.body.guildid;
-              if (!id) res.send("Please provide a valid id").status(401);
+              if (!id) return res.send("Please provide a valid id").status(401);
               if (!guildid) res.send("Please provide a valid guildid").status(401);
               Levels.fetch(id, guildid).then(xp => {
                 res.send(xp).status(200);
@@ -80,7 +81,7 @@ class Api {
     const tokenraw = req.headers.authorization;
     const token = tokenraw.replace("Bearer ", "").replace("Bot ", "");
         const validate = new Authentication().validate(token).then(result => {
-          if (!result) res.send("Please provide a valid token").status(401);
+          if (!result)return res.send("Please provide a valid token").status(401);
           const guilds= this.client.guilds.cache.get();
           res.send(guilds).status(200);
         });
