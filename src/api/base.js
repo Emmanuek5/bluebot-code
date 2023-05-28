@@ -50,7 +50,13 @@ class Api {
           if(!id) res.send("Please provide a valid id").status(401); 
          const user =   ecoSChema.findOne({User: id})
          if (!user) return res.send("User does not have an economy profile").status(401);
-         res.json(user).status(200);
+         const data = {
+            balance: user.Bank + User.Wallet,
+            bank: user.Bank,
+            wallet: user.Wallet,
+            Guild : user.Guild
+         }
+         res.json(data).status(200);
         });
     })    
 
