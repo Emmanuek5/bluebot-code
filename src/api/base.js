@@ -104,14 +104,19 @@ class Api {
       const validate = new Authentication().validate(token).then(result => {
         if (!result) return res.send("Please provide a valid token").status(401);
         const guilds = [];
-        this.client.guilds.cache.forEach(async guild => {
-            const serverSchema = require("../models/server");
-       console.log(guild.id);   
-          const data = await serverSchema.findOne({ guildId: guild.id });
-          guilds.push(data);
-        });
-
-        res.send(guilds).status(200);
+        this.client.guilds.cache.forEach((guild) => {
+            const data = {
+                id: guild.id,
+                name: guild.name,
+                icon: guild.iconURL(),
+                icon: guild.iconURL(),
+                owner: guild.owner.user.tag,
+                membercount: guild.memberCount,
+            }
+            guilds.push(data);
+           
+        })
+         res.send(guilds).status(200);
       });
     });
   }
