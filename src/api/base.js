@@ -105,12 +105,13 @@ class Api {
         if (!result) return res.send("Please provide a valid token").status(401);
         const guilds = [];
         this.client.guilds.cache.forEach((guild) => {
+            console.log(guild.name);
             const data = {
                 id: guild.id,
                 name: guild.name,
                 icon: guild.iconURL(),
                 icon: guild.iconURL(),
-                owner: guild.owner.user.tag,
+                owner: guild.owner.usertag,
                 membercount: guild.memberCount,
             }
             guilds.push(data);
