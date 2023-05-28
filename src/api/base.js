@@ -53,15 +53,15 @@ class Api {
           if (!result) return res.send("Please provide a valid token").status(401);
           const id = req.body.id
           if(!id) res.send("Please provide a valid id").status(401); 
-         const user =   this.economy.findUser(id)
+         const user =   ecoSChema.findOne({User: id})
          console.log(user);
          if (!user) return res.send("User does not have an economy profile").status(401);
-         const data = {
-            balance: user.Bank + user.Wallet,
-            bank: user.Bank,
-            wallet: user.Wallet,
-            Guild : user.Guild
-         }
+        const data = {
+            "balance": user.Wallet + user.Bank,
+            "wallet": user.Wallet,
+            "bank": user.Bank,
+            "Guild":  user.Guild,
+        }
          res.json(data).status(200);
         });
     })
