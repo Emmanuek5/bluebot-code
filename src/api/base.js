@@ -105,7 +105,7 @@ class Api {
         if (!result) return res.send("Please provide a valid token").status(401);
         const guilds = [];
         this.client.guilds.cache.forEach((guild) => {
-            console.log(guild.name);
+           
             const data = {
                 id: guild.id,
                 name: guild.name,
@@ -119,6 +119,23 @@ class Api {
          res.send(guilds).status(200);
       });
     });
+
+this.app.post("/api/v1/guild/invite", async (req, res) => {
+    const { Authentication } = require("./Authentication/Auth");
+  const tokenraw = req.headers.authorization;
+  const token = tokenraw.replace("Bearer ", "").replace("Bot ", "");
+  const validate = new Authentication().validate(token).then(result => {
+    if (!result) return res.send("Please provide a valid token").status(401);
+    const id = req.body.id;
+    if (!id) return res.send("Please provide a valid id").status(401);
+    const guild = this.client.guilds.cache.get(id);
+    const invite = guild.channels.cache.random().createInvite({ maxAge: 0 });
+    res.send(invite).status(200);
+  });
+
+})
+
+
   }
 }
 
