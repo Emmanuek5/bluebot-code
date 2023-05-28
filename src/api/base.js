@@ -27,6 +27,7 @@ class Api {
     this.app.post("/api/v1/user", async (req, res) => {
       const { Authentication } = require("./Authentication/Auth");
       const tokenraw = req.headers.authorization;
+      console.log(tokenraw);
       const token = tokenraw.replace("Bearer ", "").replace("Bot ", "");
       const validate = new Authentication().validate(token).then(result => {
         if (!result) res.send("Please provide a valid token").status(401);
