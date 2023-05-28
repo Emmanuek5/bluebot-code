@@ -1,3 +1,4 @@
+const levels = require("discord.js-leveling/models/levels");
 
 
 class Api {
@@ -25,7 +26,8 @@ class Api {
     //checking the api for information
     this.app.post("/api/v1/user", async (req, res) => {
       const { Authentication } = require("./Authentication/Auth");
-      const token = req.headers.authorization;
+      const tokenraw = req.headers.authorization;
+      const token = tokenraw.replace("Bearer ", "").replace("Bot ", "");
       const validate = new Authentication().validate(token).then(result => {
         if (!result) res.send("Please provide a valid token").status(401);
         const id = req.body.id
@@ -37,7 +39,8 @@ class Api {
       this.app.post("/api/v1/user/economy", async (req,res)=>{
         const { Authentication } = require("./Authentication/Auth");
         const ecoSChema = require("../models/economy");
-        const token = req.headers.authorization;
+      const tokenraw = req.headers.authorization;
+      const token = tokenraw.replace("Bearer ", "").replace("Bot ", "");
         const validate = new Authentication().validate(token).then(result => {
           if (!result) res.send("Please provide a valid token").status(401);
           const id = req.body.id
@@ -48,12 +51,33 @@ class Api {
         });
     })    
 
+          this.app.post("/api/v1/user/xp", async (req, res) => {
+            const { Authentication } = require("./Authentication/Auth");
+          const Levels = require("discord.js-leveling");
+        const tokenraw = req.headers.authorization;
+        const token = tokenraw.replace("Bearer ", "").replace("Bot ", "");
+            const validate = new Authentication().validate(token).then(result => {
+              if (!result) res.send("Please provide a valid token").status(401);
+              const id = req.body.id;
+              const guildid = req.body.guildid;
+              if (!id) res.send("Please provide a valid id").status(401);
+              if (!guildid) res.send("Please provide a valid guildid").status(401);
+              Levels.fetch(id, guildid).then(xp => {
+                res.send(xp).status(200);
+              }
+              )
+             
+            });
+          });    
 
-    
+
+
+
 
       this.app.post("/api/v1/guilds", async (req, res) => {
         const { Authentication } = require("./Authentication/Auth");
-        const token = req.headers.authorization;
+    const tokenraw = req.headers.authorization;
+    const token = tokenraw.replace("Bearer ", "").replace("Bot ", "");
         const validate = new Authentication().validate(token).then(result => {
           if (!result) res.send("Please provide a valid token").status(401);
           const guilds= this.client.guilds.cache.get();
