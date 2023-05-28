@@ -54,6 +54,7 @@ class Api {
           const id = req.body.id
           if(!id) res.send("Please provide a valid id").status(401); 
          const user =   this.economy.findUser(id)
+         console.log(user);
          if (!user) return res.send("User does not have an economy profile").status(401);
          const data = {
             balance: user.Bank + user.Wallet,
