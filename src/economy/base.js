@@ -34,7 +34,13 @@ return data;
 findUser(user){
     const data = this.db.findOne({User: user});
     if (!data) return false;
-    return data;
+    const userdata = {
+        User: data.User,
+        Wallet: data.Wallet,
+        Bank: data.Bank,
+        Guild: data.Guild,
+    }
+    return userdata;
 
 }
 
@@ -43,8 +49,10 @@ findUser(user){
 getBalance(user, guild){
     const data = this.db.findOne({User: user});
 if (!data) return false;
-return data;
+return data.Wallet + data.Bank;
 }
+
+
 
 
 updateBalance(user, guild, amount){
