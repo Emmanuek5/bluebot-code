@@ -40,46 +40,52 @@ class Api {
 
     // retrive user economy
     this.app.post("/api/v1/user/economy", async (req, res) => {
-        const { Authentication } = require("./Authentication/Auth");
-        const ecoSchema = require("../models/economy");
-      const tokenRaw = req.headers.authorization;
-      const token = tokenRaw.replace("Bearer ", "").replace("Bot ", "");
-      console.log(token, tokenRaw);
+      try {
+          const { Authentication } = require("./Authentication/Auth");
+          const ecoSchema = require("../models/economy");
+          const tokenRaw = req.headers.authorization;
+          const token = tokenRaw.replace("Bearer ", "").replace("Bot ", "");
+          console.log(token, tokenRaw);
 
-      const validate = new Authentication().validate(token).then(async result => {
-        if (!result) {
-          return res.status(401).send("Please provide a valid token");
-        }
+          const validate = new Authentication().validate(token).then(async result => {
+            if (!result) {
+              return res.status(401).send("Please provide a valid token");
+            }
 
-        const id = req.body.id;
-        if (!id) {
-          return res.status(401).send("Please provide a valid id");
-        }
+            const id = req.body.id;
+            if (!id) {
+              return res.status(401).send("Please provide a valid id");
+            }
 
-        try {
-          const user = await ecoSchema.findOne({ User: id });
+            try {
+              const user = await ecoSchema.findOne({ User: id });
 
-          if (!user) {
-            return res.status(401).send("User does not have an economy profile");
-          }
+              if (!user) {
+                return res.status(401).send("User does not have an economy profile");
+              }
 
-          const data = {
-            balance: user.Wallet + user.Bank,
-            wallet: user.Wallet,
-            bank: user.Bank,
-            guild: user.Guild,
-          };
+              const data = {
+                balance: user.Wallet + user.Bank,
+                wallet: user.Wallet,
+                bank: user.Bank,
+                guild: user.Guild,
+              };
 
-          res.status(200).json(data);
-        } catch (error) {
-          console.error(error);
-          res.status(500).send("An error occurred while retrieving user economy data");
-        }
-      });
+              res.status(200).json(data);
+            } catch (error) {
+              console.error(error);
+              res.status(500).send("An error occurred while retrieving user economy data");
+            }
+          });
+      } catch (error) {
+        console.log(error)
+        res.send("An error occurred while retrieving the economy").status(500);
+      }
     });
 
     //retrive user xp
     this.app.post("/api/v1/user/xp", async (req, res) => {
+try {
       const { Authentication } = require("./Authentication/Auth");
       const Levels = require("discord.js-leveling");
       const tokenraw = req.headers.authorization;
@@ -94,48 +100,60 @@ class Api {
           res.send(xp).status(200);
         });
       });
+} catch (error) {   
+    console.log(error)
+    res.send("An error occurred while retrieving the xp").status(500);
+}    
     });
 
     //retrive bots guilds
     this.app.post("/api/v1/guilds", async (req, res) => {
-      const { Authentication } = require("./Authentication/Auth");
-      const tokenraw = req.headers.authorization;
-      const token = tokenraw.replace("Bearer ", "").replace("Bot ", "");
-      const validate = new Authentication().validate(token).then(result => {
-        if (!result) return res.send("Please provide a valid token").status(401);
-        const guilds = [];
-        this.client.guilds.cache.forEach((guild) => {
-           
-            const data = {
-                id: guild.id,
-                name: guild.name,
-                icon: guild.iconURL(),
-                icon: guild.iconURL(),
-                membercount: guild.memberCount,
-            }
-            guilds.push(data);
-           
-        })
-         res.send(guilds).status(200);
-      });
+     try {
+         const { Authentication } = require("./Authentication/Auth");
+         const tokenraw = req.headers.authorization;
+         const token = tokenraw.replace("Bearer ", "").replace("Bot ", "");
+         const validate = new Authentication().validate(token).then(result => {
+           if (!result) return res.send("Please provide a valid token").status(401);
+           const guilds = [];
+           this.client.guilds.cache.forEach(guild => {
+             const data = {
+               id: guild.id,
+               name: guild.name,
+               icon: guild.iconURL(),
+               icon: guild.iconURL(),
+               membercount: guild.memberCount,
+             };
+             guilds.push(data);
+           });
+           res.send(guilds).status(200);
+         });
+     } catch (error) {
+         console.log(error)
+         res.send("An error occurred while retrieving the guilds").status(500);
+     }
     });
 
 this.app.post("/api/v1/guild/invite", async (req, res) => {
-    const { Authentication } = require("./Authentication/Auth");
-  const tokenraw = req.headers.authorization;
-  const token = tokenraw.replace("Bearer ", "").replace("Bot ", "");
-  const validate = new Authentication().validate(token).then(async result => {
-    if (!result) return res.send("Please provide a valid token").status(401);
-    const id = req.body.id;
-    if (!id) return res.send("Please provide a valid id").status(401);
-    const guild = this.client.guilds.cache.get(id);
-    
-       const invite = await guild.invites.create(guild.systemChannelId, {
-         unique: true,
-         maxAge: 0,
-       });
-    res.send(invite).status(200);
-  });
+try {
+        const { Authentication } = require("./Authentication/Auth");
+        const tokenraw = req.headers.authorization;
+        const token = tokenraw.replace("Bearer ", "").replace("Bot ", "");
+        const validate = new Authentication().validate(token).then(async result => {
+          if (!result) return res.send("Please provide a valid token").status(401);
+          const id = req.body.id;
+          if (!id) return res.send("Please provide a valid id").status(401);
+          const guild = this.client.guilds.cache.get(id);
+
+          const invite = await guild.invites.create(guild.systemChannelId, {
+            unique: true,
+            maxAge: 0,
+          });
+          res.send(invite).status(200);
+        });
+} catch (error) {
+    console.log(error)
+    res.send("An error occurred while creating the invite").status(500);
+}
 
 })
 
