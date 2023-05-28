@@ -1,3 +1,5 @@
+
+
 class Api {
   constructor(client, client_secret, app) {
     this.url = "https://discord.com/api/v/9/";
@@ -27,10 +29,40 @@ class Api {
       const validate = new Authentication().validate(token).then(result => {
         if (!result) res.send("Please provide a valid token").status(401);
         const id = req.body.id
-        console.log(this.client);
+        if(!id) res.send("Please provide a valid id").status(401); 
         const user = this.client.users.cache.get(id);
         res.send(user).status(200);
       });
+
+      this.app.post("/api/v1/user/economy", async (req,res)=>{
+        const { Authentication } = require("./Authentication/Auth");
+        const ecoSChema = require("../models/economy");
+        const token = req.headers.authorization;
+        const validate = new Authentication().validate(token).then(result => {
+          if (!result) res.send("Please provide a valid token").status(401);
+          const id = req.body.id
+          if(!id) res.send("Please provide a valid id").status(401); 
+         const user =   ecoSChema.findOne({User: id})
+         if (!user) res.send("User does not have an economy profile").status(401);
+         res.send(user).status(200);
+        });
+    })    
+
+
+    
+
+      this.app.post("/api/v1/guilds", async (req, res) => {
+        const { Authentication } = require("./Authentication/Auth");
+        const token = req.headers.authorization;
+        const validate = new Authentication().validate(token).then(result => {
+          if (!result) res.send("Please provide a valid token").status(401);
+          const guilds= this.client.guilds.cache.get();
+          res.send(guilds).status(200);
+        });
+
+
+
+      })
 
 
       

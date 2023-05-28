@@ -10,7 +10,7 @@ module.exports = {
         async  execute(interaction) { 
             const {user, guild} = interaction
 
-            let Data = await ecoSChema.findOne({ Guild: guild.id,User: user.id}) 
+            let Data = await ecoSChema.findOne({ User: user.id}) 
             console.log(Data);
 
             const negative= Math.round( Math.random() * -300) -10

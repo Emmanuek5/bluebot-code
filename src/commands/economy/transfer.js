@@ -13,7 +13,7 @@ module.exports = {
     const { user, guild } = interaction;
     const command = interaction.options.getSubcommand();
 
-    let Data = await ecoSChema.findOne({ Guild: guild.id, User: user.id });
+    let Data = await ecoSChema.findOne({ User: user.id });
     console.log(Data);
    if (!Data) return interaction.reply({ content: "You don't have an Economy Account", ephemeral: true })
 
@@ -24,7 +24,7 @@ module.exports = {
 
       if (amount > Data.Wallet) return interaction.reply({ content: "You don't have enough money", ephemeral: true })
 
-      const targetData = await ecoSChema.findOne({ Guild: guild.id, User: target.id });
+      const targetData = await ecoSChema.findOne({  User: target.id });
       if (!targetData) return interaction.reply({ content: "This user doesn't have an Economy Account", ephemeral: true })
 
       Data.Wallet -= amount;
