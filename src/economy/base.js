@@ -34,13 +34,7 @@ return data;
 findUser(user){
     const data = this.db.findOne({User: user});
     if (!data) return false;
-    const userdata = {
-        User: data.User,
-        Wallet: data.Wallet,
-        Bank: data.Bank,
-        Guild: data.Guild,
-    }
-    return userdata;
+    return data;
 
 }
 
