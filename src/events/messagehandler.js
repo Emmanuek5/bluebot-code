@@ -124,7 +124,7 @@ console.log(process.env.OPENAI_API_KEY);
            const a = humanFilter(message, msg);
            if (a) return;
            const res = await openai.createCompletion({
-             model: "text-davinci-003",
+             model: "gpt-3.5-turbo",
              prompt: filecontent,
              temperature: 0.5,
              max_tokens: 2048,
@@ -160,7 +160,7 @@ console.log(process.env.OPENAI_API_KEY);
        const a =  humanFilter(message,msg)
         if (a) return;
         const res = await openai.createCompletion({
-          model: 'text-davinci-003',
+          model: "gpt-3.5-turbo",
           prompt: content,
           temperature: 0.5,
           max_tokens: 2048,
