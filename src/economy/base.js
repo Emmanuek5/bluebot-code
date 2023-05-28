@@ -31,6 +31,15 @@ if (!data) return false;
 return data;
 }
 
+findUser(user){
+    const data = this.db.findOne({User: user});
+    if (!data) return false;
+    return data;
+
+}
+
+
+
 getBalance(user, guild){
     const data = this.db.findOne({User: user});
 if (!data) return false;
@@ -67,3 +76,4 @@ return data;
 
 
 
+module.exports= {Economy}

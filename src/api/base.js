@@ -8,6 +8,8 @@ class Api {
     this.client_secret = client_secret;
     this.client = client;
     this.app = app;
+    this.economyhandler = require("../economy/base");
+    this.economy = new  this.economyhandler.Economy();
   }
 
   async start() {
@@ -37,10 +39,12 @@ class Api {
         const user = this.client.users.cache.get(id);
         res.send(user).status(200);
       });
+    }) 
 
 // retrive user economy      
     this.app.post("/api/v1/user/economy", async (req,res)=>{
         const { Authentication } = require("./Authentication/Auth");
+      
         const ecoSChema = require("../models/economy");
       const tokenraw = req.headers.authorization;
       const token = tokenraw.replace("Bearer ", "").replace("Bot ", "");
@@ -49,7 +53,7 @@ class Api {
           if (!result) return res.send("Please provide a valid token").status(401);
           const id = req.body.id
           if(!id) res.send("Please provide a valid id").status(401); 
-         const user =   ecoSChema.findOne({User: id})
+         const user =   this.economy.findUser(id)
          if (!user) return res.send("User does not have an economy profile").status(401);
          const data = {
             balance: user.Bank + User.Wallet,
@@ -88,7 +92,7 @@ class Api {
     const token = tokenraw.replace("Bearer ", "").replace("Bot ", "");
         const validate = new Authentication().validate(token).then(result => {
           if (!result)return res.send("Please provide a valid token").status(401);
-          const guilds= this.client.guilds.cache.get();
+          const guilds= this.client.guilds.cache.find();
           res.send(guilds).status(200);
         });
 
@@ -102,9 +106,8 @@ class Api {
     
 
     
-  })
+  }
 
-}
 }
 
 module.exports = { Api };

@@ -6,15 +6,17 @@ const {
   ActionRowBuilder,
   EmbedBuilder,
 } = require("discord.js");
-const ecoSChema = require("../../models/economy.js");
+const {Economy} = require("../../economy/base")
 
 
 module.exports = {
   data: new SlashCommandBuilder().setName("economy").setDescription("Create Your Economy Account"),
   async execute(interaction, client) {
     const { user, guild } = interaction;
+const eco = new Economy()
+    let Data = await eco.findUser(user.id);
 
-    let Data = await ecoSChema.findOne({ Guild: interaction.guild.id, User: interaction.user.id });
+    if(Data) return interaction.reply({ content: `You already have an account`, ephemeral: true })
 
     const embed = new EmbedBuilder()
       .setColor("Blue")

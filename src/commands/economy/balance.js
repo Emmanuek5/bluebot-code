@@ -1,13 +1,14 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders");
 const ecoSChema = require("../../models/economy.js");
 const { Colors } = require("discord.js");
+const {Economy} = require("../../economy/base")
 
 module.exports = {
   data: new SlashCommandBuilder().setName("balance").setDescription("Check Your Balance"),
   async execute(interaction) {
     const { user, guild } = interaction;
-
-    let Data = await ecoSChema.findOne({  User: user.id });
+const eco = new Economy();
+    let Data = await eco.findUser(user.id)
     console.log(Data);
 
     if(!Data) {
