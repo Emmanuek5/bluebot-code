@@ -43,13 +43,14 @@ class Api {
         const ecoSChema = require("../models/economy");
       const tokenraw = req.headers.authorization;
       const token = tokenraw.replace("Bearer ", "").replace("Bot ", "");
+      console.log(token,tokenraw);
         const validate = new Authentication().validate(token).then(result => {
           if (!result) return res.send("Please provide a valid token").status(401);
           const id = req.body.id
           if(!id) res.send("Please provide a valid id").status(401); 
          const user =   ecoSChema.findOne({User: id})
          if (!user) return res.send("User does not have an economy profile").status(401);
-         res.send(user).status(200);
+         res.json(user).status(200);
         });
     })    
 
