@@ -153,7 +153,7 @@ console.log(process.env.OPENAI_API_KEY);
 
   
       })
-
+return;
     }
    channel.send('The Blue  Bot is Thinking ... ').then(async (msg) => {
       try {
