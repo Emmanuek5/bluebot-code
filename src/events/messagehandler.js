@@ -113,47 +113,48 @@ console.log(process.env.OPENAI_API_KEY);
       return;
     }
 
-    if (message.attachment){
+    if (message.attachments.size > 0) {
       const file = message.attachments.first().url;
-     const url = await download(file);
-     if ( !url.endsWith(".txt")) return; 
-      channel.send('The Blue  Bot is Thinking ... ').then(async (msg) => {
-        const filecontent = fs.readFileSync(url,"utf-8")
-        console.log(filecontent.slice(1,10));
-         try {
-           const a = humanFilter(message, msg);
-           if (a) return;
-           const res = await openai.createCompletion({
-             model: "gpt-3.5-turbo",
-             prompt: filecontent,
-             temperature: 0.5,
-             max_tokens: 2048,
-           });
-           const nulls = aiFilter(res, msg);
-           if (nulls) return;
+      console.log(file);
+      const url = await download(file);
+      if (!url.endsWith(".txt")) return;
 
-           const adata = res.data.choices[0].text;
-           if (adata.length > 1999) {
-             const data = adata.slice(0, 1900);
-             msg.edit(`\`\`\`${data}\`\`\``);
-             const newdata = adata.slice(1900, adata.length);
-             if (newdata.length > 1990) {
-               const newdata2 = newdata.slice(1990, newdata.length);
-               channel.send(`\`\`\`${newdata2}\`\`\``);
-             }
-             channel.send(`\`\`\`${newdata}\`\`\``);
-           } else {
-             msg.edit(`\`\`\`${adata}\`\`\``);
-           }
-         } catch (error) {
-           msg.edit(`\`\`\`${process.env.AI_ERROR} \`\`\``);
-           channel.send(error.data);
-           console.log(error);
-         }
+      channel.send("The Blue Bot is Thinking...").then(async msg => {
+        const filecontent = fs.readFileSync(url, "utf-8");
+        console.log(filecontent.slice(1, 10));
+        try {
+          const a = humanFilter(message, msg);
+          if (a) return;
+          const res = await openai.createCompletion({
+            model: "gpt-3.5-turbo",
+            prompt: filecontent,
+            temperature: 0.5,
+            max_tokens: 2048,
+          });
+          const nulls = aiFilter(res, msg);
+          if (nulls) return;
 
-  
-      })
-return;
+          const adata = res.data.choices[0].text;
+          if (adata.length > 1999) {
+            const data = adata.slice(0, 1900);
+            msg.edit(`\`\`\`${data}\`\`\``);
+            const newdata = adata.slice(1900, adata.length);
+            if (newdata.length > 1990) {
+              const newdata2 = newdata.slice(1990, newdata.length);
+              channel.send(`\`\`\`${newdata2}\`\`\``);
+            }
+            channel.send(`\`\`\`${newdata}\`\`\``);
+          } else {
+            msg.edit(`\`\`\`${adata}\`\`\``);
+          }
+        } catch (error) {
+          msg.edit(`\`\`\`${process.env.AI_ERROR} \`\`\``);
+          channel.send(error.data);
+          console.log(error);
+        }
+      });
+
+      return;
     }
    channel.send('The Blue  Bot is Thinking ... ').then(async (msg) => {
       try {
