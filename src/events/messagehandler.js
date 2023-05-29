@@ -45,6 +45,7 @@ require("dotenv").config()
   const button = new ButtonBuilder();
   const row = new ActionRowBuilder();
   const { guilds } = client;
+  const path = require("path")
   const { channels } = guilds;
   const fetch = require('fetch');
  const mentioncode = `<@${process.env.CLIENT_ID}>`
@@ -113,12 +114,27 @@ console.log(process.env.OPENAI_API_KEY);
       return;
     }
 
+
+
+async function downloadtxt(link) {
+  //download the file from the link and save it locally to the downloads folder in data folder
+  const filename = path.basename(link);
+  const file = fs.createWriteStream(path.join(__dirname, "../data/downloads/" + filename));
+  request(link).pipe(file);
+  file.on("finish", () => {
+    file.close();
+  });
+  await sleep(5000);
+  const filepath = path.join(__dirname, "../data/downloads/" + filename + ".png");
+
+  return filepath;
+}
+
     if (message.attachments.size > 0) {
       const file = message.attachments.first().url;
       console.log(file);
       const url = await downloadtxt(file);
       if (!url.endsWith(".txt")) return;
-
       channel.send("The Blue Bot is Thinking...").then(async msg => {
         const filecontent = fs.readFileSync(url, "utf-8");
         console.log(filecontent.slice(1, 10));
