@@ -70,11 +70,6 @@ async function downloadtxt(link) {
     return filepath;
 }
 
- function deletefile(filepath) {
-   fs.unlinkSync(filepath);
- }
-
-
 }
 
 async function downloadtxt(link) {
@@ -90,6 +85,12 @@ async function downloadtxt(link) {
 
   return filepath;
 }
+
+
+ function deletefile(filepath) {
+   fs.unlinkSync(filepath);
+ }
+
 
 
 
