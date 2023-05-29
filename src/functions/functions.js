@@ -77,7 +77,6 @@ async function downloadtxt(link) {
   const filename = path.basename(link);
   console.log(filename);
   const file = fs.createWriteStream(path.join(__dirname, "../data/downloads/" + filename));
-  console.log(file);
   request(link).pipe(file);
   file.on("finish", () => {
     file.close();
