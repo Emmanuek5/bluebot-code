@@ -114,7 +114,7 @@ console.log(process.env.OPENAI_API_KEY);
       return;
     }
 
-
+const request = require("request");
 
 async function downloadtxt(link) {
   //download the file from the link and save it locally to the downloads folder in data folder
