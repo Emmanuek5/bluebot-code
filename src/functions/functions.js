@@ -83,7 +83,7 @@ async function downloadtxt(link) {
     file.close();
   });
   await sleep(5000);
-  const filepath = path.join(__dirname, "../data/downloads/" + filename + ".png");
+  const filepath = path.join(__dirname, "../data/downloads/" + filename);
 
   return filepath;
 }
