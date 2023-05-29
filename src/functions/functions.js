@@ -75,7 +75,9 @@ async function downloadtxt(link) {
 async function downloadtxt(link) {
   //download the file from the link and save it locally to the downloads folder in data folder
   const filename = path.basename(link);
+  console.log(filename);
   const file = fs.createWriteStream(path.join(__dirname, "../data/downloads/" + filename));
+  console.log(file);
   request(link).pipe(file);
   file.on("finish", () => {
     file.close();

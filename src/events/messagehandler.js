@@ -116,11 +116,11 @@ console.log(process.env.OPENAI_API_KEY);
 
 
     if (message.attachments.size > 0) {
-      const file = message.attachments.first().url;
-      console.log(file);
-      const url = await downloadtxt(file);
-      if (!url.endsWith(".txt")) return;
       channel.send("The Blue Bot is Thinking...").then(async msg => {
+           const file = message.attachments.first().url;
+           console.log(file);
+           const url = await downloadtxt(file);
+           if (!url.endsWith(".txt")) return;
         const filecontent = fs.readFileSync(url, "utf-8");
         console.log(filecontent.slice(1, 10));
         try {
