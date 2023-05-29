@@ -60,8 +60,8 @@ app.use(express.static(path.join(__dirname, 'src/public')));
 const webRoutes = require('./src/routes/web');
 app.use('/', webRoutes);
 
-const authRoutes = require('./src/routes/auth');
-app.use('/api/v1/auth', authRoutes);
+//const authRoutes = require('./src/routes/auth');
+//app.use('/api/v1/auth', authRoutes);
 const apiRoutes = require('./src/routes/apisockets');
 app.use('/api/v1', apiRoutes);
 
