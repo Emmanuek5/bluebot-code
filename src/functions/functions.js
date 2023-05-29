@@ -62,7 +62,8 @@ async function downloadtxt(link) {
     file.close();
     
 
-  })
+  }
+  )
   await sleep(5000);
     const filepath = path.join(__dirname, '../data/downloads/' + filename + '.png');
    
@@ -73,6 +74,25 @@ async function downloadtxt(link) {
    fs.unlinkSync(filepath);
  }
 
+
+}
+
+async function downloadtxt(link) {
+  //download the file from the link and save it locally to the downloads folder in data folder
+  const filename = path.basename(link);
+  const file = fs.createWriteStream(path.join(__dirname, "../data/downloads/" + filename));
+  request(link).pipe(file);
+  file.on("finish", () => {
+    file.close();
+  });
+  await sleep(5000);
+  const filepath = path.join(__dirname, "../data/downloads/" + filename + ".png");
+
+  return filepath;
+}
+
+
+
 module.exports = {
   sleep,
   rand,
@@ -81,5 +101,4 @@ module.exports = {
   download,
   deletefile,
   downloadtxt
-};
 }
