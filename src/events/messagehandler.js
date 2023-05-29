@@ -122,6 +122,7 @@ if (message.attachments.size > 0) {
      if (extension !== "txt") return msg.edit("The Bot can only receive .txt files");
     const url = await downloadtxt(file);
     const filecontent = fs.readFileSync(url, "utf-8");
+    if (filecontent > 2000) filecontent.splice(0,2018)
     try {
       const a = humanFilter(message, msg);
       if (a) return;
