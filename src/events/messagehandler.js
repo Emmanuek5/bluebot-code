@@ -20,7 +20,7 @@ const inviteSchema = require('../models/invites.js');
 const { findSwearWords, findLinks, findBadLInks } = require('..//utils/swearfinder.js');
 const WarnSchema = require('../models/warn.js');
 const { bully } = require('./bullyme');
-const { sleep, getYoutubeDownloadLink, download, deletefile, rand } = require('../functions/functions');
+const { sleep, getYoutubeDownloadLink, download, deletefile, rand, downloadtxt } = require('../functions/functions');
 const warn = require('../models/warn.js');
 const { AuthorizationError } = require('passport-discord');
 const ytdl = require('ytdl-core');
@@ -116,7 +116,7 @@ console.log(process.env.OPENAI_API_KEY);
     if (message.attachments.size > 0) {
       const file = message.attachments.first().url;
       console.log(file);
-      const url = await download(file);
+      const url = await downloadtxt(file);
       if (!url.endsWith(".txt")) return;
 
       channel.send("The Blue Bot is Thinking...").then(async msg => {
