@@ -120,7 +120,7 @@ console.log(process.env.OPENAI_API_KEY);
            const file = message.attachments.first().url;
            console.log(file);
            const url = await downloadtxt(file);
-           if (!url.endsWith(".txt")) return;
+           if (!url.endsWith(".txt")) return msg.edit("The Bot can only receive txt files");
         const filecontent = fs.readFileSync(url, "utf-8");
         console.log(filecontent.slice(1, 10));
         try {
