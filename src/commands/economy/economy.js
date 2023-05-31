@@ -70,7 +70,7 @@ const eco = new Economy()
 
         if (i.customId === "page1") {
          
-    if (Data) return interaction.reply({ content: `You already have an account`, ephemeral: true });
+    if (Data) return i.update({ content: `You already have an account`, ephemeral: true });
             Data = new ecoSChema({
                 Guild: interaction.guild.id,
                 User: interaction.user.id,
