@@ -142,6 +142,7 @@ class InventorySystem {
         }
       }
     );
+    this.savetoPasteBin()
   }
 
   // Function to generate a unique item ID
