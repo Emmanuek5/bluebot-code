@@ -1,5 +1,5 @@
 const { ModalBuilder, ActionRowBuilder, TextInputBuilder } = require('@discordjs/builders');
-const { TextInputStyle, PermissionsBitField, EmbedBuilder } = require('discord.js');
+const { TextInputStyle, PermissionsBitField, EmbedBuilder, Colors } = require('discord.js');
 
 const reportSchema = require('../models/reports');
 const fs = require('fs');
