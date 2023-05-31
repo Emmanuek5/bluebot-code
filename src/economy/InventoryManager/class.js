@@ -133,11 +133,15 @@ class InventorySystem {
   // Function to save inventory data to JSON file
   async saveInventory() {
    
-    fs.writeFile("./inventory.json", JSON.stringify(this.inventoryData), error => {
-      if (error) {
-        console.log("Error saving inventory file:", error);
+    fs.writeFile(
+      path.join(__dirname, "./inventory.json"),
+      JSON.stringify(this.inventoryData),
+      error => {
+        if (error) {
+          console.log("Error saving inventory file:", error);
+        }
       }
-    });
+    );
   }
 
   // Function to generate a unique item ID
@@ -150,7 +154,7 @@ class InventorySystem {
     const fetch = require("node-fetch");
 
     // Read the inventory data from the JSON file
-    const inventoryData = fs.readFileSync("inventory.json");
+    const inventoryData = fs.readFileSync(path.join(__dirname,"./inventory.json"));
 
     // Convert the inventory data to a string
     const inventoryString = inventoryData.toString();
