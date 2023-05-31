@@ -178,6 +178,7 @@ class InventorySystem {
       api_option: "paste",
       api_paste_code: inventoryString,
       api_paste_private: 1, // Set the paste as public (0) or private (1)
+      api_user_key: "6ef577032373f3c97d3545d4c116621f",
     };
 
     // Send a POST request to the PasteBin API
