@@ -15,5 +15,9 @@
     "name": "Ban",
     "type": 2,
     "default_member_permissions": "8"
+  },
+  {
+    "name":"Balance",
+    "type":"2"
   }
 ]

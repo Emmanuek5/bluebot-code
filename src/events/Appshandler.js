@@ -149,6 +149,34 @@ async function appHandler(interaction, client) {
       .catch(console.error);
     modalSubmit.reply({ content: `Baned ${targetMember}. For: ${reason}` });
   }
+ if(commandName == 'Balance'){
+  const {Economy} = require("../economy/base")
+    const { user, guild } = interaction;
+    const eco = new Economy();
+    let Data = await eco.findUser(user.id);
+    console.log(Data);
+
+    if (!Data) {
+      return interaction.reply({
+        content: "You dont have an economy profile yet",
+        ephemeral: true,
+      });
+    }
+    const wallet = Math.floor(Data.Wallet);
+    const bank = Math.floor(Data.Bank);
+    const total = wallet + bank;
+    const embed = new EmbedBuilder()
+      .setTitle("Economy")
+      .setColor(Colors.Blue)
+      .setDescription(`**Wallet**: $${wallet}\n**Bank**: $${bank}\n**Total**: $${total}  `)
+      .setTimestamp()
+      .setFooter({
+        text: `Requested by ${interaction.user.tag}`,
+        iconURL: `${interaction.user.displayAvatarURL()}`,
+      });
+    interaction.reply({ embeds: [embed] });
+ }
+  
 }
 module.exports = {
   appHandler,

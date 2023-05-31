@@ -77,30 +77,6 @@ data.save();
 return data;
 }
 
-buyItemfromShop(user, guild, item, price, ){
-const {inventoryManager} = require("./InventoryManager/class")
-const inv = new inventoryManager()
-    const data = this.db.findOne({User: user});
-if (!data) return false;
-if (data.Wallet < price) return false;
-inv.addItemtoUser(user, item, 1);
-data.Wallet -= price;
-data.save();
-return data;   
-}
-
-buyItemfromUser(user,target,item,price){
-    const { inventoryManager } = require("./InventoryManager/class");
-    const inv = new inventoryManager();
-    const data = this.db.findOne({User: user});
-if (!data) return false;
-if (data.Wallet < price) return false;
-inv.addItemtoUser(user, item, 1);
-inv.removeItem(target, item, 1);
-data.save();
-return data;   
-}
-
 
 
 

@@ -16,7 +16,7 @@ module.exports = {
 const eco = new Economy()
     let Data = await eco.findUser(user.id);
 
-    if(Data) return interaction.reply({ content: `You already have an account`, ephemeral: true })
+
 
     const embed = new EmbedBuilder()
       .setColor("Blue")
@@ -70,7 +70,7 @@ const eco = new Economy()
 
         if (i.customId === "page1") {
          
-
+    if (Data) return interaction.reply({ content: `You already have an account`, ephemeral: true });
             Data = new ecoSChema({
                 Guild: interaction.guild.id,
                 User: interaction.user.id,
