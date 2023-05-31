@@ -1,5 +1,5 @@
 # This .gitignore file specially written by MrSpeedy from AtlasDevelopmentLLC for Craftilities.
-
+inventory.json
 # Logs
 # Directory for log files
 logs
