@@ -133,7 +133,7 @@ class InventorySystem {
   // Function to save inventory data to JSON file
   async saveInventory() {
    
-    fs.writeFile("inventory.json", JSON.stringify(this.inventoryData), error => {
+    fs.writeFile("./inventory.json", JSON.stringify(this.inventoryData), error => {
       if (error) {
         console.log("Error saving inventory file:", error);
       }
