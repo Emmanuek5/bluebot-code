@@ -9,7 +9,6 @@ constructor(){
     this.maxbet = 10000
     this.maxitems = 1000
     this.minitems = 1
-    this.InventorySystem.savetoPasteBin()
     this.defaultItems = []
 }
 /**
