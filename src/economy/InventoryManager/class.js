@@ -1,5 +1,5 @@
 const fs = require("fs");
-
+const path = require("path")
 class InventorySystem {
   constructor() {
     this.inventoryData = {};
@@ -7,7 +7,7 @@ class InventorySystem {
 
     // Load inventory data from JSON file
     try {
-      const data = fs.readFileSync("inventory.json");
+      const data = fs.readFileSync(path.join(__dirname,"./inventory.json"));
       this.inventoryData = JSON.parse(data);
     } catch (error) {
       console.log("Error reading inventory file:", error);
@@ -15,7 +15,7 @@ class InventorySystem {
 
     // Load gambling probabilities from JSON file
     try {
-      const data = fs.readFileSync("gambling.json");
+      const data = fs.readFileSync(path.join(__dirname,"./gambling.json"));
       this.gamblingData = JSON.parse(data);
     } catch (error) {
       console.log("Error reading gambling file:", error);
