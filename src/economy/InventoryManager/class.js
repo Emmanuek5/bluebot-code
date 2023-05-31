@@ -24,6 +24,7 @@ class InventorySystem {
 
   // Function to get a user's inventory
   getInventory(userId) {
+    console.log("Getting inventory for user:", userId);
     return this.inventoryData[userId] || [];
   }
 
@@ -181,6 +182,7 @@ class InventorySystem {
   }
   // Function to save a user with default items
   saveUserWithDefaultItems(userId, defaultItems) {
+    console.log("Saving user:", userId);
     if (!this.inventoryData[userId]) {
       this.inventoryData[userId] = defaultItems;
       this.saveInventory();

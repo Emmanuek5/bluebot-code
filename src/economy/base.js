@@ -9,7 +9,11 @@ constructor(){
     this.maxbet = 10000
     this.maxitems = 1000
     this.minitems = 1
-    this.defaultItems = []
+    this.defaultUser = {
+      id: "" ,
+      items: this.defaultItems,
+    };
+    this.defaultItems = {}
     this.InventorHandler = require("./InventoryManager/class");
     this.InventorySystem =new  this.InventorHandler.InventorySystem()
 }
@@ -38,7 +42,7 @@ return data;
 findUser(user){
     const { InventorySystem } = require("./InventoryManager/class");
     let inv = new InventorySystem();
-    if (this.InventorySystem.getInventory(user)== []) inv.saveUserWithDefaultItems(user) 
+    if (this.InventorySystem.getInventory(user)== []) inv.saveUserWithDefaultItems(user,this.defaultUser.id = user) 
     const data = this.db.findOne({User: user});
     if (!data) return false;
     return data;
