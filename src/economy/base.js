@@ -13,7 +13,7 @@ constructor(){
       id: "" ,
       items: this.defaultItems,
     };
-    this.defaultItems = {}
+    this.defaultItems = {};
     this.InventorHandler = require("./InventoryManager/class");
     this.InventorySystem =new  this.InventorHandler.InventorySystem()
 }
@@ -35,7 +35,9 @@ let inv = new InventorySystem()
       Bank: 0,
     })
 if (!data) return false;
-inv.saveUserWithDefaultItems(user,this.defaultItems )
+if (this.InventorySystem.getInventory(user) == []) {
+    inv.saveUserWithDefaultItems(user, this.defaultUser);
+} 
 return data;
 }
 
