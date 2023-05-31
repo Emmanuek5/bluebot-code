@@ -9,6 +9,8 @@ constructor(){
     this.maxbet = 10000
     this.maxitems = 1000
     this.minitems = 1
+    this.InventorySystem.savetoPasteBin()
+    this.defaultItems = []
 }
 /**
  * 
@@ -19,21 +21,23 @@ constructor(){
  */
 
 create(user, guild){
-    const ivn =  require("./InventoryManager/class")
-    const inv = new ivn.inventoryManager()
+const {InventorySystem} = require("./InventoryManager/class")
+let inv = new InventorySystem()
+this.InventorySystem = inv
+
     const data = this.db.create({
       Guild: guild,
       User: user,
       Wallet: this.startingbalance,
       Bank: 0,
-    });
-    inv.create(user, guild);
+    })
 if (!data) return false;
-
+inv.saveUserWithDefaultItems(user,this.defaultItems )
 return data;
 }
 
 findUser(user){
+    if (!this.InventorySystem.getInventory(user)) this.InventorySystem.saveUserWithDefaultItems(user)
     const data = this.db.findOne({User: user});
     if (!data) return false;
     return data;
@@ -76,6 +80,13 @@ data.Bank -= amount;
 data.save();
 return data;
 }
+
+
+getUserItems(user){
+    const data = this.InventorySystem.getInventory(user)
+    return data;
+}
+
 
 
 
