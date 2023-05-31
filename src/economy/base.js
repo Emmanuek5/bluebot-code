@@ -35,9 +35,9 @@ let inv = new InventorySystem()
       Bank: 0,
     })
 if (!data) return false;
-if (this.InventorySystem.getInventory(user) == []) {
+
     inv.saveUserWithDefaultItems(user, this.defaultUser);
-} 
+
 return data;
 }
 
