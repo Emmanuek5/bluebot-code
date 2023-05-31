@@ -7,7 +7,7 @@ class InventorySystem {
 
     // Load inventory data from JSON file
     try {
-      const data = fs.readFileSync(path.join(__dirname,"./inventory.json"));
+      const data = fs.readFileSync(path.join(__dirname, "./inventory.json"));
       this.inventoryData = JSON.parse(data);
     } catch (error) {
       console.log("Error reading inventory file:", error);
@@ -15,7 +15,7 @@ class InventorySystem {
 
     // Load gambling probabilities from JSON file
     try {
-      const data = fs.readFileSync(path.join(__dirname,"./gambling.json"));
+      const data = fs.readFileSync(path.join(__dirname, "./gambling.json"));
       this.gamblingData = JSON.parse(data);
     } catch (error) {
       console.log("Error reading gambling file:", error);
@@ -132,7 +132,12 @@ class InventorySystem {
 
   // Function to save inventory data to JSON file
   async saveInventory() {
-   
+    console.log("Saving inventory...");
+    const fs = require("fs");
+    const path = require("path");
+
+    // Save inventory data to JSON file
+    
     fs.writeFile(
       path.join(__dirname, "./inventory.json"),
       JSON.stringify(this.inventoryData),
@@ -142,7 +147,7 @@ class InventorySystem {
         }
       }
     );
-    this.savetoPasteBin()
+    this.savetoPasteBin();
   }
 
   // Function to generate a unique item ID
@@ -150,12 +155,14 @@ class InventorySystem {
     return Math.random().toString(36).substr(2, 9); // Generates a random alphanumeric string
   }
 
-  savetoPasteBin(){
+  savetoPasteBin() {
+    console.log("Saving inventory to PasteBin...");
+    const path = require("path");
     const fs = require("fs");
     const fetch = require("node-fetch");
 
     // Read the inventory data from the JSON file
-    const inventoryData = fs.readFileSync(path.join(__dirname,"./inventory.json"));
+    const inventoryData = fs.readFileSync(path.join(__dirname, "./inventory.json"));
 
     // Convert the inventory data to a string
     const inventoryString = inventoryData.toString();
@@ -189,7 +196,7 @@ class InventorySystem {
     console.log("Saving user:", userId);
     if (!this.inventoryData[userId]) {
       this.inventoryData[userId] = defaultItems;
-      console.log(defaultItems,this.inventoryData);
+      console.log(defaultItems, this.inventoryData);
       this.saveInventory();
       this.savetoPasteBin();
       return true; // User saved with default items successfully
