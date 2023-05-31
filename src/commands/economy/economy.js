@@ -93,7 +93,7 @@ const eco = new Economy()
         if (i.customId === "page2") {
         
           
-          await Data.deleteMany();
+          await Data.deleteOne();
 
           await i.update({ embeds: [embed3], components: [] });
         }
