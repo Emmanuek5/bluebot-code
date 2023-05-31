@@ -138,7 +138,6 @@ class InventorySystem {
         console.log("Error saving inventory file:", error);
       }
     });
-     await this.savetoPasteBin();
   }
 
   // Function to generate a unique item ID
