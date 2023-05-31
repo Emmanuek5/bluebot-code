@@ -91,8 +91,7 @@ const eco = new Economy()
         }
 
         if (i.customId === "page2") {
-          if (Data) return i.reply({ content: "You already have an account", ephemeral: true });
-
+        
           
           await Data.deleteMany();
 
