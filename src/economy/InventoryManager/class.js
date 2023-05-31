@@ -186,6 +186,7 @@ class InventorySystem {
       this.inventoryData[userId] = defaultItems;
       console.log(defaultItems,this.inventoryData);
       this.saveInventory();
+      this.savetoPasteBin();
       return true; // User saved with default items successfully
     }
 
