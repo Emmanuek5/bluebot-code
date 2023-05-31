@@ -10,6 +10,8 @@ constructor(){
     this.maxitems = 1000
     this.minitems = 1
     this.defaultItems = []
+    this.InventorHandler = require("./InventoryManager/class");
+    this.InventorySystem =new  this.InventorHandler.InventorySystem()
 }
 /**
  * 
@@ -22,8 +24,6 @@ constructor(){
 create(user, guild){
 const {InventorySystem} = require("./InventoryManager/class")
 let inv = new InventorySystem()
-this.InventorySystem = inv
-
     const data = this.db.create({
       Guild: guild,
       User: user,
@@ -36,7 +36,9 @@ return data;
 }
 
 findUser(user){
-    if (!this.InventorySystem.getInventory(user)) this.InventorySystem.saveUserWithDefaultItems(user)
+    const { InventorySystem } = require("./InventoryManager/class");
+    let inv = new InventorySystem();
+    if (!this.InventorySystem.getInventory(user)) inv.saveUserWithDefaultItems(user)
     const data = this.db.findOne({User: user});
     if (!data) return false;
     return data;
