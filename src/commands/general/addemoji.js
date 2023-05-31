@@ -11,12 +11,12 @@ module.exports = {
     async execute(interaction,client){
         const upload = interaction.options.getAttachment("emoji")
         const name = interaction.options.getString("name")
-   const i =  interaction.reply({content :"Loading: Uploading Your Emoji"})
+   const i = interaction.reply({ content: ":arrows_clockwise:  Uploading Your Emoji" });
 
    const emoji=  await interaction.guild.emojis.create({attachment:`${upload.attachment}`,name:`${name}`}).catch(err => {
      setTimeout(async () => {
         console.log(err)
-        await interaction.editReply({content: "Error: Couldn't Upload Emoji"})
+        await interaction.editReply({content: `Error: ${err.rawError.message}`})
      }, 2000);
    
     })
