@@ -184,6 +184,7 @@ class InventorySystem {
     console.log("Saving user:", userId);
     if (!this.inventoryData[userId]) {
       this.inventoryData[userId] = defaultItems;
+      console.log(defaultItems,this.inventoryData);
       this.saveInventory();
       return true; // User saved with default items successfully
     }
