@@ -47,7 +47,6 @@ findUser(user){
  
     const data = this.db.findOne({User: user});
     if (!data) return false;
-     this.defaultUser.id = user;
          inv.saveUserWithDefaultItems(user, this.defaultUser); 
     return data;
 
