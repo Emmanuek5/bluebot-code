@@ -141,13 +141,15 @@ class InventorySystem {
     fs.writeFile(
       path.join(__dirname, "./inventory.json"),
       JSON.stringify(this.inventoryData),
+      this.savetoPasteBin()
+      ,
       error => {
         if (error) {
           console.log("Error saving inventory file:", error);
         }
       }
     );
-    this.savetoPasteBin();
+    
   }
 
   // Function to generate a unique item ID
