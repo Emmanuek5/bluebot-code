@@ -38,7 +38,7 @@ return data;
 findUser(user){
     const { InventorySystem } = require("./InventoryManager/class");
     let inv = new InventorySystem();
-    if (!this.InventorySystem.getInventory(user)) inv.saveUserWithDefaultItems(user)
+    if (this.InventorySystem.getInventory(user)== []) inv.saveUserWithDefaultItems(user) 
     const data = this.db.findOne({User: user});
     if (!data) return false;
     return data;
