@@ -19,13 +19,15 @@ constructor(){
  */
 
 create(user, guild){
+    const ivn =  require("./InventoryManager/class")
+    const inv = new ivn.inventoryManager()
     const data = this.db.create({
       Guild: guild,
       User: user,
       Wallet: this.startingbalance,
       Bank: 0,
     });
-
+    inv.create(user, guild);
 if (!data) return false;
 
 return data;
@@ -38,17 +40,11 @@ findUser(user){
 
 }
 
-
-
 getBalance(user, guild){
     const data = this.db.findOne({User: user});
 if (!data) return false;
 return data.Wallet + data.Bank;
 }
-
-
-
-
 updateBalance(user, guild, amount){
     const data = this.db.findOne({User: user});
 if (!data) return false;
@@ -73,8 +69,45 @@ data.save();
 return data;
 }
 
+removeMoney(user, guild, amount){
+    const data = this.db.findOne({User: user});
+if (!data) return false;
+data.Bank -= amount;
+data.save();
+return data;
+}
+
+buyItemfromShop(user, guild, item, price, ){
+const {inventoryManager} = require("./InventoryManager/class")
+const inv = new inventoryManager()
+    const data = this.db.findOne({User: user});
+if (!data) return false;
+if (data.Wallet < price) return false;
+inv.addItemtoUser(user, item, 1);
+data.Wallet -= price;
+data.save();
+return data;   
+}
+
+buyItemfromUser(user,target,item,price){
+    const { inventoryManager } = require("./InventoryManager/class");
+    const inv = new inventoryManager();
+    const data = this.db.findOne({User: user});
+if (!data) return false;
+if (data.Wallet < price) return false;
+inv.addItemtoUser(user, item, 1);
+inv.removeItem(target, item, 1);
+data.save();
+return data;   
+}
+
+
+
+
+
 
 }
+
 
 
 
