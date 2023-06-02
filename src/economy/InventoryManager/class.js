@@ -68,13 +68,13 @@ class InventorySystem {
   }
 
   // Function to buy an item and add it to a user's inventory
-  buyItem(userId, sellerId, itemId, amount = 1) {
+  buyItem(userId, sellerId, item, amount = 1) {
     const sellerInventory = this.inventoryData[sellerId];
     if (!sellerInventory || sellerInventory.length === 0) {
       return false; // Seller's inventory is empty or seller doesn't exist
     }
 
-    const itemIndex = sellerInventory.findIndex(item => item.id === itemId);
+    const itemIndex = sellerInventory.findIndex(item => item.name === item);
     if (itemIndex === -1) {
       return false; // Item not found in the seller's inventory
     }
@@ -83,6 +83,7 @@ class InventorySystem {
     if (item.amount < amount) {
       return false; // Not enough quantity available for purchase
     }
+
 
     const buyerInventory = this.inventoryData[userId];
     if (!buyerInventory) {
@@ -94,10 +95,13 @@ class InventorySystem {
     if (existingItem) {
       existingItem.amount += amount;
     } else {
-      const boughtItem = { id: item.id, name: item.name, amount };
+      const boughtItem = { id: item.id, name: item.name, amount, price: pamount };
       buyerInventory.push(boughtItem);
     }
 
+
+      
+    
     item.amount -= amount;
     if (item.amount === 0) {
       sellerInventory.splice(itemIndex, 1);
@@ -108,7 +112,7 @@ class InventorySystem {
   }
 
   // Function to gamble for an item
-  gambleItem(userId) {
+  gambleItem(userId,uitem) {
     const userInventory = this.inventoryData[userId];
     if (!userInventory) {
       return false; // User doesn't exist
@@ -124,7 +128,9 @@ class InventorySystem {
     const selectedItem = items[itemIndex];
 
     const itemId = this.generateItemId(); // Generate a unique item ID
-    const item = { id: itemId, name: selectedItem, amount: 1 };
+    const item = { id: itemId, name: selectedItem, amount: 1 , price: 1000 };
+
+    if (item == uitem) return false;
 
     this.addItem(userId, item);
     return item; // Item won from gambling
@@ -208,6 +214,25 @@ class InventorySystem {
 
     return false; // User already exists
   }
+
+
+
+  getItemInfo(userId,item) {
+    const userInventory = this.inventoryData[userId];
+    if (!userInventory) {
+      return false; // User doesn't exist
+    }
+
+    const itemIndex = userInventory.findIndex(item => item.name === item);
+    if (itemIndex === -1) {
+      return false; // Item not found in the inventory
+    }
+
+    return userInventory[itemIndex];
+  }
+
 }
+
+
 
 module.exports = {InventorySystem};

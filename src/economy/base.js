@@ -1,4 +1,4 @@
-
+require("dotenv").config();
 class Economy {
 constructor(){
     this.db = require("../models/economy")
@@ -8,6 +8,7 @@ constructor(){
     this.minbet = 10
     this.maxbet = 10000
     this.maxitems = 1000
+    this.getshopid = process.env.CLIENT_ID
     this.minitems = 1
     this.defaultUser = {
       id: "" ,
@@ -52,7 +53,7 @@ findUser(user){
 
 }
 
-getBalance(user, guild){
+getBalance(user){
     const data = this.db.findOne({User: user});
 if (!data) return false;
 return data.Wallet + data.Bank;
@@ -81,10 +82,11 @@ data.save();
 return data;
 }
 
-removeMoney(user, guild, amount){
+removeMoney(user, amount){
     const data = this.db.findOne({User: user});
 if (!data) return false;
-data.Bank -= amount;
+if (!data.Wallet >= amount) return false;
+data.Wallet -= amount;
 data.save();
 return data;
 }
@@ -95,13 +97,28 @@ getUserItems(user){
     return data;
 }
 
+gable(user,item,amount){
+   const gamble = this.InventorySystem.gambleItem(user)
+   if (!gamble) { this.removeMoney(user, amount); return false}
+   return gamble;
+}
 
 
+buyItemfromShop(user, item, amount){
+    const data = this.InventorySystem.getItemInfo(this.getshopid,item)
+    if (!data) return "Item not found";
+     if (this.getBalance(user, this.getshopid) < data.price) return false,"You Dont Have Enough Money";
+     const user = this.removeMoney(user,data.price)
+     this.InventorySystem.buyItem(user,this.getshopid,item,amount)
 
-
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
 
 
 }
+
+
+
+
 
 
 
