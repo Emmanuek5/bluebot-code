@@ -15,7 +15,7 @@ module.exports = {
           option.setName("item").setDescription("The Item You Want To Buy").setRequired(true)
         )
         .addNumberOption(option =>
-          option.setName("amount").setDescription("Amount of item to buy").setRequired("true")
+          option.setName("amount").setDescription("Amount of item to buy").setRequired(true)
         )
     ),
   async execute(interaction, client) {
