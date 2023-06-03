@@ -29,11 +29,11 @@ module.exports = {
         
     if (command == "shop") {
       const eco = new Economy();
-      const user = eco.findUser(user.id);
-      if (!user) return interaction.reply({ content: "You Don't Have An Economy Account" });
+      const ecouser = eco.findUser(user.id);
+      if (!ecouser) return interaction.reply({ content: "You Don't Have An Economy Account" });
       let itemdata = eco.InventorySystem.getItemInfo(process.env.CLIENT_ID);
       if (!itemdata)  return interaction.reply({content: "The item Does not exist check the spelling and try again"}) 
-     if (!user.Wallet >= item.price)  return interaction.reply({ content: "You Don't Have Enough Money in Your Wallet" });
+     if (!ecouser.Wallet >= item.price)  return interaction.reply({ content: "You Don't Have Enough Money in Your Wallet" });
       const result =  eco.buyItemfromShop(user.id,item,number)
       if (result) {
         const embed = new EmbedBuilder()
@@ -51,20 +51,12 @@ module.exports = {
        interaction.reply({content: "This Command Is Currently Unavailable"})
     }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
     
 
     } catch (err) {
         interaction.reply({content: "There Was an Error" + err})
+        console.log(err);
     }
 
   },
