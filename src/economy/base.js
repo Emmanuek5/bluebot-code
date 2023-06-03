@@ -10,10 +10,7 @@ constructor(){
     this.maxitems = 1000
     this.getshopid = process.env.CLIENT_ID
     this.minitems = 1
-    this.defaultUser = {
-      id: "" ,
-      items: this.defaultItems,
-    };
+
     this.defaultItems = {};
     this.InventorHandler = require("./InventoryManager/class");
     this.InventorySystem =new  this.InventorHandler.InventorySystem()
@@ -37,7 +34,7 @@ let inv = new InventorySystem()
     })
 if (!data) return false;
 
-    inv.saveUserWithDefaultItems(user, this.defaultUser);
+    inv.saveUserWithDefaultItems(user, this.defaultItems);
 
 return data;
 }

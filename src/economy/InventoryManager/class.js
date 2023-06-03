@@ -219,6 +219,7 @@ class InventorySystem {
 
    getItemInfo(userId, itemName) {
   const userInventory = this.inventoryData[userId];
+  console.log(userInventory);
   if (!userInventory) {
     return false; // User doesn't exist
   }
