@@ -108,7 +108,7 @@ buyItemfromShop(user, item, amount){
     const data = this.InventorySystem.getItemInfo(this.getshopid,item)
     if (!data) return "Item not found";
      if (this.getBalance(user, this.getshopid) < data.price) return false,"You Dont Have Enough Money";
-     const user = this.removeMoney(user,data.price)
+     const users = this.removeMoney(user,data.price)
      this.InventorySystem.buyItem(user,this.getshopid,item,amount)
 
 }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    

@@ -47,6 +47,22 @@ module.exports = {
       }
     }
 
+    if (command == "user"){
+       interaction.reply({content: "This Command Is Currently Unavailable"})
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
     } catch (err) {
         interaction.reply({content: "There Was an Error" + err})
     }
