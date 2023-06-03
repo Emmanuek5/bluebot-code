@@ -68,13 +68,13 @@ class InventorySystem {
   }
 
   // Function to buy an item and add it to a user's inventory
-  buyItem(userId, sellerId, item, amount = 1) {
+  buyItem(userId, sellerId, items, amount = 1) {
     const sellerInventory = this.inventoryData[sellerId];
     if (!sellerInventory || sellerInventory.length === 0) {
       return false; // Seller's inventory is empty or seller doesn't exist
     }
 
-    const itemIndex = sellerInventory.findIndex(item => item.name === item);
+    const itemIndex = sellerInventory.findIndex(item => items.name === item);
     if (itemIndex === -1) {
       return false; // Item not found in the seller's inventory
     }
