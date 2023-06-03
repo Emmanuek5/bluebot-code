@@ -217,7 +217,6 @@ class InventorySystem {
 
 
 
-  getItemInfo(userId,item) {
    getItemInfo(userId, itemName) {
   const userInventory = this.inventoryData[userId];
   if (!userInventory) {
@@ -232,7 +231,7 @@ class InventorySystem {
   return userInventory[itemIndex];
 }
 
-  }
+  
 
 }
 
