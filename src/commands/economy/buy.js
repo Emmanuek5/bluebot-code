@@ -34,6 +34,7 @@ module.exports = {
       const ecouser = eco.findUser(process.env.CLIENT_ID);
       if (!ecouser) return interaction.reply({ content: "You Don't Have An Economy Account" });
       let itemdata = eco.InventorySystem.getItemInfo(item);
+      console.log(itemdata);
       if (!itemdata)  return interaction.reply({content: "The item Does not exist check the spelling and try again"}) 
      if (!ecouser.Wallet >= item.price)  return interaction.reply({ content: "You Don't Have Enough Money in Your Wallet" });
       const result =  eco.buyItemfromShop(user.id,item,number)
