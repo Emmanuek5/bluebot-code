@@ -74,7 +74,7 @@ class InventorySystem {
       return false; // Seller's inventory is empty or seller doesn't exist
     }
 
-    const itemIndex = sellerInventory.findIndex(item => items.name === item);
+    const itemIndex = Object.values(sellerInventory).findIndex(item => items.name === item);
     if (itemIndex === -1) {
       return false; // Item not found in the seller's inventory
     }
