@@ -218,17 +218,20 @@ class InventorySystem {
 
 
   getItemInfo(userId,item) {
-    const userInventory = this.inventoryData[userId];
-    if (!userInventory) {
-      return false; // User doesn't exist
-    }
+   getItemInfo(userId, itemName) {
+  const userInventory = this.inventoryData[userId];
+  if (!userInventory) {
+    return false; // User doesn't exist
+  }
 
-    const itemIndex = userInventory.findIndex(item => item.name === item);
-    if (itemIndex === -1) {
-      return false; // Item not found in the inventory
-    }
+  const itemIndex = Object.values(userInventory).findIndex(item => item.name === itemName);
+  if (itemIndex === -1) {
+    return false; // Item not found in the inventory
+  }
 
-    return userInventory[itemIndex];
+  return userInventory[itemIndex];
+}
+
   }
 
 }
