@@ -1,4 +1,5 @@
-const {SlashCommandBuilder,EmbedBuilder} = require("discord.js")
+const {SlashCommandBuilder,EmbedBuilder} = require("discord.js");
+
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -29,9 +30,10 @@ module.exports = {
         
     if (command == "shop") {
       const eco = new Economy();
-      const ecouser = eco.findUser(user.id);
+      eco.create(user.id,guild.id)
+      const ecouser = eco.findUser(process.env.CLIENT_ID);
       if (!ecouser) return interaction.reply({ content: "You Don't Have An Economy Account" });
-      let itemdata = eco.InventorySystem.getItemInfo(process.env.CLIENT_ID);
+      let itemdata = eco.InventorySystem.getItemInfo(item);
       if (!itemdata)  return interaction.reply({content: "The item Does not exist check the spelling and try again"}) 
      if (!ecouser.Wallet >= item.price)  return interaction.reply({ content: "You Don't Have Enough Money in Your Wallet" });
       const result =  eco.buyItemfromShop(user.id,item,number)
