@@ -10,7 +10,6 @@ constructor(){
     this.maxitems = 1000
     this.getshopid = process.env.CLIENT_ID
     this.minitems = 1
-
     this.defaultItems = {name:"boot",price:100,amount:1};
     this.InventorHandler = require("./InventoryManager/class");
     this.InventorySystem =new  this.InventorHandler.InventorySystem()
