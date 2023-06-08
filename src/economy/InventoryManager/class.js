@@ -1,9 +1,6 @@
 const InventoryItem = require("../../models/inventory");
-const {Economy} = require("../base")
-class InventorySystem extends Economy {
-  constructor() {
-   super()
-  }
+class InventorySystem  {
+  
 
   // Function to get a user's inventory
   async getInventory(userId) {
