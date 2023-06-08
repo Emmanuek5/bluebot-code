@@ -1,161 +1,143 @@
-const fs = require("fs");
-const path = require("path")
-class InventorySystem {
+const InventoryItem = require("../../models/inventory");
+const {Economy} = require("../base")
+class InventorySystem extends Economy {
   constructor() {
-    this.inventoryData = {};
-    this.gamblingData = {};
-
-    // Load inventory data from JSON file
-    try {
-      const data = fs.readFileSync(path.join(__dirname, "./inventory.json"));
-      this.inventoryData = JSON.parse(data);
-    } catch (error) {
-      console.log("Error reading inventory file:", error);
-    }
-
-    // Load gambling probabilities from JSON file
-    try {
-      const data = fs.readFileSync(path.join(__dirname, "./gambling.json"));
-      this.gamblingData = JSON.parse(data);
-    } catch (error) {
-      console.log("Error reading gambling file:", error);
-    }
+   super()
   }
 
   // Function to get a user's inventory
-  getInventory(userId) {
+  async getInventory(userId) {
     console.log("Getting inventory for user:", userId);
-    return this.inventoryData[userId] || [];
+    try {
+      const inventory = await InventoryItem.find({ userId });
+      return inventory;
+    } catch (error) {
+      console.error("Error getting inventory:", error);
+      return [];
+    }
   }
 
   // Function to add an item to a user's inventory
-  addItem(userId, item) {
-    if (!this.inventoryData[userId]) {
-      this.inventoryData[userId] = [];
+  async addItem(userId, item) {
+    try {
+      const newItem = new InventoryItem({
+        userId,
+        itemId: this.generateItemId(),
+        name: item.name,
+        amount: item.amount,
+        price: item.price,
+      });
+
+      await newItem.save();
+      console.log("Item added to inventory:", newItem);
+      return true;
+    } catch (error) {
+      console.error("Error adding item to inventory:", error);
+      return false;
     }
-
-    const itemId = this.generateItemId(); // Generate a unique item ID
-    item.id = itemId;
-    this.inventoryData[userId].push(item);
-
-    this.saveInventory();
   }
 
   // Function to sell an item from a user's inventory
-  sellItem(userId, itemId, amount = 1) {
-    const userInventory = this.inventoryData[userId];
-    if (!userInventory || userInventory.length === 0) {
-      return false; // Inventory is empty or user doesn't exist
-    }
+  async sellItem(userId, itemId, amount = 1) {
+    try {
+      const item = await InventoryItem.findOne({ userId, itemId });
+      if (!item) {
+        return false; // Item not found in the inventory
+      }
 
-    const itemIndex = userInventory.findIndex(item => item.id === itemId);
-    if (itemIndex === -1) {
-      return false; // Item not found in the inventory
-    }
+      if (item.amount < amount) {
+        return false; // Not enough quantity to sell
+      }
 
-    const item = userInventory[itemIndex];
-    if (item.amount < amount) {
-      return false; // Not enough quantity to sell
-    }
+      item.amount -= amount;
+      if (item.amount === 0) {
+        await item.remove();
+      } else {
+        await item.save();
+      }
 
-    item.amount -= amount;
-    if (item.amount === 0) {
-      userInventory.splice(itemIndex, 1);
+      console.log("Item sold from inventory:", item);
+      return true;
+    } catch (error) {
+      console.error("Error selling item from inventory:", error);
+      return false;
     }
-
-    this.saveInventory();
-    return true; // Item sold successfully
   }
 
   // Function to buy an item and add it to a user's inventory
-  buyItem(userId, sellerId, items, amount = 1) {
-    const sellerInventory = this.inventoryData[sellerId];
-    if (!sellerInventory || sellerInventory.length === 0) {
-      return false; // Seller's inventory is empty or seller doesn't exist
+  async buyItem(userId, sellerId, items, amount = 1) {
+    try {
+      const sellerInventory = await InventoryItem.find({ userId: sellerId, name: items.name });
+      if (sellerInventory.length === 0) {
+        return false; // Item not found in the seller's inventory
+      }
+
+      const item = sellerInventory[0];
+      if (item.amount < amount) {
+        return false; // Not enough quantity available for purchase
+      }
+
+      const buyerInventory = await InventoryItem.findOne({ userId, name: items.name });
+      if (buyerInventory) {
+        buyerInventory.amount += amount;
+        await buyerInventory.save();
+      } else {
+        const boughtItem = new InventoryItem({
+          userId,
+          itemId: this.generateItemId(),
+          name: items.name,
+          amount,
+          price: items.price,
+        });
+        await boughtItem.save();
+      }
+
+      item.amount -= amount;
+      if (item.amount === 0) {
+        await item.remove();
+      } else {
+        await item.save();
+      }
+
+      console.log("Item bought and added to inventory:", item);
+      return true;
+    } catch (error) {
+      console.error("Error buying item:", error);
+      return false;
     }
-
-    const itemIndex = Object.values(sellerInventory).findIndex(item => items.name === item);
-    if (itemIndex === -1) {
-      return false; // Item not found in the seller's inventory
-    }
-
-    const item = sellerInventory[itemIndex];
-    if (item.amount < amount) {
-      return false; // Not enough quantity available for purchase
-    }
-
-
-    const buyerInventory = this.inventoryData[userId];
-    if (!buyerInventory) {
-      this.inventoryData[userId] = [];
-    }
-
-    // Check if the item ID already exists in the buyer's inventory
-    const existingItem = buyerInventory.find(i => i.id === item.id);
-    if (existingItem) {
-      existingItem.amount += amount;
-    } else {
-      const boughtItem = { id: item.id, name: item.name, amount, price: pamount };
-      buyerInventory.push(boughtItem);
-    }
-
-
-      
-    
-    item.amount -= amount;
-    if (item.amount === 0) {
-      sellerInventory.splice(itemIndex, 1);
-    }
-
-    this.saveInventory();
-    return true; // Item bought successfully
   }
 
   // Function to gamble for an item
-  gambleItem(userId,uitem) {
-    const userInventory = this.inventoryData[userId];
-    if (!userInventory) {
-      return false; // User doesn't exist
-    }
-
-    const items = Object.keys(this.gamblingData);
-    if (items.length === 0) {
-      return false; // No items available for gambling
-    }
-
-    const probabilities = items.map(item => this.gamblingData[item]);
-    const itemIndex = this.getRandomIndex(probabilities);
-    const selectedItem = items[itemIndex];
-
-    const itemId = this.generateItemId(); // Generate a unique item ID
-    const item = { id: itemId, name: selectedItem, amount: 1 , price: 1000 };
-
-    if (item == uitem) return false;
-
-    this.addItem(userId, item);
-    return item; // Item won from gambling
-  }
-
-  // Function to save inventory data to JSON file
-  async saveInventory() {
-    console.log("Saving inventory...");
-    const fs = require("fs");
-    const path = require("path");
-
-    // Save inventory data to JSON file
-    
-    fs.writeFile(
-      path.join(__dirname, "./inventory.json"),
-      JSON.stringify(this.inventoryData),
-      this.savetoPasteBin()
-      ,
-      error => {
-        if (error) {
-          console.log("Error saving inventory file:", error);
-        }
+  async gambleItem(userId, uitem) {
+    try {
+      const items = Object.keys(this.gamblingData);
+      if (items.length === 0) {
+        return false; // No items available for gambling
       }
-    );
-    
+
+      const probabilities = items.map(item => this.gamblingData[item]);
+      const itemIndex = this.getRandomIndex(probabilities);
+      const selectedItem = items[itemIndex];
+
+      const newItem = new InventoryItem({
+        userId,
+        itemId: this.generateItemId(),
+        name: selectedItem,
+        amount: 1,
+        price: 1000,
+      });
+
+      if (newItem.name === uitem) {
+        return false;
+      }
+
+      await newItem.save();
+      console.log("Item won from gambling:", newItem);
+      return newItem;
+    } catch (error) {
+      console.error("Error gambling item:", error);
+      return false;
+    }
   }
 
   // Function to generate a unique item ID
@@ -163,79 +145,28 @@ class InventorySystem {
     return Math.random().toString(36).substr(2, 9); // Generates a random alphanumeric string
   }
 
-  savetoPasteBin() {
-    console.log("Saving inventory to PasteBin...");
-    const path = require("path");
-    const fs = require("fs");
-    const fetch = require("node-fetch");
-
-    // Read the inventory data from the JSON file
-    const inventoryData = fs.readFileSync(path.join(__dirname, "./inventory.json"));
-
-    // Convert the inventory data to a string
-    const inventoryString = inventoryData.toString();
-
-    // Define the PasteBin API endpoint
-    const pasteBinEndpoint = "https://pastebin.com/api/api_post.php";
-
-    // Define the required parameters for creating a PasteBin paste
-    const pasteBinParameters = {
-      api_dev_key: "tl8rVRHyfiaSaDGCXCpOssfq-oG64bTu",
-      api_option: "paste",
-      api_paste_code: inventoryString,
-      api_paste_private: 1, // Set the paste as public (0) or private (1)
-      api_user_key: "6ef577032373f3c97d3545d4c116621f",
-      api_paste_name: `Inevntory ${new Date().toISOString()}`,
-    };
-
-    // Send a POST request to the PasteBin API
-    fetch(pasteBinEndpoint, {
-      method: "POST",
-      body: new URLSearchParams(pasteBinParameters),
-    })
-      .then(response => response.text())
-      .then(result => {
-        console.log("Inventory saved to PasteBin:", result);
-      })
-      .catch(error => {
-        console.error("Error saving inventory to PasteBin:", error);
-      });
-  }
   // Function to save a user with default items
-  saveUserWithDefaultItems(userId, defaultItems) {
-    console.log("Saving user:", userId);
-    if (!this.inventoryData[userId]) {
-      this.inventoryData[userId] = defaultItems;
-      console.log(defaultItems, this.inventoryData);
-      this.saveInventory();
-      this.savetoPasteBin();
-      return true; // User saved with default items successfully
+  async saveUserWithDefaultItems(userId, defaultItems) {
+    try {
+      const existingInventory = await InventoryItem.find({ userId });
+      if (existingInventory.length === 0) {
+        const items = defaultItems.map(item => ({
+          userId,
+          itemId: this.generateItemId(),
+          name: item.name,
+          amount: item.amount,
+          price: item.price,
+        }));
+        await InventoryItem.insertMany(items);
+        console.log("User saved with default items:", userId);
+        return true;
+      }
+      return false; // User already exists
+    } catch (error) {
+      console.error("Error saving user with default items:", error);
+      return false;
     }
-
-    return false; // User already exists
   }
-
-
-
-   getItemInfo(userId, itemName) {
-  const userInventory = this.inventoryData[userId];
-  console.log(userInventory);
-  if (!userInventory) {
-    return false; // User doesn't exist
-  }
-
-  const itemIndex = Object.values(userInventory).findIndex(item => item.name === itemName);
-  if (itemIndex === -1) {
-    return false; // Item not found in the inventory
-  }
-
-  return userInventory[itemIndex];
 }
 
-  
-
-}
-
-
-
-module.exports = {InventorySystem};
+module.exports = { InventorySystem };

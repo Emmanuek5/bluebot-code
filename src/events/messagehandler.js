@@ -119,7 +119,7 @@ if (message.attachments.size > 0) {
   channel.send("The Blue Bot is Thinking...").then(async msg => {
      const file = message.attachments.first().url;
      const extension = file.split(".").pop().toLowerCase();
-     if (extension !== "txt") return msg.edit("The Bot can only receive .txt files");
+     if (extension !== "txt" ||extension !== "js"|| extension !== "css" ) return msg.edit("The Bot can only receive .txt files");
     const url = await downloadtxt(file);
     const filecontent = fs.readFileSync(url, "utf-8");
     if (filecontent > 2000) filecontent.splice(0,2018)

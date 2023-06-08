@@ -1,9 +1,28 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const inventorySchema = new mongoose.Schema({
-        User:{ type:String, required:true, unique:true},
-        items:{ type:Array, required:true},
-    
-    })
+// Define the inventory item schema
+const InventoryItemSchema = new mongoose.Schema({
+  userId: {
+    type: String,
+    required: true,
+  },
+  itemId: {
+    type: String,
+    required: true,
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+  amount: {
+    type: Number,
+    required: true,
+  },
+  price: {
+    type: Number,
+    required: true,
+  },
+});
 
-    module.exports = mongoose.model('inventory',inventorySchema);
+// Create the Mongoose model for inventory items
+const InventoryItem = mongoose.model("InventoryItem", InventoryItemSchema);
