@@ -33,11 +33,12 @@ let inv = new InventorySystem()
       Bank: 0,
     })
 if (!data) return false;
-
-    inv.saveUserWithDefaultItems(user, this.defaultItems);
-
+if (inv.findUser(user)) return false;
+inv.saveUserWithDefaultItems(user, this.defaultItems);
 return data;
-}
+} 
+
+
 
 findUser(user){
     const { InventorySystem } = require("./InventoryManager/class");

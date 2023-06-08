@@ -64,6 +64,10 @@ class InventorySystem extends Economy {
     }
   }
 
+  findUser(userId) {
+    return InventoryItem.findOne({ userId: userId });
+  }
+  
   // Function to buy an item and add it to a user's inventory
   async buyItem(userId, sellerId, items, amount = 1) {
     try {
