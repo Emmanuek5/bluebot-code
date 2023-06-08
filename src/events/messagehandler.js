@@ -10,34 +10,41 @@ const {
   PermissionsBitField,
   RoleManager,
   Colors,
-  AttachmentBuilder,  
-} = require('discord.js');
-const discord = require('discord.js');
-const levels = require('discord.js-leveling');
-const { dmhandler } = require('./dmhandler');
-const { MessageCommands } = require('./Messagecommands');
-const inviteSchema = require('../models/invites.js');
-const { findSwearWords, findLinks, findBadLInks } = require('..//utils/swearfinder.js');
-const WarnSchema = require('../models/warn.js');
-const { bully } = require('./bullyme');
-const { sleep, getYoutubeDownloadLink, download, deletefile, rand, downloadtxt } = require('../functions/functions');
-const warn = require('../models/warn.js');
-const { AuthorizationError } = require('passport-discord');
-const ytdl = require('ytdl-core');
-const serverSchema = require('../models/server.js');
-const { data } = require('../commands/general/image-gen');
-const client = require('../..');
-const rateSchema = require('../models/messages-rate');
-const { aiFilter, humanFilter } = require('../utils/filter');
+  AttachmentBuilder,
+} = require("discord.js");
+const discord = require("discord.js");
+const levels = require("discord.js-leveling");
+const { dmhandler } = require("./dmhandler");
+const { MessageCommands } = require("./Messagecommands");
+const inviteSchema = require("../models/invites.js");
+const { findSwearWords, findLinks, findBadLInks } = require("..//utils/swearfinder.js");
+const WarnSchema = require("../models/warn.js");
+const { bully } = require("./bullyme");
+const {
+  sleep,
+  getYoutubeDownloadLink,
+  download,
+  deletefile,
+  rand,
+  downloadtxt,
+} = require("../functions/functions");
+const warn = require("../models/warn.js");
+const { AuthorizationError } = require("passport-discord");
+const ytdl = require("ytdl-core");
+const serverSchema = require("../models/server.js");
+const { data } = require("../commands/general/image-gen");
+const client = require("../..");
+const rateSchema = require("../models/messages-rate");
+const { aiFilter, humanFilter } = require("../utils/filter");
 
 async function messages(client, message) {
   const { guild, member, content, channel, author } = message;
   const serverInfo = await serverSchema.findOne({
     guildID: message.guild.id,
   });
-const fs = require("fs")
-require("dotenv").config()
-  const args = content.split(' ');
+  const fs = require("fs");
+  require("dotenv").config();
+  const args = content.split(" ");
   const command = args.shift().toLowerCase();
   const { id } = author;
   const { username, iconURL } = author;
@@ -45,15 +52,15 @@ require("dotenv").config()
   const button = new ButtonBuilder();
   const row = new ActionRowBuilder();
   const { guilds } = client;
-  const path = require("path")
+  const path = require("path");
   const { channels } = guilds;
-  const fetch = require('fetch');
- const mentioncode = `<@${process.env.CLIENT_ID}>`
-  const alias = 'b';
+  const fetch = require("fetch");
+  const mentioncode = `<@${process.env.CLIENT_ID}>`;
+  const alias = "b";
   if (content.startsWith(process.env.PREFIX)) {
-    const command = content.split(' ')[0].slice(process.env.PREFIX.length);
+    const command = content.split(" ")[0].slice(process.env.PREFIX.length);
     console.log(command);
-    const args = content.split(' ').slice(1);
+    const args = content.split(" ").slice(1);
     MessageCommands(client, command, args, message);
     return;
   }
@@ -66,110 +73,117 @@ require("dotenv").config()
 
   if (message.author.bot || !message.guild) return;
 
-  if (channel.name.includes('gpt-consersation-')) {
-    if (content.startsWith('https://')) {
-      channel.send('Links are not allowed');
+  if (channel.name.includes("gpt-consersation-")) {
+    if (content.startsWith("https://")) {
+      channel.send("Links are not allowed");
       message.delete();
       return;
     }
-    if (content == 'close conversation') {
+    if (content == "close conversation") {
       await channel.delete();
     }
-    const { Configuration, OpenAIApi } = require('openai');
+    const { Configuration, OpenAIApi } = require("openai");
 
     const configureration = new Configuration({
       apiKey: process.env.OPENAI_API_KEY,
     });
-console.log(process.env.OPENAI_API_KEY);
+    console.log(process.env.OPENAI_API_KEY);
     const openai = new OpenAIApi(configureration);
 
     if (
-      content.toLowerCase().startsWith('generate image of') ||
-      content.toLowerCase().startsWith('image of') ||
-      content.toLowerCase().startsWith('generate an image of') ||
-      content.toLowerCase().startsWith('generate image')
+      content.toLowerCase().startsWith("generate image of") ||
+      content.toLowerCase().startsWith("image of") ||
+      content.toLowerCase().startsWith("generate an image of") ||
+      content.toLowerCase().startsWith("generate image")
     ) {
-      channel.send('The Blue  Bot is Thinking ... ').then(async (msg) => {
+      channel.send("The Blue  Bot is Thinking ... ").then(async msg => {
         const response = await openai.createImage({
           prompt: content,
           n: 1,
-          size: '1024x1024',
+          size: "1024x1024",
         });
         const image_url = response.data.data[0].url;
-     const results =await download(image_url);
-     const attachment = new AttachmentBuilder(results, { name: `${content}${rand(0,99999)}.png` });
-     msg.edit({
-       content: `${content}`,
-    })
-    channel.send({
-      files: [attachment]
-    })
-     await sleep(50000);
-     deletefile(results);
-  
-       
-      
+        const results = await download(image_url);
+        const attachment = new AttachmentBuilder(results, {
+          name: `${content}${rand(0, 99999)}.png`,
+        });
+        msg.edit({
+          content: `${content}`,
+        });
+        channel.send({
+          files: [attachment],
+        });
+        await sleep(50000);
+        deletefile(results);
       });
 
       return;
     }
 
-if (message.attachments.size > 0) {
- 
-  channel.send("The Blue Bot is Thinking...").then(async msg => {
-     const file = message.attachments.first().url;
-     const extension = file.split(".").pop().toLowerCase();
-     if (extension !== "txt" ||extension !== "js"|| extension !== "css" ||extension !== "theme" ) return msg.edit("The Bot can only receive .txt files");
-    const url = await downloadtxt(file);
-    const filecontent = fs.readFileSync(url, "utf-8");
-    if (filecontent > 2000) filecontent.splice(0,2018)
-    try {
-      const a = humanFilter(message, msg);
-      if (a) return;
-      const res = await openai.createCompletion({
-        model: "text-davinci-003",
-        prompt: filecontent,
-        temperature: 0.5,
-        max_tokens: 2048,
-      });
-      const nulls = aiFilter(res, msg);
-      if (nulls) return;
-
-      const adata = res.data.choices[0].text;
-      if (adata.length > 1999) {
-        const data = adata.slice(0, 1900);
-        msg.edit(`\`\`\`${data}\`\`\``);
-        const newdata = adata.slice(1900, adata.length);
-        if (newdata.length > 1990) {
-          const newdata2 = newdata.slice(1990, newdata.length);
-          channel.send(`\`\`\`${newdata2}\`\`\``);
+    if (message.attachments.size > 0) {
+      channel.send("The Blue Bot is Thinking...").then(async msg => {
+        const file = message.attachments.first().url;
+        const extension = file.split(".").pop().toLowerCase();
+        if (
+          extension !== "txt" ||
+          extension !== "js" ||
+          extension !== "css" ||
+          extension !== "theme"
+        ) {
+          message.delete();
+          msg.edit("The Bot can only receive .txt files");
+          return;
         }
-        channel.send(`\`\`\`${newdata}\`\`\``);
-      } else {
-        msg.edit(`\`\`\`${adata}\`\`\``);
-      }
-    } catch (error) {
-      msg.edit(`\`\`\`${process.env.AI_ERROR} \`\`\``);
-      channel.send(error.data);
-      console.log(error);
-    }
-  });
+        const url = await downloadtxt(file);
+        const filecontent = fs.readFileSync(url, "utf-8");
+        if (filecontent > 2000) filecontent.splice(0, 2018);
+        try {
+          const a = humanFilter(message, msg);
+          if (a) return;
+          const res = await openai.createCompletion({
+            model: "text-davinci-003",
+            prompt: filecontent,
+            temperature: 0.5,
+            max_tokens: 2048,
+          });
+          const nulls = aiFilter(res, msg);
+          if (nulls) return;
 
-  return;
-}
-   channel.send('The Blue  Bot is Thinking ... ').then(async (msg) => {
+          const adata = res.data.choices[0].text;
+          if (adata.length > 1999) {
+            const data = adata.slice(0, 1900);
+            msg.edit(`\`\`\`${data}\`\`\``);
+            const newdata = adata.slice(1900, adata.length);
+            if (newdata.length > 1990) {
+              const newdata2 = newdata.slice(1990, newdata.length);
+              channel.send(`\`\`\`${newdata2}\`\`\``);
+            }
+            channel.send(`\`\`\`${newdata}\`\`\``);
+          } else {
+            msg.edit(`\`\`\`${adata}\`\`\``);
+          }
+        } catch (error) {
+          msg.edit(`\`\`\`${process.env.AI_ERROR} \`\`\``);
+          channel.send(error.data);
+          console.log(error);
+        }
+      });
+
+      return;
+    }
+    channel.send("The Blue  Bot is Thinking ... ").then(async msg => {
       try {
-       const a =  humanFilter(message,msg)
+        const a = humanFilter(message, msg);
         if (a) return;
         const res = await openai.createCompletion({
-          model: 'text-davinci-003',
+          model: "text-davinci-003",
           prompt: content,
           temperature: 0.5,
           max_tokens: 2048,
         });
-         const nulls = aiFilter(res, msg);
-         if (nulls) return;
-         
+        const nulls = aiFilter(res, msg);
+        if (nulls) return;
+
         const adata = res.data.choices[0].text;
         if (adata.length > 1999) {
           const data = adata.slice(0, 1900);
@@ -178,7 +192,6 @@ if (message.attachments.size > 0) {
           if (newdata.length > 1990) {
             const newdata2 = newdata.slice(1990, newdata.length);
             channel.send(`\`\`\`${newdata2}\`\`\``);
-
           }
           channel.send(`\`\`\`${newdata}\`\`\``);
         } else {
@@ -193,12 +206,10 @@ if (message.attachments.size > 0) {
     return;
   }
 
-  if (message.channel.name === 'bully-me' || message.channel.id == serverInfo.bullyMeChannel) {
+  if (message.channel.name === "bully-me" || message.channel.id == serverInfo.bullyMeChannel) {
     bully(client, message);
     return;
   }
-
-  
 
   if (message.content.length > 3 && !findSwearWords(message)) {
     const random = Math.floor(Math.random() * 100) + 1;
@@ -207,59 +218,63 @@ if (message.attachments.size > 0) {
     if (hasLeveledUp) {
       const user = await levels.fetch(message.author.id, message.guild.id);
 
-      dmhandler(client, message, 'levelup', user.level);
-      const levelingupChannel = guild.channels.cache.find((ch) => ch.id === serverInfo.levelingChannel);
+      dmhandler(client, message, "levelup", user.level);
+      const levelingupChannel = guild.channels.cache.find(
+        ch => ch.id === serverInfo.levelingChannel
+      );
 
       if (!levelingupChannel) {
-        const channel = guild.channels.cache.find((ch) => ch.id === message.channel.id);
+        const channel = guild.channels.cache.find(ch => ch.id === message.channel.id);
 
         const embed = new EmbedBuilder()
-          .setTitle('Level Up!')
+          .setTitle("Level Up!")
           .setDescription(`GG ${author}!, You Just Leveled Up to Level ${user.level}`)
-          .setColor('Random')
-          .setAuthor({ name: 'The Blue Bot', iconURL: process.env.BOT_AVATAR })
+          .setColor("Random")
+          .setAuthor({ name: "The Blue Bot", iconURL: process.env.BOT_AVATAR })
           .setTimestamp()
           .setFooter({
             text: `Level Up By: ${username}`,
             iconURL: iconURL,
           });
-        const sendEmbed = channel.send({ embeds: [embed] }).then((msg) => {
-          msg.react('🎉');
+        const sendEmbed = channel.send({ embeds: [embed] }).then(msg => {
+          msg.react("🎉");
         });
 
         return;
       }
 
       const embed = new EmbedBuilder()
-        .setTitle('Level Up!')
+        .setTitle("Level Up!")
         .setDescription()
-        .setColor('Random')
-        .setAuthor({ name: 'The Blue Bot', iconURL: process.env.BOT_AVATAR })
+        .setColor("Random")
+        .setAuthor({ name: "The Blue Bot", iconURL: process.env.BOT_AVATAR })
         .setTimestamp()
         .setFooter({
           text: `Level Up By: ${username}`,
           iconURL: iconURL,
         });
 
-      const sendEmbed = levelingupChannel.send({ embeds: [embed] }).then((msg) => {
-        msg.react('🎉');
+      const sendEmbed = levelingupChannel.send({ embeds: [embed] }).then(msg => {
+        msg.react("🎉");
       });
     } else {
     }
   }
 
-  if (content.includes('https://discord.gg/') && !content.includes('event')) {
-    if (member.permissions.has(PermissionsBitField.Flags.Administrator )) return;
-    const invite = content.split('https://discord.gg/')[1];
-    const invitecode = invite.split(' ')[0];
+  if (content.includes("https://discord.gg/") && !content.includes("event")) {
+    if (member.permissions.has(PermissionsBitField.Flags.Administrator)) return;
+    const invite = content.split("https://discord.gg/")[1];
+    const invitecode = invite.split(" ")[0];
     const inviteurl = `https://discord.gg/${invitecode}`;
     message.delete();
 
     const inviteembed = new EmbedBuilder()
-      .setTitle('Invite Link Detected')
-      .setDescription(`Hey ${author}, We Don't Allow Invite Links In This Server, Please Don't Do It Again!`)
-      .setColor('Red')
-      .setAuthor({ name: 'The Blue Bot', iconURL: process.env.BOT_AVATAR })
+      .setTitle("Invite Link Detected")
+      .setDescription(
+        `Hey ${author}, We Don't Allow Invite Links In This Server, Please Don't Do It Again!`
+      )
+      .setColor("Red")
+      .setAuthor({ name: "The Blue Bot", iconURL: process.env.BOT_AVATAR })
       .setTimestamp()
       .setFooter({
         text: `Invite Link Detected By: ${username}`,
@@ -276,7 +291,8 @@ if (message.attachments.size > 0) {
     if (serverinfo.swearWords == true) {
       return;
     }
-    if (message.channel.name === 'bully-me' || message.channel.id == serverInfo.bullyMeChannel) return;
+    if (message.channel.name === "bully-me" || message.channel.id == serverInfo.bullyMeChannel)
+      return;
     message.delete();
     channel.send(
       `${author} Swearing is not allowed in this server please refrain from doing so in the future or you will be Muted`
@@ -288,8 +304,8 @@ if (message.attachments.size > 0) {
         GuildId: guild.id,
         UserId: id,
         WarnCount: 1,
-        WarnReason: 'Swearing',
-        WarnedBy: 'The Blue Bot',
+        WarnReason: "Swearing",
+        WarnedBy: "The Blue Bot",
         WarnedAt: Date.now(),
       });
 
@@ -299,14 +315,14 @@ if (message.attachments.size > 0) {
 
       if (warns.WarnCount >= 5) {
         const member = client.guilds.cache.get(guild.id).members.cache.get(message.author.id);
-        const role = guild.roles.cache.find((r) => r.name === 'Muted');
+        const role = guild.roles.cache.find(r => r.name === "Muted");
         if (!role) {
           guild.roles
             .create({
-              name: 'Muted',
+              name: "Muted",
               color: Colors.Blue,
               permissions: [],
-              reason: 'Muted Role',
+              reason: "Muted Role",
             })
             .catch(console.error);
         }
@@ -317,29 +333,29 @@ if (message.attachments.size > 0) {
           await warns.save();
           return;
         }
-        member.timeout(50000 * 10, 'Muted For Saying Bad Words');
+        member.timeout(50000 * 10, "Muted For Saying Bad Words");
         const embed = new EmbedBuilder()
           .setDescription(`:white_check_mark: You Have Been Timed Out  For Saying Bad Words`)
-          .setColor('Blue');
+          .setColor("Blue");
 
         const dmembed = new EmbedBuilder()
           .setDescription(
             `:white_check_mark: You Have Been Timed Out On ${message.guild.name} for 5 Mins For Saying Bad Words`
           )
-          .setColor('Blue');
+          .setColor("Blue");
 
-        member.send({ embeds: [dmembed] }).catch((err) => {
+        member.send({ embeds: [dmembed] }).catch(err => {
           return;
         });
         channel.send({ embeds: [embed] });
-        member.timeout(5000 * 10, 'Done');
+        member.timeout(5000 * 10, "Done");
         member.roles.add(role);
         warns.WarnCount = 0;
         await warns.save();
 
         // after 5 minutes remove the role
         await sleep(50000);
-        member.timeout(null, 'Done');
+        member.timeout(null, "Done");
         member.roles.remove(role);
         return;
       }
@@ -347,7 +363,7 @@ if (message.attachments.size > 0) {
       await warns.save();
     }
 
-    dmhandler(client, message, 'badword');
+    dmhandler(client, message, "badword");
 
     const currentxp = await levels.fetch(id, guild.id);
     if (!currentxp) {
@@ -362,15 +378,13 @@ if (message.attachments.size > 0) {
     }
   }
 
-
   if (message.content.includes(mentioncode)) {
-    channel.send(`Hey ${author}, How can i help? `)
-    
+    channel.send(`Hey ${author}, How can i help? `);
   }
   //find the channel named bully-me and send a message to it
 
   if (findBadLInks(message)) {
-    if (message.channel.name === 'bully-me') bully(client, message);
+    if (message.channel.name === "bully-me") bully(client, message);
   }
 }
 
