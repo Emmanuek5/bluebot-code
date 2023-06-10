@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require('@discordjs/builders');
-const { SlashCommandBuilder, Colors } = require('discord.js');
+const { SlashCommandBuilder, Colors,AttachmentBuilder } = require('discord.js');
 const { Configuration, OpenAIApi } = require('openai');
 const { rand,download } = require('../../functions/functions');
 
