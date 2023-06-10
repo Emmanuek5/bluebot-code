@@ -6,7 +6,7 @@ class InventorySystem  {
   async getInventory(userId) {
     console.log("Getting inventory for user:", userId);
     try {
-      const inventory = await InventoryItem.find({ userId });
+      const inventory = await InventoryItem.findOne({ userId });
       return inventory;
     } catch (error) {
       console.error("Error getting inventory:", error);
