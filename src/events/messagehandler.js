@@ -141,7 +141,7 @@ async function messages(client, message) {
           const a = humanFilter(message, msg);
           if (a) return;
           const res = await openai.createCompletion({
-            model: "text-davinci-003",
+            model: "gpt-4",
             prompt: filecontent,
             temperature: 0.5,
             max_tokens: 2048,
@@ -176,7 +176,7 @@ async function messages(client, message) {
         const a = humanFilter(message, msg);
         if (a) return;
         const res = await openai.createCompletion({
-          model: "text-davinci-003",
+          model: "gpt-4",
           prompt: content,
           temperature: 0.5,
           max_tokens: 2048,
