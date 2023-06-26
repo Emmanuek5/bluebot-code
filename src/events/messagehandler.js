@@ -36,6 +36,7 @@ const { data } = require("../commands/general/image-gen");
 const client = require("../..");
 const rateSchema = require("../models/messages-rate");
 const { aiFilter, humanFilter } = require("../utils/filter");
+const { createPrompt } = require("./Utils/AiHandler");
 
 async function messages(client, message) {
   const { guild, member, content, channel, author } = message;
@@ -74,135 +75,7 @@ async function messages(client, message) {
   if (message.author.bot || !message.guild) return;
 
   if (channel.name.includes("gpt-consersation-")) {
-    if (content.startsWith("https://")) {
-      channel.send("Links are not allowed");
-      message.delete();
-      return;
-    }
-    if (content == "close conversation") {
-      await channel.delete();
-    }
-    const { Configuration, OpenAIApi } = require("openai");
-
-    const configureration = new Configuration({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
-    console.log(process.env.OPENAI_API_KEY);
-    const openai = new OpenAIApi(configureration);
-
-    if (
-      content.toLowerCase().startsWith("generate image of") ||
-      content.toLowerCase().startsWith("image of") ||
-      content.toLowerCase().startsWith("generate an image of") ||
-      content.toLowerCase().startsWith("generate image")
-    ) {
-      channel.send("The Blue  Bot is Thinking ... ").then(async msg => {
-        const response = await openai.createImage({
-          prompt: content,
-          n: 1,
-          size: "1024x1024",
-        });
-        const image_url = response.data.data[0].url;
-        const results = await download(image_url);
-        const attachment = new AttachmentBuilder(results, {
-          name: `${content}${rand(0, 99999)}.png`,
-        });
-        msg.edit({
-          content: `${content}`,
-        });
-        channel.send({
-          files: [attachment],
-        });
-        await sleep(50000);
-        deletefile(results);
-      });
-
-      return;
-    }
-
-    if (message.attachments.size > 0) {
-      channel.send("The Blue Bot is Thinking...").then(async msg => {
-        const file = message.attachments.first().url;
-        const extension = file.split(".").pop().toLowerCase();
-        if (
-          extension !== "txt" ||
-          extension !== "js" ||
-          extension !== "css" ||
-          extension !== "theme"
-        ) {
-          message.delete();
-          msg.edit("The Bot can only receive .txt files");
-          return;
-        }
-        const url = await downloadtxt(file);
-        const filecontent = fs.readFileSync(url, "utf-8");
-        if (filecontent > 2000) filecontent.splice(0, 2018);
-        try {
-          const a = humanFilter(message, msg);
-          if (a) return;
-          const res = await openai.createCompletion({
-            model: "text-davinci-003",
-            prompt: filecontent,
-            temperature: 0.5,
-            max_tokens: 2048,
-          });
-          const nulls = aiFilter(res, msg);
-          if (nulls) return;
-
-          const adata = res.data.choices[0].text;
-          if (adata.length > 1999) {
-            const data = adata.slice(0, 1900);
-            msg.edit(`\`\`\`${data}\`\`\``);
-            const newdata = adata.slice(1900, adata.length);
-            if (newdata.length > 1990) {
-              const newdata2 = newdata.slice(1990, newdata.length);
-              channel.send(`\`\`\`${newdata2}\`\`\``);
-            }
-            channel.send(`\`\`\`${newdata}\`\`\``);
-          } else {
-            msg.edit(`\`\`\`${adata}\`\`\``);
-          }
-        } catch (error) {
-          msg.edit(`\`\`\`${process.env.AI_ERROR} \`\`\``);
-          channel.send(error.data);
-          console.log(error);
-        }
-      });
-
-      return;
-    }
-    channel.send("The Blue  Bot is Thinking ... ").then(async msg => {
-      try {
-        const a = humanFilter(message, msg);
-        if (a) return;
-        const res = await openai.createCompletion({
-          model: "text-davinci-003",
-          prompt: content,
-          temperature: 0.5,
-          max_tokens: 2048,
-        });
-        const nulls = aiFilter(res, msg);
-        if (nulls) return;
-
-        const adata = res.data.choices[0].text;
-        if (adata.length > 1999) {
-          const data = adata.slice(0, 1900);
-          msg.edit(`\`\`\`${data}\`\`\``);
-          const newdata = adata.slice(1900, adata.length);
-          if (newdata.length > 1990) {
-            const newdata2 = newdata.slice(1990, newdata.length);
-            channel.send(`\`\`\`${newdata2}\`\`\``);
-          }
-          channel.send(`\`\`\`${newdata}\`\`\``);
-        } else {
-          msg.edit(`\`\`\`${adata}\`\`\``);
-        }
-      } catch (error) {
-        msg.edit(`\`\`\`${process.env.AI_ERROR} \`\`\``);
-        channel.send(error.data);
-        console.log(error);
-      }
-    });
+    createPrompt(message, client);
     return;
   }
 

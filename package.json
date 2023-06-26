@@ -23,6 +23,7 @@
     "axios": "^1.2.6",
     "bcrypt": "^5.1.0",
     "bootstrap": "^5.3.0-alpha1",
+    "cheerio": "^1.0.0-rc.12",
     "currency-system": "^2.8.6",
     "discord-player": "^5.3.2",
     "discord-youtube": "^1.1.1",
