@@ -1,4 +1,4 @@
-### Custom discord Bot
+r### Custom discord Bot
 
 This is a custom discord bot that I made for my server. It has a few commands that I use for my server. I will be adding more commands as I go along.
 
