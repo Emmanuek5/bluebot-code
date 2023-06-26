@@ -1,8 +1,6 @@
-
-const path = require('path');
-const fs = require('fs');
-const request = require('request');
-
+const path = require("path");
+const fs = require("fs");
+const request = require("request");
 
 function sleep(params) {
   return new Promise((resolve, reject) => {
@@ -25,51 +23,31 @@ function checkAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
   } else {
-    res.redirect('/login');
+    res.redirect("/login");
   }
 }
 
 function checkNotAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
-    return res.redirect('/dashboard');
+    return res.redirect("/dashboard");
   } else {
     next();
   }
 }
 
-
 async function download(link) {
   //download the file from the link and save it locally to the downloads folder in data folder
-  const filename = path.basename(link);
-  const file = fs.createWriteStream(path.join(__dirname, '../data/downloads/'+ filename+".png"));
-  request(link).pipe(file);
-  file.on('finish', () => {
-    
-    file.close();
-    
-
-  })
-
-
-
-async function downloadtxt(link) {
-  //download the file from the link and save it locally to the downloads folder in data folder
-  const filename = path.basename(link);
-  const file = fs.createWriteStream(path.join(__dirname, '../data/downloads/'+ filename));
-  request(link).pipe(file);
-  file.on('finish', () => {
-    
-    file.close();
-    
-
+  if (!fs.existsSync("../data/downloads")) {
+    fs.mkdirSync("../data/downloads");
+    console.log("HH");
   }
-  )
-  await sleep(5000);
-    const filepath = path.join(__dirname, '../data/downloads/' + filename + '.png');
-   
-    return filepath;
-}
-
+  const filename = path.basename(link);
+  console.log(filename);
+  const file = fs.createWriteStream(path.join(__dirname, "../data/downloads/" + filename + ".png"));
+  request(link).pipe(file);
+  file.on("finish", () => {
+    file.close();
+  });
 }
 
 async function downloadtxt(link) {
@@ -87,13 +65,9 @@ async function downloadtxt(link) {
   return filepath;
 }
 
-
- function deletefile(filepath) {
-   fs.unlinkSync(filepath);
- }
-
-
-
+function deletefile(filepath) {
+  fs.unlinkSync(filepath);
+}
 
 module.exports = {
   sleep,
@@ -102,5 +76,5 @@ module.exports = {
   checkNotAuthenticated,
   download,
   deletefile,
-  downloadtxt
-}
+  downloadtxt,
+};
