@@ -69,6 +69,12 @@ async function download(link) {
   return filePath;
 }
 
+/**
+ * Downloads a file from a given link and saves it locally to the downloads folder in the data folder.
+ *
+ * @param {string} link - The URL of the file to be downloaded.
+ * @return {Promise<string>} Returns a Promise containing the filepath of the downloaded file.
+ */
 async function downloadtxt(link) {
   //download the file from the link and save it locally to the downloads folder in data folder
   const filename = path.basename(link);
