@@ -19,7 +19,7 @@ const configureration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
 const cheerio = require("cheerio");
-const { download, sleep } = require("../../functions/functions");
+const { download, sleep, downloadtxt } = require("../../functions/functions");
 console.log(process.env.OPENAI_API_KEY);
 const openai = new OpenAIApi(configureration);
 
@@ -117,7 +117,6 @@ async function createPrompt(message, client) {
         }
         return;
       }
-      const { sleep, download, deleteFile } = require("./utils"); // Assuming you have utility functions for sleep, download, and deleteFile
 
       if (
         content.toLowerCase().startsWith("generate image of") ||
@@ -228,38 +227,38 @@ async function createPrompt(message, client) {
           channel.send(error.data);
           console.log(error);
         }
-        return;
-      }
 
-      try {
-        const a = humanFilter(message, msg);
-        if (a) return;
-        const res = await openai.createCompletion({
-          model: "text-davinci-003",
-          prompt: content,
-          temperature: 0.5,
-          max_tokens: 2048,
-        });
-        const nulls = aiFilter(res, msg);
-        if (nulls) return;
+        try {
+          const a = humanFilter(message, msg);
+          if (a) return;
+          const res = await openai.createCompletion({
+            model: "text-davinci-003",
+            prompt: content,
+            temperature: 0.5,
+            max_tokens: 2048,
+          });
+          const nulls = aiFilter(res, msg);
+          if (nulls) return;
 
-        const adata = res.data.choices[0].text;
-        if (adata.length > 1999) {
-          const data = adata.slice(0, 1900);
-          msg.edit(`\`\`\`${data}\`\`\``);
-          const newdata = adata.slice(1900, adata.length);
-          if (newdata.length > 1990) {
-            const newdata2 = newdata.slice(1990, newdata.length);
-            channel.send(`\`\`\`${newdata2}\`\`\``);
+          const adata = res.data.choices[0].text;
+          if (adata.length > 1999) {
+            const data = adata.slice(0, 1900);
+            msg.edit(`\`\`\`${data}\`\`\``);
+            const newdata = adata.slice(1900, adata.length);
+            if (newdata.length > 1990) {
+              const newdata2 = newdata.slice(1990, newdata.length);
+              channel.send(`\`\`\`${newdata2}\`\`\``);
+            }
+            channel.send(`\`\`\`${newdata}\`\`\``);
+          } else {
+            msg.edit(`\`\`\`${adata}\`\`\``);
           }
-          channel.send(`\`\`\`${newdata}\`\`\``);
-        } else {
-          msg.edit(`\`\`\`${adata}\`\`\``);
+        } catch (error) {
+          msg.edit(`\`\`\`${process.env.AI_ERROR} \`\`\``);
+          channel.send(error.data);
+          console.log(error);
         }
-      } catch (error) {
-        msg.edit(`\`\`\`${process.env.AI_ERROR} \`\`\``);
-        channel.send(error.data);
-        console.log(error);
+        return;
       }
     })
     .catch(err => {});
