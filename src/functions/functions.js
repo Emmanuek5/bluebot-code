@@ -35,19 +35,35 @@ function checkNotAuthenticated(req, res, next) {
   }
 }
 
+/**
+ * Downloads a file from a given link and saves it to the "downloads" folder.
+ *
+ * @param {string} link - The link to the file to download.
+ * @return {Promise<string>} A promise that resolves with the path to the downloaded file.
+ */
 async function download(link) {
-  //download the file from the link and save it locally to the downloads folder in data folder
-  if (!fs.existsSync("../data/downloads")) {
-    fs.mkdirSync("../data/downloads");
-    console.log("HH");
+  // Create the "downloads" folder if it doesn't exist
+  const downloadsFolderPath = path.join(__dirname, "../data/downloads");
+  if (!fs.existsSync(downloadsFolderPath)) {
+    fs.mkdirSync(downloadsFolderPath);
   }
+
+  // Extract filename from link and create file path in downloads folder
   const filename = path.basename(link);
-  console.log(filename);
-  const file = fs.createWriteStream(path.join(__dirname, "../data/downloads/" + filename + ".png"));
-  request(link).pipe(file);
-  file.on("finish", () => {
-    file.close();
+  const filePath = path.join(downloadsFolderPath, `${filename}.png`);
+
+  // Create write stream to file and pipe request to write stream
+  const file = fs.createWriteStream(filePath);
+  const response = await new Promise((resolve, reject) => {
+    request(link)
+      .pipe(file)
+      .on("finish", () => resolve())
+      .on("error", error => reject(error));
   });
+
+  // Log downloaded file path and return it
+  console.log(`File downloaded and saved to: ${filePath}`);
+  return filePath;
 }
 
 async function downloadtxt(link) {
@@ -65,6 +81,12 @@ async function downloadtxt(link) {
   return filepath;
 }
 
+/**
+ * Deletes a file from the given file path.
+ *
+ * @param {string} filepath - The path of the file to be deleted.
+ * @return {void}
+ */
 function deletefile(filepath) {
   fs.unlinkSync(filepath);
 }

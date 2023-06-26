@@ -19,7 +19,7 @@ const configureration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
 const cheerio = require("cheerio");
-const { download } = require("../../functions/functions");
+const { download, sleep } = require("../../functions/functions");
 console.log(process.env.OPENAI_API_KEY);
 const openai = new OpenAIApi(configureration);
 
@@ -124,18 +124,33 @@ async function createPrompt(message, client) {
         content.toLowerCase().startsWith("generate an image of") ||
         content.toLowerCase().startsWith("generate image")
       ) {
-        console.log("Image Here");
+         msg.edit({
+           content: `Begining Image Creation Process.....`,
+         });
+         sleep(2000)
+         msg.edit({
+            content:`Generating The image.......`
+         })
         const response = await openai.createImage({
           prompt: content,
           n: 1,
           size: "1024x1024",
         });
+          msg.edit({
+            content: `Image Generation Complete.`,
+          });
+           sleep(2000);
         const image_url = response.data.data[0].url;
+          msg.edit({
+            content:`Downloading The image.......`
+         })
         const results = await download(image_url);
-        console.log(results);
+          msg.edit({
+            content: `Download Complete. Preparing to upload to discord`,
+          });
         const attachment = new AttachmentBuilder(results, {
           name: `${content}${rand(0, 99999)}.png`,
-        });
+        }); 
         msg.edit({
           content: `${content}`,
         });
