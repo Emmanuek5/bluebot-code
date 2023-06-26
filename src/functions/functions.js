@@ -57,7 +57,10 @@ async function download(link) {
   const response = await new Promise((resolve, reject) => {
     request(link)
       .pipe(file)
-      .on("finish", () => resolve())
+      .on("finish", () => {
+        resolve();
+        console.log("Done");
+      })
       .on("error", error => reject(error));
   });
 

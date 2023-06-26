@@ -45,29 +45,28 @@ async function createPrompt(message, client) {
     : `<@${author.id}>`;
   const guildMemberNicknameTag4 = guildMemberNickname;
 
- const ReplyOptions = [
-   "Generating AI Prompts...",
-   "The Bot is thinking...",
-   "We are getting the answers to your question...",
-   "Analyzing the data...",
-   "Please wait while we process your request...",
-   "Searching for the information...",
-   "Compiling the response...",
-   "Exploring the possibilities...",
-   "Delving into the knowledge...",
-   "In the realm of artificial intelligence...",
-   "Unleashing the power of algorithms...",
-   "Venturing into the realm of knowledge...",
-   "Harnessing the computational prowess...",
-   "Unlocking the secrets of language...",
-   "Embarking on an intellectual journey...",
-   "Connecting dots to form insights...",
-   "Empowering the neural networks...",
-   "Navigating through the vast information landscape...",
-   "Transforming data into wisdom...",
-   "Crafting responses with precision...",
- ];
-
+  const ReplyOptions = [
+    "Generating AI Prompts...",
+    "The Bot is thinking...",
+    "We are getting the answers to your question...",
+    "Analyzing the data...",
+    "Please wait while we process your request...",
+    "Searching for the information...",
+    "Compiling the response...",
+    "Exploring the possibilities...",
+    "Delving into the knowledge...",
+    "In the realm of artificial intelligence...",
+    "Unleashing the power of algorithms...",
+    "Venturing into the realm of knowledge...",
+    "Harnessing the computational prowess...",
+    "Unlocking the secrets of language...",
+    "Embarking on an intellectual journey...",
+    "Connecting dots to form insights...",
+    "Empowering the neural networks...",
+    "Navigating through the vast information landscape...",
+    "Transforming data into wisdom...",
+    "Crafting responses with precision...",
+  ];
 
   const selectedReply = ReplyOptions[Math.floor(Math.random() * ReplyOptions.length)];
   channel
@@ -118,47 +117,66 @@ async function createPrompt(message, client) {
         }
         return;
       }
+      const { sleep, download, deleteFile } = require("./utils"); // Assuming you have utility functions for sleep, download, and deleteFile
+
       if (
         content.toLowerCase().startsWith("generate image of") ||
         content.toLowerCase().startsWith("image of") ||
         content.toLowerCase().startsWith("generate an image of") ||
         content.toLowerCase().startsWith("generate image")
       ) {
-         msg.edit({
-           content: `Begining Image Creation Process.....`,
-         });
-         sleep(2000)
-         msg.edit({
-            content:`Generating The image.......`
-         })
-        const response = await openai.createImage({
-          prompt: content,
-          n: 1,
-          size: "1024x1024",
-        });
+        try {
           msg.edit({
-            content: `Image Generation Complete.`,
+            content: "🎨 Beginning Image Creation Process...",
           });
-           sleep(2000);
-        const image_url = response.data.data[0].url;
+          await sleep(2000);
           msg.edit({
-            content:`Downloading The image.......`
-         })
-        const results = await download(image_url);
-          msg.edit({
-            content: `Download Complete. Preparing to upload to discord`,
+            content: "⌛ Generating the image...",
           });
-        const attachment = new AttachmentBuilder(results, {
-          name: `${content}${rand(0, 99999)}.png`,
-        }); 
-        msg.edit({
-          content: `${content}`,
-        });
-        channel.send({
-          files: [attachment],
-        });
-        await sleep(50000);
-        deletefile(results);
+
+          const response = await openai.createImage({
+            prompt: content,
+            n: 1,
+            size: "1024x1024",
+          });
+
+          msg.edit({
+            content: "✅ Image Generation Complete.",
+          });
+          await sleep(2000);
+
+          const image_url = response.data.data[0].url;
+
+          msg.edit({
+            content: "⬇️ Downloading the image...",
+          });
+
+          const filePath = await download(image_url);
+
+          msg.edit({
+            content: "✅ Download Complete. Preparing to upload to Discord.",
+          });
+
+          const attachment = new AttachmentBuilder(filePath, `${content}${rand(0, 99999)}.png`);
+
+          msg.edit({
+            content: `🖼️ ${content}`,
+          });
+
+          channel.send({
+            files: [attachment],
+          });
+
+          await sleep(50000);
+
+          deletefile(filePath);
+        } catch (error) {
+          console.log(error);
+          msg.edit({
+            content: "❌ Error occurred during image generation.",
+          });
+        }
+
         return;
       }
 
