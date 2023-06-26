@@ -36,18 +36,25 @@ function checkNotAuthenticated(req, res, next) {
 }
 
 async function download(link) {
-  //download the file from the link and save it locally to the downloads folder in data folder
-  if (!fs.existsSync("../data/downloads")) {
-    fs.mkdirSync("../data/downloads");
-    console.log("HH");
+  // Create the "downloads" folder if it doesn't exist
+  const downloadsFolderPath = path.join(__dirname, "../data/downloads");
+  if (!fs.existsSync(downloadsFolderPath)) {
+    fs.mkdirSync(downloadsFolderPath);
   }
+
   const filename = path.basename(link);
-  console.log(filename);
-  const file = fs.createWriteStream(path.join(__dirname, "../data/downloads/" + filename + ".png"));
-  request(link).pipe(file);
-  file.on("finish", () => {
-    file.close();
+  const filePath = path.join(downloadsFolderPath, `${filename}.png`);
+
+  const file = fs.createWriteStream(filePath);
+  const response = await new Promise((resolve, reject) => {
+    request(link)
+      .pipe(file)
+      .on("finish", () => resolve())
+      .on("error", error => reject(error));
   });
+
+  console.log(`File downloaded and saved to: ${filePath}`);
+  return filePath;
 }
 
 async function downloadtxt(link) {
