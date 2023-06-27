@@ -3,7 +3,7 @@ const qr = require("qr-image");
 const { createWriteStream } = require("fs");
 const { join } = require("path");
 const { rand } = require("../functions/functions");
-
+const fs = require("fs");
 /**
  * Asynchronously generates a QR code from the provided text and saves it to a file.
  *
