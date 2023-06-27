@@ -2,7 +2,7 @@ process.on("unhandledRejection", (reason, promise) => {
   console.log("Unhandled Rejection at: Promise", promise, "reason:", reason);
 });
 
-process.on("uncaughtException", function (error) {
+process.on("uncaughtException", function(error) {
   console.error("An uncaught exception occurred:", error);
 });
 const {
@@ -35,8 +35,11 @@ const client = new Client({
     GatewayIntentBits.GuildMembers,
   ],
 });
+
 const clienthandler = require("./src/events/clienthandler");
 clienthandler.client(client);
+let botName = client.username;
+process.env.BOT_NAME = botName;
 const { Api } = require("./load.js");
 require("./updater");
 const fs = require("fs");
