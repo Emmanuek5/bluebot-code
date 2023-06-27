@@ -49,19 +49,18 @@ function checkNotAuthenticated(req, res, next) {
  * @return {Promise<string>} A promise that resolves with the path to the downloaded file.
  */
 async function download(link) {
+  const filep = path.join(__dirname, "../data/downloads/" + rand(1, 999999) + ".png");
   //download the file from the link and save it locally to the downloads folder in data folder
   console.log(link);
   const filename = path.basename(link);
   console.log(filename);
-  const file = fs.createWriteStream(
-    path.join(__dirname, "../data/downloads/" + rand(1, 999999) + ".png")
-  );
+  const file = fs.createWriteStream(filep);
   request(link).pipe(file);
   file.on("finish", () => {
     file.close();
   });
 
-  return path.join(__dirname, "../data/downloads/" + rand(1, 999999) + ".png");
+  return filep;
 }
 /**
  * Downloads a file from a given link and saves it locally to the downloads folder in the data folder.
