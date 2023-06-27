@@ -12,6 +12,10 @@ router.get('/', (req, res) => {
   });
 });
 
+router.get("/status",(req,res)=>{
+  res.send("Online").status(200)
+})
+
 router.get('/logout', (req, res) => {
   req.session.destroy();
 
