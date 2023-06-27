@@ -126,7 +126,7 @@ async function createPrompt(message, client) {
           msg.edit({
             content: "🎨 Beginning Image Creation Process...",
           });
-          await sleep(2000);
+          await sleep(4000);
           msg.edit({
             content: "⌛ Generating the image...",
           });
@@ -141,13 +141,11 @@ async function createPrompt(message, client) {
             content: "✅ Image Generation Complete.",
           });
           await sleep(2000);
-
           const image_url = response.data.data[0].url;
 
           msg.edit({
             content: "⬇️ Downloading the image...",
           });
-
           const filePath = await download(image_url);
           console.log(filePath);
 
@@ -155,13 +153,11 @@ async function createPrompt(message, client) {
             content: "✅ Download Complete. Preparing to upload to Discord.",
           });
 
-          const attachment = new AttachmentBuilder().setFile(filePath).setName(content);
+          const attachment = new AttachmentBuilder().setFile(filePath).setName(content + ".png");
           console.log(attachment);
 
           msg.edit({
-            content: `🖼️ ${
-              content.replace("generate image", "").replace("generate image of", "") + ".png"
-            }`,
+            content: `🖼️ ${content.replace("generate image", "").replace("generate image of", "")}`,
           });
 
           channel.send({
