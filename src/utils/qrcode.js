@@ -2,6 +2,7 @@ const qrcode = require("qrcode");
 const qr = require("qr-image");
 const { createWriteStream } = require("fs");
 const { join } = require("path");
+const { rand } = require("../functions/functions");
 
 /**
  * Asynchronously generates a QR code from the provided text and saves it to a file.
@@ -14,14 +15,19 @@ async function generateQRCode(text) {
     // Generate the QR code
     const qrCodeBuffer = await qrcode.toBuffer(text);
     const outputPath = join(__dirname, "../data/qrcodes");
+
     // Save the QR code to a file
-    const outputFilePath = join(outputPath, `qrcode-${Date.now.toString()}.png`);
-    const qrCodeFileStream = createWriteStream(outputFilePath);
+    const outputFilePath = join(outputPath, `qrcode-${rand(1, 1000000)}.png`);
+    const qrCodeFileStream = await createWriteStreamAsync(outputFilePath);
+
     qrCodeFileStream.write(qrCodeBuffer);
     qrCodeFileStream.end();
 
-    console.log("QR code generated successfully:", outputFilePath);
-    return outputFilePath;
+    return new Promise(resolve => {
+      qrCodeFileStream.on("finish", () => {
+        resolve(outputFilePath);
+      });
+    });
   } catch (error) {
     console.error("Error while generating QR code:", error);
     throw new Error("An error occurred while generating the QR code.");
