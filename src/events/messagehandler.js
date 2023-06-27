@@ -35,7 +35,7 @@ const serverSchema = require("../models/server.js");
 const { data } = require("../commands/general/image-gen");
 const client = require("../..");
 const rateSchema = require("../models/messages-rate");
-const { aiFilter, humanFilter } = require("../utils/filter");
+const { filterResponseForSwearWords, humanFilter } = require("../utils/filter");
 const { createPrompt } = require("./Utils/AiHandler");
 
 async function messages(client, message) {

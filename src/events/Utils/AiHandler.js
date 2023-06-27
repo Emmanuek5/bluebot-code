@@ -1,4 +1,4 @@
-const { aiFilter, humanFilter } = require("../../utils/filter");
+const { filterResponseForSwearWords, humanFilter } = require("../../utils/filter");
 const { Configuration, OpenAIApi } = require("openai");
 const {
   ButtonBuilder,
@@ -95,7 +95,7 @@ async function createPrompt(message, client) {
             temperature: 1.5,
             max_tokens: 2048,
           });
-          const nulls = aiFilter(res, msg);
+          const nulls = filterResponseForSwearWords(res, msg);
           if (nulls) return;
           const adata = res.data.choices[0].text;
           if (adata.length > 1999) {
@@ -199,7 +199,7 @@ async function createPrompt(message, client) {
             temperature: 0.5,
             max_tokens: 2048,
           });
-          const nulls = aiFilter(res, msg);
+          const nulls = filterResponseForSwearWords(res, msg);
           if (nulls) return;
 
           const adata = res.data.choices[0].text;
@@ -222,17 +222,30 @@ async function createPrompt(message, client) {
         }
       } else {
         try {
-          console.log("Nr");
+          msg.edit({
+            content: "🔍 Searching the depths of the internet...",
+          });
+
           const a = humanFilter(message, msg);
           if (a) return;
+
           const res = await openai.createCompletion({
             model: "text-davinci-003",
             prompt: content,
             temperature: 0.5,
             max_tokens: 2048,
           });
-          const nulls = aiFilter(res, msg);
+
+          msg.edit({
+            content: "🔬 Analyzing the information...",
+          });
+
+          const nulls = filterResponseForSwearWords(res, msg);
           if (nulls) return;
+
+          msg.edit({
+            content: "📊 Formatting the data...",
+          });
 
           const adata = res.data.choices[0].text;
           if (adata.length > 1999) {
