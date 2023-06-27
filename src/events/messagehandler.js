@@ -118,7 +118,7 @@ async function messages(client, message) {
 
       const embed = new EmbedBuilder()
         .setTitle("Level Up!")
-        .setDescription()
+        .setDescription(`GG ${author}!, You Just Leveled Up to Level ${user.level}`)
         .setColor("Random")
         .setAuthor({ name: "The Blue Bot", iconURL: process.env.BOT_AVATAR })
         .setTimestamp()
