@@ -41,7 +41,7 @@ module.exports = {
         await interaction.editReply({ files: [attachment], embeds: [embed] });
       } else if (command === "read") {
         const attachment = interaction.options.getAttachment("attachment");
-        const filePath = download(attachment.url);
+        const filePath = await download(attachment.url);
         const text = await readQRCode(filePath);
         const embed = new EmbedBuilder()
           .setTitle("QR Code Reader")
@@ -56,7 +56,6 @@ module.exports = {
         content: "There was an error while executing this command!",
         ephemeral: true,
       });
-      e;
     }
   },
 };
