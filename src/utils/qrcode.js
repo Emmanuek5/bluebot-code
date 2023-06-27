@@ -18,7 +18,7 @@ async function generateQRCode(text) {
 
     // Save the QR code to a file
     const outputFilePath = join(outputPath, `qrcode-${rand(1, 1000000)}.png`);
-    const qrCodeFileStream = await createWriteStreamAsync(outputFilePath);
+    const qrCodeFileStream = createWriteStream(outputFilePath);
 
     qrCodeFileStream.write(qrCodeBuffer);
     qrCodeFileStream.end();
