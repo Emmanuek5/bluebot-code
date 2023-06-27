@@ -149,18 +149,19 @@ async function createPrompt(message, client) {
           });
 
           const filePath = await download(image_url);
+          console.log(filePath);
 
           msg.edit({
             content: "✅ Download Complete. Preparing to upload to Discord.",
           });
 
-          const attachment = new AttachmentBuilder(filePath, {
-            name: `${content}` + rand(1, 999999) + ".png",
-          });
+          const attachment = new AttachmentBuilder().setFile(filePath).setName(content);
           console.log(attachment);
 
           msg.edit({
-            content: `🖼️ ${content.replace("generate image", "").replace("generate image of", "")}`,
+            content: `🖼️ ${
+              content.replace("generate image", "").replace("generate image of", "") + ".png"
+            }`,
           });
 
           channel.send({
