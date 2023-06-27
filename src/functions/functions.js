@@ -10,6 +10,13 @@ function sleep(params) {
   });
 }
 
+/**
+ * Generate a random number between the given minimum and maximum values
+ *
+ * @param {number} min - The minimum value of the range
+ * @param {number} max - The maximum value of the range
+ * @return {string} A random number between min and max as a string
+ */
 function rand(min, max) {
   //create a random number between min and max and convert it to a string
   let random = Math.floor(Math.random() * (max - min + 1) + min).toString();
@@ -41,34 +48,18 @@ function checkNotAuthenticated(req, res, next) {
  * @param {string} link - The link to the file to download.
  * @return {Promise<string>} A promise that resolves with the path to the downloaded file.
  */
-async function download(link) {
-  // Create the "downloads" folder if it doesn't exist
-  const downloadsFolderPath = path.join(__dirname, "../data/downloads");
-  if (!fs.existsSync(downloadsFolderPath)) {
-    fs.mkdirSync(downloadsFolderPath);
-  }
-
-  // Extract filename from link and create file path in downloads folder
+async function download(link, content) {
+  //download the file from the link and save it locally to the downloads folder in data folder
   const filename = path.basename(link);
-  const filePath = path.join(downloadsFolderPath, `${filename}.png`);
-
-  // Create write stream to file and pipe request to write stream
-  const file = fs.createWriteStream(filePath);
-  const response = await new Promise((resolve, reject) => {
-    request(link)
-      .pipe(file)
-      .on("finish", () => {
-        resolve();
-        console.log("Done");
-      })
-      .on("error", error => reject(error));
+  const file = fs.createWriteStream(path.join(__dirname, "../data/downloads/" + content));
+  request(link).pipe(file);
+  file.on("finish", () => {
+    file.close();
   });
 
-  // Log downloaded file path and return it
-  console.log(`File downloaded and saved to: ${filePath}`);
+  const filePath = path.join(__dirname, "../data/downloads/");
   return filePath;
 }
-
 /**
  * Downloads a file from a given link and saves it locally to the downloads folder in the data folder.
  *
@@ -78,6 +69,12 @@ async function download(link) {
 async function downloadtxt(link) {
   //download the file from the link and save it locally to the downloads folder in data folder
   const filename = path.basename(link);
+  /**
+   * Downloads a file from a given link and saves it locally to the downloads folder in the data folder.
+   *
+   * @param {string} link - The URL of the file to be downloaded.
+   * @return {Promise<string>} Returns a Promise containing the filepath of the downloaded file.
+   */
   console.log(filename);
   const file = fs.createWriteStream(path.join(__dirname, "../data/downloads/" + filename));
   request(link).pipe(file);

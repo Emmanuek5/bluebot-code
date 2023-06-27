@@ -14,21 +14,7 @@ const {
   ActivityType,
   Partials,
   PermissionsBitField,
-} = require('discord.js');
-const {Api} = require('./load.js');
-require('./updater');
-const fs = require('fs');
-const last_used = new Map();
-const clienthandler = require('./src/events/clienthandler');
-const commandhandler = require('./src/events/createcommands');
-const serverSchema = require('./src/models/server');
-const server = require('./server');
-const leaveandjoinhandler = require('./src/events/leaveandjoinhandler');
-const mongoose = require('mongoose');
-const messagehand = require('./src/events/messagehandler.js');
-
-require("dotenv").config();
-const fetch = require("node-fetch")
+} = require("discord.js");
 const client = new Client({
   partials: [Partials.Channel, Partials.GuildMember, Partials.Message],
   intents: [
@@ -49,18 +35,30 @@ const client = new Client({
     GatewayIntentBits.GuildMembers,
   ],
 });
+const clienthandler = require("./src/events/clienthandler");
+clienthandler.client(client);
+const { Api } = require("./load.js");
+require("./updater");
+const fs = require("fs");
+const last_used = new Map();
 
+const commandhandler = require("./src/events/createcommands");
+const serverSchema = require("./src/models/server");
+const server = require("./server");
+const leaveandjoinhandler = require("./src/events/leaveandjoinhandler");
+const mongoose = require("mongoose");
+const messagehand = require("./src/events/messagehandler.js");
 
-    process.on('unhandledRejection', (reason, promise) => {
-      console.log('Unhandled Rejection at: Promise', promise, 'reason:', reason);
-    });
+require("dotenv").config();
+const fetch = require("node-fetch");
 
+process.on("unhandledRejection", (reason, promise) => {
+  console.log("Unhandled Rejection at: Promise", promise, "reason:", reason);
+});
 
-const {InventorySystem} = require("./src/economy/InventoryManager/class.js")
+const { InventorySystem } = require("./src/economy/InventoryManager/class.js");
 
-
-
-fetch('https://api.whatismyip.com/ip.php?key=d45eb681c66f717566b468a43e96199c')
+fetch("https://api.whatismyip.com/ip.php?key=d45eb681c66f717566b468a43e96199c")
   .then(response => response.text())
   .then(data => console.log(data))
   .catch(error => console.error(error));
@@ -69,14 +67,12 @@ fetch('https://api.whatismyip.com/ip.php?key=d45eb681c66f717566b468a43e96199c')
 const RATE_LIMIT = 7; // Maximum number of messages allowed within a time period
 const RATE_PERIOD = 20; // Time period in seconds
 
-if (process.env.TOKEN !== 'undefined') {
-  require('dotenv').config();
+if (process.env.TOKEN !== "undefined") {
+  require("dotenv").config();
 }
-//every 5 mins delete all the files in the downloads folder 
+//every 5 mins delete all the files in the downloads folder
 
-
-client.on('messageCreate', async (message) => {
-  
+client.on("messageCreate", async message => {
   if (message.author.bot || !message.guild) return;
   const user_id = message.author.id;
   // Check if the user has exceeded the rate limit
@@ -85,14 +81,16 @@ client.on('messageCreate', async (message) => {
     const current_time = Date.now();
     if (current_time - user_data.time < RATE_PERIOD * 1000) {
       if (user_data.count == 5) {
-        message.channel.send(`${message.author}, Slow Down Jeez. You Really Don't Need To Type This Fast.`);
+        message.channel.send(
+          `${message.author}, Slow Down Jeez. You Really Don't Need To Type This Fast.`
+        );
       }
       user_data.count++;
       console.log(user_data.count);
       if (user_data.count > RATE_LIMIT) {
-        const mute_role = message.guild.roles.cache.find((role) => role.name === 'Muted'); // Change this to the name of your muted role
+        const mute_role = message.guild.roles.cache.find(role => role.name === "Muted"); // Change this to the name of your muted role
         if (!mute_role) {
-          await message.reply('Error: Muted role not found.');
+          await message.reply("Error: Muted role not found.");
           return;
         }
         const member = message.member;
@@ -101,15 +99,15 @@ client.on('messageCreate', async (message) => {
           message.channel.send({ content: "I Can't Mute This User :sob:" });
           return;
         }
-        await member.timeout(5000 * 10 - 200, 'Spaming');
-        if (member.roles.cache.some((role) => role.name === mute_role.name)) {
+        await member.timeout(5000 * 10 - 200, "Spaming");
+        if (member.roles.cache.some(role => role.name === mute_role.name)) {
           return; // The user is already muted
         }
         await member.roles.add(mute_role);
-        await message.reply('You have been muted for 5 minutes for spamming.');
+        await message.reply("You have been muted for 5 minutes for spamming.");
         setTimeout(() => {
           member.roles.remove(mute_role);
-          message.reply('You have been unmuted.');
+          message.reply("You have been unmuted.");
         }, 5 * 60 * 1000); // Unmute the user after 5 minutes
       }
     } else {
@@ -125,16 +123,14 @@ client.on('messageCreate', async (message) => {
   messagehand.messages(client, message);
 });
 
-client.on('guildMemberAdd', (member) => {
+client.on("guildMemberAdd", member => {
   leaveandjoinhandler.join(client, member);
 });
 
-client.on('guildMemberRemove', (member) => {
+client.on("guildMemberRemove", member => {
   leaveandjoinhandler.leave(client, member);
 });
 
-
-clienthandler.client(client);
 commandhandler.createcommands(client);
 
 client.login(process.env.TOKEN);
