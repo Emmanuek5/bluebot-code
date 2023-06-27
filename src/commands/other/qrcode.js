@@ -46,7 +46,7 @@ module.exports = {
         const embed = new EmbedBuilder()
           .setTitle("QR Code Reader")
           .setColor("Green")
-          .setDescription("The Qr Code Text is" + text)
+          .setDescription("The Qr Code Text is :**" + text + "**")
           .setFooter({ text: "Made By The Obsidian Group" });
         await interaction.editReply({ embeds: [embed] });
       }

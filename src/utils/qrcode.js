@@ -3,6 +3,8 @@ const qr = require("qr-image");
 const { createWriteStream } = require("fs");
 const { join } = require("path");
 const { rand } = require("../functions/functions");
+const Jimp = require("jimp");
+const qrCode = require("qrcode-reader");
 const fs = require("fs");
 /**
  * Asynchronously generates a QR code from the provided text and saves it to a file.
@@ -40,25 +42,36 @@ async function generateQRCode(text) {
  * @param {string} filePath - the path to the QR code image file
  * @return {Promise<string>} a Promise that resolves with the QR code data as a string
  */
-function readQRCode(filePath) {
-  return new Promise((resolve, reject) => {
-    // Read the QR code image file
-    const qrCodeStream = qr.image(fs.createReadStream(filePath));
+async function readQRCode(filePath) {
+  try {
+    // Read the image and create a buffer
+    const buffer = fs.readFileSync(filePath);
 
-    let qrCodeData = "";
+    // Parse the image using Jimp.read() method
+    const image = await Jimp.read(buffer);
 
-    qrCodeStream.on("data", chunk => {
-      qrCodeData += chunk;
+    // Create an instance of the qrcode-reader module
+    const qrDecoder = new qrCode();
+    const value = await new Promise((resolve, reject) => {
+      qrDecoder.callback = (err, value) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(value);
+        }
+      };
+      // Decoding the QR code
+      qrDecoder.decode(image.bitmap);
     });
 
-    qrCodeStream.on("end", () => {
-      resolve(qrCodeData);
-    });
+    // Retrieve the decrypted value
+    const qrCodeValue = value.result;
 
-    qrCodeStream.on("error", error => {
-      reject(error);
-    });
-  });
+    return qrCodeValue;
+  } catch (error) {
+    console.error("Error while reading QR code:", error);
+    throw new Error("An error occurred while reading the QR code.");
+  }
 }
 
 module.exports = {

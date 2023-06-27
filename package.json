@@ -24,11 +24,8 @@
     "axios": "^1.4.0",
     "bcrypt": "^5.1.0",
     "bootstrap": "^5.3.0-alpha1",
-
     "bytes": "^3.1.2",
-
     "cheerio": "^1.0.0-rc.12",
-
     "currency-system": "^2.8.6",
     "diagnostics_channel": "^1.1.0",
     "discord-player": "^5.3.2",
@@ -44,6 +41,7 @@
     "fetch": "^1.1.0",
     "ffmpeg-static": "^5.1.0",
     "install": "^0.13.0",
+    "jimp": "^0.22.8",
     "mongoose": "^6.8.2",
     "node-fetch": "^2.6.6",
     "node-spotify-api": "^1.1.1",
@@ -57,12 +55,10 @@
     "passport-local": "^1.0.0",
     "passport-oauth2-refresh": "^2.1.0",
     "prettier": "^2.8.4",
-
-    "request": "^2.88.2",
-
     "qr-image": "^3.2.0",
     "qrcode": "^1.5.3",
-
+    "qrcode-reader": "^1.0.4",
+    "request": "^2.88.2",
     "serve-favicon": "^2.5.0",
     "undici": "^5.20.0",
     "ws": "^8.12.1",
