@@ -41,6 +41,11 @@ module.exports = {
         await interaction.editReply({ files: [attachment], embeds: [embed] });
       } else if (command === "read") {
         const attachment = interaction.options.getAttachment("attachment");
+        if (!attachment.contentType.startsWith("image/"))
+          return interaction.editReply({
+            content: "The Attachment is not a valid image! Only .png,.jpg files are allowed",
+            ephemeral: true,
+          });
         const filePath = await download(attachment.url);
         const text = await readQRCode(filePath);
         const embed = new EmbedBuilder()
