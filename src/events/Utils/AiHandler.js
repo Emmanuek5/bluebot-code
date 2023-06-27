@@ -159,7 +159,9 @@ async function createPrompt(message, client) {
           console.log(attachment);
 
           msg.edit({
-            content: `🖼️ ${content.replace("generate image", "").replace("generate image of", "")}`,
+            content: `🖼️ ${
+              content.replace("generate image", "").replace("generate image of", "") + ".png"
+            }`,
           });
 
           channel.send({

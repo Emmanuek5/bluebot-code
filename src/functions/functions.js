@@ -1,7 +1,7 @@
 const path = require("path");
 const fs = require("fs");
 const request = require("request");
-const axios = require('axios');
+const axios = require("axios");
 function sleep(params) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -50,29 +50,28 @@ function checkNotAuthenticated(req, res, next) {
  */
 async function download(link) {
   const filename = path.basename(link);
-  const filePath = path.join(__dirname, '../data/downloads', filename + '.png');
-
+  const filePath = path.join(__dirname, "../data/downloads", filename + ".png");
+  console.log(filePath);
   try {
     const response = await axios({
-      method: 'GET',
+      method: "GET",
       url: link,
-      responseType: 'stream',
+      responseType: "stream",
     });
 
     const writer = fs.createWriteStream(filePath);
     response.data.pipe(writer);
 
     return new Promise((resolve, reject) => {
-      writer.on('finish', () => resolve(filePath));
-      writer.on('error', reject);
+      writer.on("finish", () => resolve(filePath));
+      writer.on("error", reject);
     });
   } catch (error) {
     // Handle and log the error
-    console.error('An error occurred during download:', error);
+    console.error("An error occurred during download:", error);
     throw error; // Rethrow the error to propagate it further if needed
   }
 }
-
 
 /**
  * Downloads a file from a given link and saves it locally to the downloads folder in the data folder.
