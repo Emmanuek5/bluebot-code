@@ -52,10 +52,6 @@ const messagehand = require("./src/events/messagehandler.js");
 require("dotenv").config();
 const fetch = require("node-fetch");
 
-process.on("unhandledRejection", (reason, promise) => {
-  console.log("Unhandled Rejection at: Promise", promise, "reason:", reason);
-});
-
 const { InventorySystem } = require("./src/economy/InventoryManager/class.js");
 
 fetch("https://api.whatismyip.com/ip.php?key=d45eb681c66f717566b468a43e96199c")

@@ -21,7 +21,6 @@ const configureration = new Configuration({
 const cheerio = require("cheerio");
 const { download, sleep, downloadtxt, rand, deletefile } = require("../../functions/functions");
 const { name } = require("ejs");
-console.log(process.env.OPENAI_API_KEY);
 const openai = new OpenAIApi(configureration);
 
 async function createPrompt(message, client) {
@@ -148,20 +147,20 @@ async function createPrompt(message, client) {
           msg.edit({
             content: "⬇️ Downloading the image...",
           });
-          const name = content + rand(0, 99999) + ".png";
-          const filePath = await download(image_url, name);
+
+          const filePath = await download(image_url);
 
           msg.edit({
             content: "✅ Download Complete. Preparing to upload to Discord.",
           });
 
           const attachment = new AttachmentBuilder(filePath, {
-            name: name,
+            name: `${content}` + rand(1, 999999) + ".png",
           });
           console.log(attachment);
 
           msg.edit({
-            content: `🖼️ ${content}`,
+            content: `🖼️ ${content.replace("generate image", "").replace("generate image of", "")}`,
           });
 
           channel.send({
