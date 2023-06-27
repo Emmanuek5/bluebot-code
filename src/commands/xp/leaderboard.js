@@ -1,10 +1,10 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { EmbedBuilder } = require('discord.js');
-const Levels = require('discord.js-leveling');
+const { SlashCommandBuilder } = require("@discordjs/builders");
+const { EmbedBuilder } = require("discord.js");
+const Levels = require("discord.js-leveling");
 
 module.exports = {
-  usage: 'Leaderboard',
-  data: new SlashCommandBuilder().setName('xp-leaderboard').setDescription('Shows the leaderboard'),
+  usage: "Leaderboard",
+  data: new SlashCommandBuilder().setName("xp-leaderboard").setDescription("Shows the leaderboard"),
   async execute(interaction, client) {
     const { option, user, guildId } = interaction;
 
@@ -14,14 +14,17 @@ module.exports = {
     const leaderboard = await Levels.computeLeaderboard(client, rank, true); //We process the leaderboard.
 
     const mappedRank = leaderboard.map(
-      (e) => `${e.position}. ${e.username}#${e.discriminator}\nLevel: ${e.level}\nXP: ${e.xp.toLocaleString()}`
+      e =>
+        `${e.position}. ${e.username}#${e.discriminator}\nLevel: ${
+          e.level
+        }\nXP: ${e.xp.toLocaleString()}`
     ); //We map the outputs.
 
     const embed = new EmbedBuilder()
-      .setTitle('Leaderboard')
-      .setDescription(mappedRank.join('\n\n'))
-      .setColor('Random')
-      .setAuthor({ name: 'The Blue Bot', iconURL: process.env.BOT_AVATAR })
+      .setTitle("Leaderboard")
+      .setDescription(mappedRank.join("\n\n"))
+      .setColor("Random")
+      .setAuthor({ name: "Obsidianator", iconURL: process.env.BOT_AVATAR })
       .setFooter({
         text: `Requested By: ${user.username}`,
         iconURL: user.iconURL,

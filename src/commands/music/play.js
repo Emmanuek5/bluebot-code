@@ -1,24 +1,26 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder } = require("@discordjs/builders");
+const { EmbedBuilder } = require("discord.js");
 
 module.exports = {
-  usage: 'Plays a song in the voice channel or continues the song if it is paused ',
+  usage: "Plays a song in the voice channel or continues the song if it is paused ",
   data: new SlashCommandBuilder()
-    .setName('play')
-    .setDescription('Plays a song in the voice channel')
-    .addStringOption((option) => option.setName('song').setDescription('The song you want to play').setRequired(false)),
+    .setName("play")
+    .setDescription("Plays a song in the voice channel")
+    .addStringOption(option =>
+      option.setName("song").setDescription("The song you want to play").setRequired(false)
+    ),
 
   async execute(interaction, client, args) {
     const { member, guild } = interaction;
-    const song = interaction.options.getString('song');
+    const song = interaction.options.getString("song");
     const embed = new EmbedBuilder();
     //reduce the amount of time it to run the command
     if (member.voice.channel) {
       if (member.voice.channel.full) {
         embed
-          .setTitle('The voice channel is full')
-          .setColor('Red')
-          .setAuthor({ name: 'The Blue Bot', iconURL: process.env.BOT_AVATAR })
+          .setTitle("The voice channel is full")
+          .setColor("Red")
+          .setAuthor({ name: "Obsidianator", iconURL: process.env.BOT_AVATAR })
           .setTimestamp();
 
         return await interaction.reply({ embeds: [embed] });
@@ -27,9 +29,9 @@ module.exports = {
 
     if (!member.voice.channel) {
       embed
-        .setTitle('You need to be in a voice channel to use this command')
-        .setColor('Red')
-        .setAuthor({ name: 'The Blue Bot', iconURL: process.env.BOT_AVATAR })
+        .setTitle("You need to be in a voice channel to use this command")
+        .setColor("Red")
+        .setAuthor({ name: "Obsidianator", iconURL: process.env.BOT_AVATAR })
         .setTimestamp();
 
       await interaction.reply({ embeds: [embed] });
@@ -48,12 +50,12 @@ module.exports = {
     if (player.paused) {
       player.pause(false);
       embed
-        .setTitle('Song Resumed')
+        .setTitle("Song Resumed")
 
-        .setColor('Purple')
-        .setAuthor({ name: 'The Blue Bot', iconURL: process.env.BOT_AVATAR })
-        .setTimestamp()
-    
+        .setColor("Purple")
+        .setAuthor({ name: "Obsidianator", iconURL: process.env.BOT_AVATAR })
+        .setTimestamp();
+
       return await interaction.reply({ embeds: [embed] });
     }
 
@@ -77,11 +79,14 @@ module.exports = {
       player.queue.add(songs.tracks[0]);
 
       embed
-        .setTitle('Song Added to Queue')
+        .setTitle("Song Added to Queue")
         .setDescription(`[${title}](${uri})`)
-        .addFields({ name: 'Author', value: author, inline: true }, { name: 'Duration', value: dur, inline: true })
-        .setColor('Purple')
-        .setAuthor({ name: 'The Blue Bot', iconURL: process.env.BOT_AVATAR })
+        .addFields(
+          { name: "Author", value: author, inline: true },
+          { name: "Duration", value: dur, inline: true }
+        )
+        .setColor("Purple")
+        .setAuthor({ name: "Obsidianator", iconURL: process.env.BOT_AVATAR })
         .setTimestamp()
         .setThumbnail(songs.tracks[0].thumbnail);
       await interaction.reply({ embeds: [embed] });
@@ -89,9 +94,9 @@ module.exports = {
 
     if (song === null) {
       embed
-        .setTitle('You need to specify a song to play')
-        .setColor('Red')
-        .setAuthor({ name: 'The Blue Bot', iconURL: process.env.BOT_AVATAR })
+        .setTitle("You need to specify a song to play")
+        .setColor("Red")
+        .setAuthor({ name: "Obsidianator", iconURL: process.env.BOT_AVATAR })
         .setTimestamp();
 
       await interaction.reply({ embeds: [embed] });
@@ -100,11 +105,14 @@ module.exports = {
     if (!player.playing && !player.paused && !player.queue.size) player.play();
 
     embed
-      .setTitle('Song Added to Queue')
+      .setTitle("Song Added to Queue")
       .setDescription(`[${title}](${uri})`)
-      .addFields({ name: 'Author', value: author, inline: true }, { name: 'Duration', value: dur, inline: true })
-      .setColor('Purple')
-      .setAuthor({ name: 'The Blue Bot', iconURL: process.env.BOT_AVATAR })
+      .addFields(
+        { name: "Author", value: author, inline: true },
+        { name: "Duration", value: dur, inline: true }
+      )
+      .setColor("Purple")
+      .setAuthor({ name: "Obsidianator", iconURL: process.env.BOT_AVATAR })
       .setTimestamp()
       .setThumbnail(songs.tracks[0].thumbnail);
 

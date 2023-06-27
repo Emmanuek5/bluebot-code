@@ -1,20 +1,20 @@
-const ytdl = require('ytdl-core');
-const { EmbedBuilder } = require('discord.js');
-const ticketSchema = require('../models/tickets');
-const { getBadWords } = require('../commands/moderation/roles/badwords');
+const ytdl = require("ytdl-core");
+const { EmbedBuilder } = require("discord.js");
+const ticketSchema = require("../models/tickets");
+const { getBadWords } = require("../commands/moderation/roles/badwords");
 
 async function buttons(interaction, client) {
   if (interaction.isButton()) {
-    if (interaction.customId == 'close') {
+    if (interaction.customId == "close") {
       const ticket = await ticketSchema.findOne({
         guildID: interaction.guild.id,
         userID: interaction.user.id,
       });
       if (ticket) {
         const embed = new EmbedBuilder()
-          .setTitle('Ticket')
-          .setDescription('Your ticket has been closed')
-          .setColor('Red')
+          .setTitle("Ticket")
+          .setDescription("Your ticket has been closed")
+          .setColor("Red")
           .setTimestamp()
           .setAuthor({
             name: interaction.user.tag,
@@ -30,65 +30,65 @@ async function buttons(interaction, client) {
           userID: interaction.user.id,
         });
       } else {
-        interaction.reply({ content: 'Your Not The Owner of this ticket' });
+        interaction.reply({ content: "Your Not The Owner of this ticket" });
       }
-      const channel = await interaction.guild.channels.cache.find((c) => c.id === ticket.channelID);
+      const channel = await interaction.guild.channels.cache.find(c => c.id === ticket.channelID);
       channel.delete();
     }
-    if (interaction.customId == 'delete-invite') {
+    if (interaction.customId == "delete-invite") {
       interaction.message.delete();
     }
-    if (interaction.customId == 'song-forward') {
+    if (interaction.customId == "song-forward") {
       const player = client.manager.players.get(interaction.guild.id);
-      if (!player) interaction.reply({ content: 'No song playing', ephemeral: true });
+      if (!player) interaction.reply({ content: "No song playing", ephemeral: true });
       player.seek(player.position + 10000);
       interaction.reply({
-        content: 'Forwarded 10 seconds',
+        content: "Forwarded 10 seconds",
         ephemeral: true,
       });
     }
-    if (interaction.customId == 'song-back') {
+    if (interaction.customId == "song-back") {
       const player = client.manager.players.get(interaction.guild.id);
-      if (!player) interaction.reply({ content: 'No song playing', ephemeral: true });
+      if (!player) interaction.reply({ content: "No song playing", ephemeral: true });
       player.seek(player.position - 10000);
-      interaction.reply({ content: 'Backed 10 seconds', ephemeral: true });
+      interaction.reply({ content: "Backed 10 seconds", ephemeral: true });
     }
-    if (interaction.customId == 'song-pause') {
+    if (interaction.customId == "song-pause") {
       const player = client.manager.players.get(interaction.guild.id);
-      if (!player) interaction.reply({ content: 'No song playing', ephemeral: true });
+      if (!player) interaction.reply({ content: "No song playing", ephemeral: true });
       player.pause(true);
-      interaction.reply({ content: 'Paused', ephemeral: true });
+      interaction.reply({ content: "Paused", ephemeral: true });
     }
-    if (interaction.customId == 'song-play') {
+    if (interaction.customId == "song-play") {
       const player = client.manager.players.get(interaction.guild.id);
-      if (!player) interaction.reply({ content: 'No song playing', ephemeral: true });
+      if (!player) interaction.reply({ content: "No song playing", ephemeral: true });
       player.pause(false);
-      interaction.reply({ content: 'Resumed', ephemeral: true });
+      interaction.reply({ content: "Resumed", ephemeral: true });
     }
-    if (interaction.customId == 'song-stop') {
+    if (interaction.customId == "song-stop") {
       const player = client.manager.players.get(interaction.guild.id);
-      if (!player) interaction.reply({ content: 'No song playing', ephemeral: true });
+      if (!player) interaction.reply({ content: "No song playing", ephemeral: true });
       player.destroy();
-      interaction.reply({ content: 'Stopped', ephemeral: true });
+      interaction.reply({ content: "Stopped", ephemeral: true });
     }
-    if (interaction.customId == 'song-skip') {
+    if (interaction.customId == "song-skip") {
       const player = client.manager.players.get(interaction.guild.id);
-      if (!player) interaction.reply({ content: 'No song playing', ephemeral: true });
+      if (!player) interaction.reply({ content: "No song playing", ephemeral: true });
       player.stop();
-      interaction.reply({ content: 'Skipped', ephemeral: true });
+      interaction.reply({ content: "Skipped", ephemeral: true });
     }
-    if (interaction.customId == 'song-queue') {
+    if (interaction.customId == "song-queue") {
       const player = client.manager.players.get(interaction.guild.id);
-      if (!player) interaction.reply({ content: 'No song playing', ephemeral: true });
+      if (!player) interaction.reply({ content: "No song playing", ephemeral: true });
       const queue = player.queue
         .map((track, i) => {
-          return `${i === 0 ? 'Now Playing' : `#${i + 1}`} - ${track.title}`;
+          return `${i === 0 ? "Now Playing" : `#${i + 1}`} - ${track.title}`;
         })
-        .join('\n');
+        .join("\n");
       const embed = new EmbedBuilder()
-        .setTitle('Queue')
+        .setTitle("Queue")
         .setDescription(queue)
-        .setColor('Random')
+        .setColor("Random")
         .setTimestamp()
         .setAuthor({
           name: interaction.user.tag,
@@ -100,7 +100,7 @@ async function buttons(interaction, client) {
         });
       interaction.reply({ embeds: [embed], ephemeral: true });
     }
-    if (interaction.customId == 'song-volume') {
+    if (interaction.customId == "song-volume") {
       const player = client.manager.players.get(interaction.guild.id);
       if (!player) return;
       const currentVolume = player.volume;
@@ -111,17 +111,17 @@ async function buttons(interaction, client) {
         ephemeral: true,
       });
     }
-    if (interaction.customId == 'queue-next') {
+    if (interaction.customId == "queue-next") {
       const { member, guild } = interaction;
       const player = client.manager.players.get(guild.id);
       if (!player) {
         return interaction.reply({
           embeds: [
             new EmbedBuilder()
-              .setTitle('There is nothing playing')
-              .setColor('Red')
+              .setTitle("There is nothing playing")
+              .setColor("Red")
               .setAuthor({
-                name: 'The Blue Bot',
+                name: "Obsidianator",
                 iconURL: process.env.BOT_AVATAR,
               })
               .setTimestamp(),
@@ -132,10 +132,10 @@ async function buttons(interaction, client) {
 
       const songList = queue.slice(25, 40);
       const embed = new EmbedBuilder()
-        .setTitle('Queue')
+        .setTitle("Queue")
 
-        .setColor('Purple')
-        .setAuthor({ name: 'The Blue Bot', iconURL: process.env.BOT_AVATAR })
+        .setColor("Purple")
+        .setAuthor({ name: "Obsidianator", iconURL: process.env.BOT_AVATAR })
         .setTimestamp();
       songList.forEach((song, index) => {
         embed.addFields({
@@ -147,7 +147,7 @@ async function buttons(interaction, client) {
         embeds: [embed],
       });
     }
-    if (interaction.customId == 'song-volume-down') {
+    if (interaction.customId == "song-volume-down") {
       const player = client.manager.players.get(interaction.guild.id);
       if (!player) return;
       const currentVolume = player.volume;
@@ -155,14 +155,14 @@ async function buttons(interaction, client) {
       player.setVolume(newVolume);
     }
 
-    if (interaction.customId == 'badwords-next') {
+    if (interaction.customId == "badwords-next") {
       const badWords = await getBadWords(interaction.guild);
       const nextBadWords = badWords.slice(100, 200);
 
       const embed = new EmbedBuilder()
-        .setTitle('Bad Words')
-        .setDescription(nextBadWords.join('\n'))
-        .setColor('Random')
+        .setTitle("Bad Words")
+        .setDescription(nextBadWords.join("\n"))
+        .setColor("Random")
         .setTimestamp()
         .setAuthor({
           name: interaction.user.tag,
@@ -179,9 +179,9 @@ async function buttons(interaction, client) {
     }
   }
   if (interaction.isStringSelectMenu()) {
-    if (interaction.customId == 'roles') {
+    if (interaction.customId == "roles") {
       for (let i = 0; i < interaction.values.length; i++) {
-        const role = interaction.guild.roles.cache.find((r) => r.id === interaction.values[i]);
+        const role = interaction.guild.roles.cache.find(r => r.id === interaction.values[i]);
         const hasRole = interaction.member.roles.cache.has(role.id);
         switch (hasRole) {
           case true:
@@ -192,7 +192,7 @@ async function buttons(interaction, client) {
             break;
         }
       }
-      interaction.reply({ content: 'Roles updated', ephemeral: true });
+      interaction.reply({ content: "Roles updated", ephemeral: true });
     }
   }
 }

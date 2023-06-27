@@ -1,7 +1,7 @@
-const serverSchema = require('../models/server');
-const commandSchema = require('../models/commands');
-const mongoose = require('mongoose');
-const { Manager } = require('erela.js');
+const serverSchema = require("../models/server");
+const commandSchema = require("../models/commands");
+const mongoose = require("mongoose");
+const { Manager } = require("erela.js");
 const {
   Client,
   GatewayIntentBits,
@@ -12,25 +12,25 @@ const {
   PermissionFlagsBits,
   PermissionsBitField,
   ChannelType,
-  Status
-} = require('discord.js');
-require('dotenv').config();
-const Level = require('discord.js-leveling');
-const { add } = require('./serveradd');
+  Status,
+} = require("discord.js");
+require("dotenv").config();
+const Level = require("discord.js-leveling");
+const { add } = require("./serveradd");
 
 function client(client) {
-  const CurrencySystem = require('currency-system');
+  const CurrencySystem = require("currency-system");
   const cs = new CurrencySystem();
   CurrencySystem.cs
-    .on('debug', (debug, error) => {
+    .on("debug", (debug, error) => {
       console.log(debug);
       if (error) console.error(error);
     })
-    .on('userFetch', (user, functionName) => {
+    .on("userFetch", (user, functionName) => {
       console.log(`( ${functionName} ) Fetched User:  ${client.users.cache.get(user.userID).tag}`);
     })
-    .on('userUpdate', (oldData, newData) => {
-      console.log('User Updated: ' + client.users.cache.get(newData.userID).tag);
+    .on("userUpdate", (oldData, newData) => {
+      console.log("User Updated: " + client.users.cache.get(newData.userID).tag);
     });
   cs.setMongoURL(process.env.DATABASE_URL);
   // Set Default Bank Amount when a new user is created!
@@ -43,19 +43,16 @@ function client(client) {
   // Search for new npm package updates on bot startup! Latest version will be displayed in console.
   cs.searchForNewUpdate(true);
 
+  process.on("unhandledRejection", (reason, promise) => {
+    console.log("Unhandled Rejection at: Promise", promise, "reason:", reason);
+  });
 
-
-    process.on('unhandledRejection', (reason, promise) => {
-      console.log('Unhandled Rejection at: Promise', promise, 'reason:', reason);
-    });
-
-
-  client.on('guildCreate', async (guild) => {
+  client.on("guildCreate", async guild => {
     add(guild, client);
 
-
-    
-    console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
+    console.log(
+      `New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`
+    );
 
     const server = await serverSchema.findOne({
       guildID: guild.id,
@@ -74,7 +71,7 @@ function client(client) {
     }
 
     let botName = client.user.tag;
-    botName = botName.replace(/#[0-9]{4}/, '');
+    botName = botName.replace(/#[0-9]{4}/, "");
     process.env.BOT_NAME = botName;
 
     let serverCount = client.guilds.cache.size;
@@ -88,12 +85,12 @@ function client(client) {
     const options = {
       type: ActivityType.Watching,
       name: `${process.env.SERVER_COUNT} servers and >help`,
-      status: 'idle',
+      status: "idle",
     };
     client.user.setPresence({ activities: [options] });
   });
 
-  client.on('guildDelete', (guild) => {
+  client.on("guildDelete", guild => {
     console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`);
     // remove the server from the database
     serverSchema.findOneAndDelete(
@@ -119,12 +116,12 @@ function client(client) {
     const options = {
       type: ActivityType.Watching,
       name: `${process.env.SERVER_COUNT} servers and >help`,
-      status: 'idle',
+      status: "idle",
     };
     client.user.setPresence({ activities: [options] });
   });
 
-  client.on('guildUpdate', async (oldGuild, newGuild) => {
+  client.on("guildUpdate", async (oldGuild, newGuild) => {
     const data = await serverSchema.findOne({
       guildID: oldGuild.id,
     });
@@ -137,17 +134,17 @@ function client(client) {
       await data.save();
   });
   client.emotes = {
-    play: '▶️',
-    stop: '⏹️',
-    queue: '📄',
-    success: '☑️',
-    repeat: '🔁',
-    error: '❌',
+    play: "▶️",
+    stop: "⏹️",
+    queue: "📄",
+    success: "☑️",
+    repeat: "🔁",
+    error: "❌",
   };
-  client.on('raw', (d) => client.manager.updateVoiceState(d));
-  client.on('ready', async () => {
+  client.on("raw", d => client.manager.updateVoiceState(d));
+  client.on("ready", async () => {
     const commandarray = client.commands;
-    commandarray.forEach((command) => {
+    commandarray.forEach(command => {
       const data = {
         name: command.data.name,
         description: command.data.description,
@@ -175,17 +172,17 @@ function client(client) {
     });
 
     client.manager.init(client.user.id);
-    mongoose.set('strictQuery', false);
+    mongoose.set("strictQuery", false);
     mongoose.connect(process.env.DATABASE_URL, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
     Level.setURL(process.env.DATABASE_URL);
-    var log = '';
+    var log = "";
 
     const db = mongoose.connection;
-    db.on('error', (error) => console.error(error));
-    db.once('open', () => (log = 'Connected To Database'));
+    db.on("error", error => console.error(error));
+    db.once("open", () => (log = "Connected To Database"));
 
     console.log(`\u001b[32m ----------------------------------------
 \u001b[31m Bot: ${client.user.tag}
@@ -198,9 +195,8 @@ function client(client) {
  \u001b[31m   Welcome  ${client.user.username}! 
 \u001b[32m ----------------------------------------`);
 
-    let botName = client.user.tag;
-    botName = botName.replace(/#[0-9]{4}/, '');
-    process.env.BOTNAME = botName;
+    let botName = client.user.username;
+    process.env.BOT_NAME = botName;
     let serverCount = client.guilds.cache.size;
     process.env.SERVER_COUNT = serverCount;
 
@@ -211,11 +207,11 @@ function client(client) {
     let channelCount = client.channels.cache.size;
     process.env.CHANNEL_COUNT = channelCount;
     //set the bot status to Playing with {usercount} users
-  const options = {
-    type: ActivityType.Watching,
-    name: `${process.env.SERVER_COUNT} servers and >help`,
-    status: 'idle',
-  }
+    const options = {
+      type: ActivityType.Watching,
+      name: `${process.env.SERVER_COUNT} servers and >help`,
+      status: "idle",
+    };
 
     client.user.setPresence({ activities: [options] });
   });
@@ -226,13 +222,12 @@ function client(client) {
       port: 443,
       password: process.env.LAVALINK_PASSWORD,
       secure: true,
-
     },
   ];
 
   client.manager = new Manager({
     // The nodes to connect to, optional if using default lavalink options
-    nodes:nodes,
+    nodes: nodes,
 
     // Method to send voice data to Discord
     send: (id, payload) => {
@@ -242,22 +237,24 @@ function client(client) {
     },
   });
   // Emitted whenever a node connects
-  client.manager.on('nodeConnect', (node) => {
+  client.manager.on("nodeConnect", node => {
     console.log(`\u001b[31m Node "${node.options.identifier}" connected.`);
   });
 
   // Emitted whenever a node encountered an error
-  client.manager.on('nodeError', (node, error) => {
-    console.log(` \u001b[31mNode "${node.options.identifier}" encountered an error: ${error.message}.`);
+  client.manager.on("nodeError", (node, error) => {
+    console.log(
+      ` \u001b[31mNode "${node.options.identifier}" encountered an error: ${error.message}.`
+    );
   });
 
   // When a track starts
-  client.manager.on('trackStart', (player, track) => {
+  client.manager.on("trackStart", (player, track) => {
     console.log(`\u001b[31m Track started on guild ${player.guild} - ${track.title}`);
   });
 }
 
-process.on('unhandledRejection', (_) => console.error(_.stack + '\n' + '='.repeat(20)));
+process.on("unhandledRejection", _ => console.error(_.stack + "\n" + "=".repeat(20)));
 
 module.exports = {
   client: client,

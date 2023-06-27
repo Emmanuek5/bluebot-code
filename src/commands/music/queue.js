@@ -1,9 +1,11 @@
-const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder } = require('discord.js');
-const { EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 module.exports = {
-  usage: 'Usage: /queue use this command to see the song queue of the current server',
-  data: new SlashCommandBuilder().setName('queue').setDescription('Shows the queue of the current song'),
+  usage: "Usage: /queue use this command to see the song queue of the current server",
+  data: new SlashCommandBuilder()
+    .setName("queue")
+    .setDescription("Shows the queue of the current song"),
   async execute(interaction, client) {
     const { member, guild } = interaction;
     const player = client.manager.players.get(guild.id);
@@ -11,10 +13,10 @@ module.exports = {
       return interaction.reply({
         embeds: [
           new EmbedBuilder()
-            .setTitle('There is nothing playing')
-            .setColor('Red')
+            .setTitle("There is nothing playing")
+            .setColor("Red")
             .setAuthor({
-              name: 'The Blue Bot',
+              name: "Obsidianator",
               iconURL: process.env.BOT_AVATAR,
             })
             .setTimestamp(),
@@ -27,8 +29,8 @@ module.exports = {
     const embed = new EmbedBuilder()
 
       .setTitle(`The Queue is ${dd} Long`)
-      .setColor('Purple')
-      .setAuthor({ name: 'The Blue Bot', iconURL: process.env.BOT_AVATAR })
+      .setColor("Purple")
+      .setAuthor({ name: "Obsidianator", iconURL: process.env.BOT_AVATAR })
       .setTimestamp();
     const { songs } = queue;
     if (queue.length > 24) {
@@ -43,7 +45,7 @@ module.exports = {
         embeds: [embed],
         components: [
           new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setCustomId('queue-next').setLabel('Next >').setStyle('Primary')
+            new ButtonBuilder().setCustomId("queue-next").setLabel("Next >").setStyle("Primary")
           ),
         ],
       });
