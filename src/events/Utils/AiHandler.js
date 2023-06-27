@@ -19,7 +19,8 @@ const configureration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
 const cheerio = require("cheerio");
-const { download, sleep, downloadtxt } = require("../../functions/functions");
+const { download, sleep, downloadtxt, rand, deletefile } = require("../../functions/functions");
+const { name } = require("ejs");
 console.log(process.env.OPENAI_API_KEY);
 const openai = new OpenAIApi(configureration);
 
@@ -116,9 +117,7 @@ async function createPrompt(message, client) {
           console.log(error);
         }
         return;
-      }
-
-      if (
+      } else if (
         content.toLowerCase().startsWith("generate image of") ||
         content.toLowerCase().startsWith("image of") ||
         content.toLowerCase().startsWith("generate an image of") ||
@@ -149,14 +148,17 @@ async function createPrompt(message, client) {
           msg.edit({
             content: "⬇️ Downloading the image...",
           });
-
-          const filePath = await download(image_url);
+          const name = content + rand(0, 99999) + ".png";
+          const filePath = await download(image_url, name);
 
           msg.edit({
             content: "✅ Download Complete. Preparing to upload to Discord.",
           });
 
-          const attachment = new AttachmentBuilder(filePath, `${content}${rand(0, 99999)}.png`);
+          const attachment = new AttachmentBuilder(filePath, {
+            name: name,
+          });
+          console.log(attachment);
 
           msg.edit({
             content: `🖼️ ${content}`,
@@ -177,9 +179,7 @@ async function createPrompt(message, client) {
         }
 
         return;
-      }
-
-      if (message.attachments.size > 0) {
+      } else if (message.attachments.size > 0) {
         const file = message.attachments.first().url;
         const extension = file.split(".").pop().toLowerCase();
         if (
@@ -227,8 +227,9 @@ async function createPrompt(message, client) {
           channel.send(error.data);
           console.log(error);
         }
-
+      } else {
         try {
+          console.log("Nr");
           const a = humanFilter(message, msg);
           if (a) return;
           const res = await openai.createCompletion({
@@ -258,8 +259,9 @@ async function createPrompt(message, client) {
           channel.send(error.data);
           console.log(error);
         }
-        return;
       }
+
+      return;
     })
     .catch(err => {});
 }
