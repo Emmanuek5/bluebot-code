@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder } = require("discord.js");
 const { readQRCode, generateQRCode } = require("../../utils/qrcode");
+const { download } = require("../../functions/functions");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -40,7 +41,8 @@ module.exports = {
         await interaction.editReply({ files: [attachment], embeds: [embed] });
       } else if (command === "read") {
         const attachment = interaction.options.getAttachment("attachment");
-        const text = await readQRCode(attachment.url);
+        const filePath = download(attachment.url);
+        const text = await readQRCode(filePath);
         const embed = new EmbedBuilder()
           .setTitle("QR Code Reader")
           .setColor("Green")
