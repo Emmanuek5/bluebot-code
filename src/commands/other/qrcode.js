@@ -43,7 +43,7 @@ module.exports = {
         const attachment = interaction.options.getAttachment("attachment");
         if (!attachment.contentType.startsWith("image/"))
           return interaction.editReply({
-            content: "The Attachment is not a valid image! Only .png,.jpg files are allowed",
+            content: "The Attachment is not a valid image! Only Image files are allowed",
             ephemeral: true,
           });
         const filePath = await download(attachment.url);
