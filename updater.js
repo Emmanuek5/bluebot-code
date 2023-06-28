@@ -1,11 +1,14 @@
 #!/usr/bin/env node
-const { execSync } = require('child_process');
+const { execSync } = require("child_process");
+const { config } = require("dotenv");
+config();
+if (process.env.DEV) return;
 
-console.log('Starting updater...');
+console.log("Starting updater...");
 
-const runCommand = (command) => {
+const runCommand = command => {
   try {
-    execSync(command, { stdio: 'inherit' });
+    execSync(command, { stdio: "inherit" });
   } catch (error) {
     console.log(`Failed to run command: ${command}`);
     return false;
@@ -13,16 +16,16 @@ const runCommand = (command) => {
   return true;
 };
 
-const command = 'git pull';
+const command = "git pull";
 runCommand(command);
 
 setInterval(() => {
-  const command = 'git pull';
+  const command = "git pull";
 
   if (runCommand(command)) {
-    console.log('Successfully updated!');
+    console.log("Successfully updated!");
   } else {
-    console.log('Failed to update!');
+    console.log("Failed to update!");
   }
   return;
 }, 10000);

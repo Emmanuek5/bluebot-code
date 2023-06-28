@@ -10,12 +10,6 @@ for (const swearWord of swearWordsfile) {
   swearWords.push(swearWord);
 }
 
-/**
- * Finds swear words in a message.
- *
- * @param {string} message - The message to search for swear words.
- * @returns {boolean|string} - Returns true if a swear word is found, otherwise false.
- */
 function findSwearWords(message) {
   const words = message.content.split(" ");
   for (const word of words) {
@@ -45,7 +39,5 @@ function findSwearWordsAI(message) {
   }
 }
 function findBadLInks(message) {}
-
-
 
 module.exports = { findSwearWords, findBadLInks, findSwearWordsAI };

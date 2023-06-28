@@ -226,7 +226,7 @@ async function createPrompt(message, client) {
           msg.edit({
             content: "🔍 Searching the depths of the internet...",
           });
-          await sleep(2000)
+          await sleep(2000);
           msg.edit({
             content: "🔬 Analyzing the information...",
           });
@@ -234,17 +234,13 @@ async function createPrompt(message, client) {
           const res = await openai.createCompletion({
             model: "text-davinci-003",
             prompt: content,
-            temperature: 0.5,
+            temperature: 0.12,
             max_tokens: 2048,
           });
-
-          const nulls = filterResponseForSwearWords(res, msg);
-          if (nulls) return;
 
           msg.edit({
             content: "📊 Formatting the data...",
           });
-
           const adata = res.data.choices[0].text;
           if (adata.length > 1999) {
             const data = adata.slice(0, 1900);
