@@ -24,7 +24,7 @@ async function buttons(interaction, client) {
           .setColor("Red")
           .setTimestamp()
           .setAuthor({
-            name: interaction.user.tag,
+            name: interaction.user.username,
             iconURL: interaction.user.avatarURL(),
           })
           .setFooter({
@@ -98,7 +98,7 @@ async function buttons(interaction, client) {
         .setColor("Random")
         .setTimestamp()
         .setAuthor({
-          name: interaction.user.tag,
+          name: interaction.user.username,
           iconURL: interaction.user.avatarURL(),
         })
         .setFooter({
@@ -172,7 +172,7 @@ async function buttons(interaction, client) {
         .setColor("Random")
         .setTimestamp()
         .setAuthor({
-          name: interaction.user.tag,
+          name: interaction.user.username,
           iconURL: interaction.user.avatarURL(),
         })
         .setFooter({

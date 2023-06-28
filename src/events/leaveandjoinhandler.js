@@ -14,7 +14,7 @@ async function join(client, member) {
     const embed = new EmbedBuilder();
     embed
       .setTitle("Welcome")
-      .setDescription(`Welcome, ${member.user.tag}!`)
+      .setDescription(`Welcome, ${member.user.username}!`)
       .setColor("#00ff00")
       .setThumbnail(member.user.avatarURL())
       .setTimestamp();
@@ -25,7 +25,7 @@ async function join(client, member) {
   const embed = new EmbedBuilder();
   embed
     .setTitle("Welcome")
-    .setDescription(`Welcome, ${member.user.tag}!`)
+    .setDescription(`Welcome, ${member.user.username}!`)
     .setColor("#00ff00")
     .setThumbnail(member.user.avatarURL())
     .setTimestamp();
@@ -46,7 +46,7 @@ async function leave(client, member) {
     const embed = new EmbedBuilder();
     embed
       .setTitle("Goodbye")
-      .setDescription(`Goodbye, ${member.user.tag}!`)
+      .setDescription(`Goodbye, ${member.user.username}!`)
       .setColor("#ff0000")
       .setThumbnail(member.user.avatarURL())
       .setTimestamp();
@@ -57,7 +57,7 @@ async function leave(client, member) {
   const embed = new EmbedBuilder();
   embed
     .setTitle("Goodbye")
-    .setDescription(`Goodbye, ${member.user.tag}!`)
+    .setDescription(`Goodbye, ${member.user.username}!`)
     .setColor("#ff0000")
     .setThumbnail(member.user.avatarURL())
     .setTimestamp();

@@ -62,7 +62,7 @@ function client(client) {
     db.once("open", () => (log = "Connected To Database"));
 
     console.log(`\u001b[32m ----------------------------------------
-\u001b[31m Bot: ${client.user.tag}
+\u001b[31m Bot: ${client.user.username}
 \u001b[34m Servers: ${client.guilds.cache.size}
 \u001b[33m Users: ${client.users.cache.size}
 \u001b[36m Channels: ${client.channels.cache.size}
@@ -144,7 +144,7 @@ function client(client) {
       await newServer.save();
     }
 
-    let botName = client.user.tag;
+    let botName = client.user.username;
     botName = botName.replace(/#[0-9]{4}/, "");
     process.env.BOT_NAME = botName;
 

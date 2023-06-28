@@ -58,7 +58,7 @@ module.exports = {
       .setColor(Colors.Green)
       .setTimestamp()
       .setAuthor({
-        name: interaction.user.tag,
+        name: interaction.user.username,
         iconURL: interaction.user.avatarURL(),
       })
       .setFooter({

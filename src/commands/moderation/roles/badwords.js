@@ -32,7 +32,7 @@ module.exports = {
         .setColor("Random")
         .setTimestamp()
         .setAuthor({
-          name: interaction.user.tag,
+          name: interaction.user.username,
           iconURL: interaction.user.avatarURL(),
         })
         .setFooter({
@@ -54,7 +54,7 @@ module.exports = {
       .setColor("Random")
       .setTimestamp()
       .setAuthor({
-        name: interaction.user.tag,
+        name: interaction.user.username,
         iconURL: interaction.user.avatarURL(),
       })
       .setFooter({

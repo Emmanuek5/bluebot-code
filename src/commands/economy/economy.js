@@ -33,7 +33,7 @@ module.exports = {
         name: "Success",
         value: "Your account has been created and you have reiceived $1000",
       })
-      .setFooter({ text: `Requested by ${interaction.user.tag}` })
+      .setFooter({ text: `Requested by ${interaction.user.username}` })
       .setTimestamp();
 
     const embed3 = new EmbedBuilder()
@@ -41,7 +41,7 @@ module.exports = {
       .setTitle("Account Deleted")
       .setDescription("Your account has been deleted")
       .addFields({ name: "Success", value: "Your account has been deleted" })
-      .setFooter({ text: `Requested by ${interaction.user.tag}` })
+      .setFooter({ text: `Requested by ${interaction.user.username}` })
       .setTimestamp();
 
     const button = new ActionRowBuilder().addComponents(
@@ -65,7 +65,7 @@ module.exports = {
     collector.on("collect", async i => {
       if (i.user.id !== interaction.user.id)
         interaction.reply({
-          content: `Only ${interaction.user.tag} can use this button`,
+          content: `Only ${interaction.user.username} can use this button`,
           ephemeral: true,
         });
 

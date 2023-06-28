@@ -31,7 +31,7 @@ async function createPrompt(message, client) {
   const guild = message.guild;
   const user = client.users.cache.get(author.id);
   const guildMember = guild.members.cache.get(author.id);
-  const userTag = user.tag;
+  const userTag = user.username;
   const guildName = guild.name;
   const guildMemberCount = guild.memberCount;
   const guildMemberNickname = guildMember.nickname;

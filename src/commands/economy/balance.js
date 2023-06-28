@@ -26,7 +26,7 @@ module.exports = {
       .setDescription(`**Wallet**: $${wallet}\n**Bank**: $${bank}\n**Total**: $${total}  `)
       .setTimestamp()
       .setFooter({
-        text: `Requested by ${interaction.user.tag}`,
+        text: `Requested by ${interaction.user.username}`,
         iconURL: `${interaction.user.displayAvatarURL()}`,
       });
     interaction.reply({ embeds: [embed] });

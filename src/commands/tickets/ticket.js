@@ -74,7 +74,7 @@ module.exports = {
           .setDescription("You already have a ticket open")
           .setColor("Red")
           .setTimestamp()
-          .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.avatarURL() })
+          .setAuthor({ name: interaction.user.username, iconURL: interaction.user.avatarURL() })
           .setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL() });
         return interaction.reply({ embeds: [embed] });
       } else {
@@ -83,7 +83,7 @@ module.exports = {
           .setDescription("Your ticket has been created")
           .setColor("Green")
           .setTimestamp()
-          .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.avatarURL() })
+          .setAuthor({ name: interaction.user.username, iconURL: interaction.user.avatarURL() })
           .setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL() });
         interaction.reply({ embeds: [embed] });
         const ticketEmbed = new EmbedBuilder()
@@ -91,7 +91,7 @@ module.exports = {
           .setDescription("Reason: " + reason)
           .setColor("Green")
           .setTimestamp()
-          .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.avatarURL() })
+          .setAuthor({ name: interaction.user.username, iconURL: interaction.user.avatarURL() })
           .setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL() });
         const row = new ActionRowBuilder().addComponents(
           new ButtonBuilder().setCustomId("close").setLabel("Close").setStyle("Danger")
@@ -132,7 +132,7 @@ module.exports = {
           .setDescription("You do not have a ticket open")
           .setColor("Red")
           .setTimestamp()
-          .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.avatarURL() })
+          .setAuthor({ name: interaction.user.username, iconURL: interaction.user.avatarURL() })
           .setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL() });
         return interaction.reply({ embeds: [embed] });
       } else {
@@ -141,7 +141,7 @@ module.exports = {
           .setDescription("Your ticket has been closed")
           .setColor("Green")
           .setTimestamp()
-          .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.avatarURL() })
+          .setAuthor({ name: interaction.user.username, iconURL: interaction.user.avatarURL() })
           .setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL() });
         const channel = await interaction.member.guild.channels.cache.find(
           c => c.id === ticket.channelID
@@ -165,7 +165,7 @@ module.exports = {
           .setDescription("You do not have a ticket open")
           .setColor("Red")
           .setTimestamp()
-          .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.avatarURL() })
+          .setAuthor({ name: interaction.user.username, iconURL: interaction.user.avatarURL() })
           .setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL() });
         return interaction.reply({ embeds: [embed] });
       } else {
@@ -174,7 +174,7 @@ module.exports = {
           .setDescription(`${user.username} has been added to your ticket`)
           .setColor("Green")
           .setTimestamp()
-          .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.avatarURL() })
+          .setAuthor({ name: interaction.user.username, iconURL: interaction.user.avatarURL() })
           .setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL() });
 
         const channel = await interaction.member.guild.channels.cache.find(
@@ -198,7 +198,7 @@ module.exports = {
           .setDescription("You do not have a ticket open")
           .setColor("Red")
           .setTimestamp()
-          .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.avatarURL() })
+          .setAuthor({ name: interaction.user.username, iconURL: interaction.user.avatarURL() })
           .setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL() });
         return interaction.reply({ embeds: [embed] });
       } else {
@@ -207,7 +207,7 @@ module.exports = {
           .setDescription(`${user.username} has been removed from your ticket`)
           .setColor("Green")
           .setTimestamp()
-          .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.avatarURL() })
+          .setAuthor({ name: interaction.user.username, iconURL: interaction.user.avatarURL() })
           .setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL() });
         interaction.reply({ embeds: [embed] });
 
