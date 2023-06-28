@@ -1,5 +1,5 @@
 const { findSwearWords, findSwearWordsAI } = require("./swearfinder");
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 /**
  * Filters a message to remove any swear words and sends a warning message if swear words are found.
@@ -7,6 +7,8 @@ const { MessageEmbed } = require("discord.js");
  * @param {string} message - The message to be filtered.
  * @return {boolean} Returns true if swear words are found and the message is filtered, otherwise false.
  */
+const { MessageEmbed } = require("discord.js");
+
 async function humanFilter(message) {
   // Check if swear words are found in the message
   if (findSwearWords(message)) {
@@ -15,7 +17,7 @@ async function humanFilter(message) {
       await message.delete();
 
       // Create an embed message to show a warning
-      const embed = new MessageEmbed()
+      const embed = new EmbedBuilder()
         .setColor("#FF0000")
         .setDescription("Please don't use swear words or ask for swear words");
 

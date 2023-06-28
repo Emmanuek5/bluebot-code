@@ -226,18 +226,16 @@ async function createPrompt(message, client) {
           msg.edit({
             content: "🔍 Searching the depths of the internet...",
           });
+          await sleep(2000)
+          msg.edit({
+            content: "🔬 Analyzing the information...",
+          });
 
-          const a = humanFilter(message, msg);
-          if (a) return;
           const res = await openai.createCompletion({
             model: "text-davinci-003",
             prompt: content,
             temperature: 0.5,
             max_tokens: 2048,
-          });
-
-          msg.edit({
-            content: "🔬 Analyzing the information...",
           });
 
           const nulls = filterResponseForSwearWords(res, msg);
