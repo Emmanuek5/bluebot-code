@@ -11,7 +11,18 @@ for (const swearWord of swearWordsfile) {
 }
 
 function findSwearWords(message) {
-  const words = message.content.split(" ");
+  let content;
+  if (typeof message === "string") {
+    // If message is a string, assign it to the content variable
+    content = message;
+  } else if (message.content) {
+    // If message has a content property, assign it to the content variable
+    content = message.content;
+  } else {
+    // Unable to determine the content, return false
+    return false;
+  }
+  const words = content.split(" ");
   for (const word of words) {
     for (const swearWord of swearWords) {
       if (word.toLowerCase() === swearWord.toLocaleLowerCase()) {
@@ -24,8 +35,25 @@ function findSwearWords(message) {
   return false;
 }
 
+/**
+ * Finds any swear words in the given message.
+ *
+ * @param {string} message - The message to search for swear words.
+ * @return {boolean} - Returns true if a swear word is found, otherwise false.
+ */
 function findSwearWordsAI(message) {
-  const words = message.replace(/[^a-zA-Z ]/g, "").split(/[ \n]/); // split by space or newline
+  let content;
+  if (typeof message === "string") {
+    // If message is a string, assign it to the content variable
+    content = message;
+  } else if (message.content) {
+    // If message has a content property, assign it to the content variable
+    content = message.content;
+  } else {
+    // Unable to determine the content, return false
+    return false;
+  }
+  const words = content.replace(/[^a-zA-Z ]/g, "").split(/[ \n]/); // split by space or newline
   console.log(words);
   for (const word of words) {
     for (const swearWord of swearWords) {

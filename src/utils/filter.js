@@ -41,8 +41,6 @@ async function humanFilter(message) {
 async function filterResponseForSwearWords(response, msg) {
   // Extract the content from the response object
   const content = response.data.choices[0].text;
-
-  // Check if there are any swear words in the content
   if (findSwearWordsAI(content)) {
     try {
       // Create a new embedded message with a red color and a description explaining the situation
@@ -63,6 +61,8 @@ async function filterResponseForSwearWords(response, msg) {
 
     // Return true to indicate that swear words were found
     return true;
+  } else {
+    return false;
   }
 }
 

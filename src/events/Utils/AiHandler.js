@@ -21,6 +21,7 @@ const configureration = new Configuration({
 const cheerio = require("cheerio");
 const { download, sleep, downloadtxt, rand, deletefile } = require("../../functions/functions");
 const { name } = require("ejs");
+const { findSwearWordsAI } = require("../../utils/swearfinder");
 const openai = new OpenAIApi(configureration);
 
 async function createPrompt(message, client) {
@@ -237,7 +238,7 @@ async function createPrompt(message, client) {
             content: "🔬 Analyzing the information...",
           });
 
-          const nulls = filterResponseForSwearWords(res, msg);
+          const nulls = findSwearWordsAI(res, msg);
           if (nulls) return;
 
           msg.edit({
