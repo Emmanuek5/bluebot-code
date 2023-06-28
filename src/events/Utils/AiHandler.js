@@ -21,7 +21,7 @@ const configureration = new Configuration({
 const cheerio = require("cheerio");
 const { download, sleep, downloadtxt, rand, deletefile } = require("../../functions/functions");
 const { name } = require("ejs");
-const { findSwearWordsAI } = require("../../utils/swearfinder");
+const { findSwearWordsAI, findSwearWords } = require("../../utils/swearfinder");
 const openai = new OpenAIApi(configureration);
 
 async function createPrompt(message, client) {
@@ -227,6 +227,24 @@ async function createPrompt(message, client) {
           msg.edit({
             content: "🔍 Searching the depths of the internet...",
           });
+          if (findSwearWords(content)) {
+            try {
+              // Delete the message
+              await message.delete();
+              // Create an embed message to show a warning
+              const embed = new EmbedBuilder()
+                .setColor("#FF0000")
+                .setDescription("Please don't use swear words or ask for swear words");
+
+              // Send the warning message in the same channel
+              await message.channel.send({ embeds: [embed], content: ":(" });
+            } catch (error) {
+              // Log any error that occurs while filtering the message
+              console.error("Error while filtering human message:", error);
+            }
+            return true;
+          }
+
           const res = await openai.createCompletion({
             model: "text-davinci-003",
             prompt: content,
