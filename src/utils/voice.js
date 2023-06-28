@@ -6,12 +6,12 @@ const {
   createAudioResource,
   NoSubscriberBehavior,
   VoiceConnectionStatus,
-} = require('@discordjs/voice');
-const EmbedBuilder = require('discord.js');
-const youtube = require('ytdl-core');
-const { entersState, AudioPlayerStatus } = require('@discordjs/voice');
+} = require("@discordjs/voice");
+const EmbedBuilder = require("discord.js");
+const youtube = require("ytdl-core");
+const { entersState, AudioPlayerStatus } = require("@discordjs/voice");
 
-const { join } = require('path');
+const { join } = require("path");
 const player = createAudioPlayer({
   behaviors: {
     noSubscriber: NoSubscriberBehavior.Pause,
@@ -19,8 +19,8 @@ const player = createAudioPlayer({
 });
 
 async function play(interaction) {
-  const channel = interaction.options.getChannel('channel');
-  const song = interaction.options.getString('song');
+  const channel = interaction.options.getChannel("channel");
+  const song = interaction.options.getString("song");
   const VoiceConnection = joinVoiceChannel({
     channelId: channel.id,
     guildId: interaction.guildId,
@@ -29,9 +29,9 @@ async function play(interaction) {
     selfMute: false,
   });
 
-  let resource = createAudioResource('/home/bobsidian/music/test.mp3', {
+  let resource = createAudioResource("/home/bobsidian/music/test.mp3", {
     metadata: {
-      title: 'test',
+      title: "test",
     },
   });
 

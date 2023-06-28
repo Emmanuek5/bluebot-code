@@ -1,17 +1,16 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const playlistSchema = mongoose.Schema({
   userId: {
     type: String,
     unique: true,
   },
-  name :{
-    type : String,
-    required : true
+  name: {
+    type: String,
+    required: true,
   },
-  songs:{
+  songs: {
     type: Array,
-    default : []
-    
-  }
+    default: [],
+  },
 });

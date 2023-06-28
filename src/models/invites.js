@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const inviteSchema = new mongoose.Schema({
   GuildId: String,
@@ -6,4 +6,4 @@ const inviteSchema = new mongoose.Schema({
   authorid: String,
 });
 
-module.exports = mongoose.model('invites', inviteSchema);
+module.exports = mongoose.model("invites", inviteSchema);

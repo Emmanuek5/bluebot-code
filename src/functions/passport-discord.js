@@ -1,29 +1,29 @@
 // create a new DiscordStrategy instance
-const DiscordStrategy = require('passport-discord').Strategy;
+const DiscordStrategy = require("passport-discord").Strategy;
 // import the User model
-const User = require('../models/users');
-const LocalStrategy = require('passport-local').Strategy;
-const localUser = require('../models/localuser');
+const User = require("../models/users");
+const LocalStrategy = require("passport-local").Strategy;
+const localUser = require("../models/localuser");
 // import the passport module
-const passport = require('passport');
-const bcrypt = require('bcrypt');
+const passport = require("passport");
+const bcrypt = require("bcrypt");
 // import the config module
 
 // create a new DiscordStrategy instance
 passport.use(
-  'discord',
+  "discord",
   new DiscordStrategy(
     {
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET,
       callbackURL: process.env.CALLBACK_URL,
-      scope: ['identify', 'email', 'guilds', 'guild.join'],
+      scope: ["identify", "email", "guilds", "guild.join"],
     },
     (accessToken, refreshToken, profile, done) => {
       // find the user in the database based on their discord
       User.findOne({
         discordId: profile.id,
-      }).then((currentUser) => {
+      }).then(currentUser => {
         if (currentUser) {
           done(null, currentUser);
         } else {
@@ -34,7 +34,7 @@ passport.use(
             email: profile.email,
           })
             .save()
-            .then((newUser) => {
+            .then(newUser => {
               done(null, newUser);
             });
         }
@@ -44,12 +44,12 @@ passport.use(
 );
 
 passport.use(
-  'local',
+  "local",
   new LocalStrategy(
     {
       //check if the user is in the database and if the password is correct
-      usernameField: 'email',
-      passwordField: 'password',
+      usernameField: "email",
+      passwordField: "password",
     },
     (email, password, done) => {
       // find the user in the database based on their email
@@ -57,7 +57,7 @@ passport.use(
         .findOne({
           email: email,
         })
-        .then((currentUser) => {
+        .then(currentUser => {
           if (currentUser) {
             // if we already have a record with the given profile ID
             bcrypt.compare(password, currentUser.password, (err, isMatch) => {
@@ -65,11 +65,11 @@ passport.use(
               if (isMatch) {
                 return done(null, currentUser);
               } else {
-                return done(null, false, { message: 'Password incorrect' });
+                return done(null, false, { message: "Password incorrect" });
               }
             });
           } else {
-            return done(null, false, { message: 'That email is not registered' });
+            return done(null, false, { message: "That email is not registered" });
           }
         });
     }

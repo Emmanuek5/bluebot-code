@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const commandSchema = new mongoose.Schema({
   name: {
@@ -9,12 +9,12 @@ const commandSchema = new mongoose.Schema({
   description: String,
   usage: {
     type: String,
-    default: 'None',
+    default: "None",
   },
   permissions: {
     type: String,
-    default: 'None',
+    default: "None",
   },
 });
 
-module.exports = mongoose.model('commands', commandSchema);
+module.exports = mongoose.model("commands", commandSchema);

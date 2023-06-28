@@ -1,6 +1,6 @@
-const { EmbedBuilder, ActionRowBuilder,ButtonBuilder } = require('discord.js');
-require('dotenv').config();
-async function dmhandler(client, message, type, level = 0, ida = 0 , guild = {}) {
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder } = require("discord.js");
+require("dotenv").config();
+async function dmhandler(client, message, type, level = 0, ida = 0, guild = {}) {
   const embed = new EmbedBuilder();
   const { id } = message.author || ida;
   const { guilds } = client;
@@ -56,53 +56,47 @@ async function dmhandler(client, message, type, level = 0, ida = 0 , guild = {})
   const { voiceChannelRtcRegion } = client;
   const { voiceChannelUserLimit } = client;
 
-  if (type == 'undefined') {
+  if (type == "undefined") {
     return;
-  } else if (type == 'badword') {
+  } else if (type == "badword") {
     let user = client.users.cache.get(id);
     const server = client.guilds.cache.get(message.guild.id);
-    embed.setTitle('Bad Word Detected');
+    embed.setTitle("Bad Word Detected");
     embed.setDescription(`Hey ${user}!, You Just Said A Bad Word ON ${server.name}!`);
-    embed.setColor('Random').setThumbnail(process.env.BOT_AVATAR);
+    embed.setColor("Random").setThumbnail(process.env.BOT_AVATAR);
     embed.setFooter({
       text: `Bad Word Detected By: ${user.username}`,
     });
 
     user.send({ embeds: [embed] });
-  } else if (type == 'levelup') {
+  } else if (type == "levelup") {
     const user = client.users.cache.get(id);
     const server = client.guilds.cache.get(message.guild.id);
-    embed.setTitle('Level Up!');
+    embed.setTitle("Level Up!");
     embed.setDescription(`GG ${user}!, You Just Leveled Up to Level ${level} ON ${server.name}`);
-    embed.setColor('Random').setThumbnail(process.env.BOT_AVATAR);
+    embed.setColor("Random").setThumbnail(process.env.BOT_AVATAR);
     embed.setFooter({
       text: `Level Up By: ${user.username}`,
     });
-  //  user.send({ embeds: [embed] });
-  }else if (type == "serveradd"){
+    //  user.send({ embeds: [embed] });
+  } else if (type == "serveradd") {
     const user = client.users.cache.get(ida);
-    embed.setTitle('Thank you for adding me to your server!');
+    embed.setTitle("Thank you for adding me to your server!");
     embed.setDescription(`・ My default prefix is >
 ・ You can use the >help command to get list of commands
 ・ Our documentation offers detailed information & guides for commands
 ・ Feel free to join our Support Server if you need help/support for anything related to the bot!`);
-    embed.setColor('Random').setThumbnail(process.env.BOT_AVATAR)
-    embed.setAuthor({ name: guild.name, iconURL:  guild.iconURL() })
+    embed.setColor("Random").setThumbnail(process.env.BOT_AVATAR);
+    embed.setAuthor({ name: guild.name, iconURL: guild.iconURL() });
     const row = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
-        .setLabel('Join Our Server')
-        .setStyle('Link')
+        .setLabel("Join Our Server")
+        .setStyle("Link")
         .setURL(`https://discord.gg/FFwryM9GyQ`),
-         new ButtonBuilder()
-    .setStyle("Link")
-    .setLabel("Visit Our Website")
-    .setURL(process.env.URL)
+      new ButtonBuilder().setStyle("Link").setLabel("Visit Our Website").setURL(process.env.URL)
     );
-user.send({embeds: [embed] ,components: [row]})
-   
-
+    user.send({ embeds: [embed], components: [row] });
   }
-
 }
 
 module.exports = {

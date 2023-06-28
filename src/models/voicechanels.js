@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 VoiceSchema = new mongoose.Schema({
   guildID: {
@@ -11,4 +11,4 @@ VoiceSchema = new mongoose.Schema({
   },
 });
 
-const VoiceModel = (module.exports = mongoose.model('VoiceChannels', VoiceSchema));
+const VoiceModel = (module.exports = mongoose.model("VoiceChannels", VoiceSchema));

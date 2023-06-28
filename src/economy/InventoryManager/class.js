@@ -1,7 +1,5 @@
 const InventoryItem = require("../../models/inventory");
-class InventorySystem  {
-  
-
+class InventorySystem {
   // Function to get a user's inventory
   async getInventory(userId) {
     console.log("Getting inventory for user:", userId);
@@ -64,7 +62,7 @@ class InventorySystem  {
   findUser(userId) {
     return InventoryItem.findOne({ userId: userId });
   }
-  
+
   // Function to buy an item and add it to a user's inventory
   async buyItem(userId, sellerId, items, amount = 1) {
     try {

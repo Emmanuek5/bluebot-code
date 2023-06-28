@@ -1,29 +1,27 @@
-const {SlashCommandBuilder} = require("discord.js")
-
+const { SlashCommandBuilder } = require("discord.js");
 
 module.exports = {
-    data: new SlashCommandBuilder()
-        .setName("change-avatar")
-        .setDescription("Change The Bots Avatar")
-        .addAttachmentOption((option) => option.setName("avatar").setDescription("The Attachment").setRequired(true))
-        ,
-        async execute(interaction,client) {
-            const attachment = interaction.options.getAttachment("avatar")
-        
-            if (interaction.user.id != "738471887902081064") {
-                interaction.reply("You Are Not Allowed To Use This Command")         
-            }
+  data: new SlashCommandBuilder()
+    .setName("change-avatar")
+    .setDescription("Change The Bots Avatar")
+    .addAttachmentOption(option =>
+      option.setName("avatar").setDescription("The Attachment").setRequired(true)
+    ),
+  async execute(interaction, client) {
+    const attachment = interaction.options.getAttachment("avatar");
 
-         try {
-               await interaction.deferReply();
+    if (interaction.user.id != "738471887902081064") {
+      interaction.reply("You Are Not Allowed To Use This Command");
+    }
 
-               client.user.setAvatar(attachment.url);
-               await interaction.editReply("Avatar Changed");
+    try {
+      await interaction.deferReply();
 
-         } catch (error) {
-             console.log(error);
-             await interaction.editReply("Something Went Wrong"); 
-            
-         }
-       
-        }}
+      client.user.setAvatar(attachment.url);
+      await interaction.editReply("Avatar Changed");
+    } catch (error) {
+      console.log(error);
+      await interaction.editReply("Something Went Wrong");
+    }
+  },
+};

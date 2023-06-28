@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const rateSchema = mongoose.Schema({
   guildId: {
@@ -16,4 +16,4 @@ const rateSchema = mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('rates', rateSchema);
+module.exports = mongoose.model("rates", rateSchema);

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const ticketSchema = new mongoose.Schema({
   guildID: {
@@ -24,4 +24,4 @@ const ticketSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('tickets', ticketSchema);
+module.exports = mongoose.model("tickets", ticketSchema);

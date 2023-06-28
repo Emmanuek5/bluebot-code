@@ -216,7 +216,7 @@ function client(client) {
     error: "❌",
   };
   client.on("raw", d => client.manager.updateVoiceState(d));
-  
+
   const nodes = [
     {
       host: process.env.LAVALINK_HOST,

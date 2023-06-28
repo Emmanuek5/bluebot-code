@@ -9,7 +9,7 @@ const {
   ActionRowBuilder,
   PermissionFlagsBits,
 } = require("discord.js");
-   const Levels = require("discord.js-leveling");
+const Levels = require("discord.js-leveling");
 const { sleep } = require("../functions/functions.js");
 require("dotenv").config();
 const commandSchema = require("../models/commands.js");
@@ -28,69 +28,68 @@ async function MessageCommands(client, command, args, message) {
   const { channels } = guild;
   const { roles } = guild;
   const { members } = guild;
-  const path = require("path")
+  const path = require("path");
   console.log(command, args);
 
-if (command === "watchtogether") {
-  const {
-    createAudioResource,
-    joinVoiceChannel,
-    createAudioPlayer,
-    NoSubscriberBehavior,
-  } = require("@discordjs/voice");
-  const { MessageEmbed } = require("discord.js");
-  if (!args.length) {
-    return message.channel.send("Please provide a YouTube video URL");
-  }
+  if (command === "watchtogether") {
+    const {
+      createAudioResource,
+      joinVoiceChannel,
+      createAudioPlayer,
+      NoSubscriberBehavior,
+    } = require("@discordjs/voice");
+    const { MessageEmbed } = require("discord.js");
+    if (!args.length) {
+      return message.channel.send("Please provide a YouTube video URL");
+    }
 
-  const svoiceChannel = message.member.voice.channel;
-  if (!svoiceChannel) {
-    return message.channel.send("Please join a voice channel first");
-  }
+    const svoiceChannel = message.member.voice.channel;
+    if (!svoiceChannel) {
+      return message.channel.send("Please join a voice channel first");
+    }
 
-  const connection = await joinVoiceChannel({
-    channelId: svoiceChannel.id,
-    guildId: svoiceChannel.guild.id,
-    adapterCreator: svoiceChannel.guild.voiceAdapterCreator,
-  });
-  const audioResource = createAudioResource(
-    `https://ia801008.us.archive.org/26/items/alicemertonnoroots_201907/Alice%20Merton%20-%20No%20Roots.mp3`
-  );
-  const player = createAudioPlayer({
-    behaviors: {
-      noSubscriber: NoSubscriberBehavior.Pause,
-    },
-  });
-  console.log(player)
+    const connection = await joinVoiceChannel({
+      channelId: svoiceChannel.id,
+      guildId: svoiceChannel.guild.id,
+      adapterCreator: svoiceChannel.guild.voiceAdapterCreator,
+    });
+    const audioResource = createAudioResource(
+      `https://ia801008.us.archive.org/26/items/alicemertonnoroots_201907/Alice%20Merton%20-%20No%20Roots.mp3`
+    );
+    const player = createAudioPlayer({
+      behaviors: {
+        noSubscriber: NoSubscriberBehavior.Pause,
+      },
+    });
+    console.log(player);
 
-  await player.play(audioResource);
-  await connection.subscribe(player);
-  const embed = new EmbedBuilder()
-    .setColor("#ff0000")
-    .setTitle("YouTube Watch Together")
-    .setDescription(`Starting a new YouTube Watch Together session`)
-    .addFields({
-      name: "URL",
-      value: `https://www.youtube.com/watch?v=${args[0]}`,
+    await player.play(audioResource);
+    await connection.subscribe(player);
+    const embed = new EmbedBuilder()
+      .setColor("#ff0000")
+      .setTitle("YouTube Watch Together")
+      .setDescription(`Starting a new YouTube Watch Together session`)
+      .addFields({
+        name: "URL",
+        value: `https://www.youtube.com/watch?v=${args[0]}`,
+      });
+
+    channel.send({ embeds: [embed] });
+
+    player.on("error", error => {
+      console.error(error);
     });
 
-  channel.send({embeds : [embed]})
-
-  player.on("error", (error) => {
-    console.error(error);
-  });
-
-  player.on("finish", () => {
-    voiceChannel.leave();
-    message.channel.send("Watch Together session ended");
-  });
-}
-
+    player.on("finish", () => {
+      voiceChannel.leave();
+      message.channel.send("Watch Together session ended");
+    });
+  }
 
   switch (command) {
     case "ping":
       //ping the bot and get the latency
-      channel.send("Pinging...").then((msg) => {
+      channel.send("Pinging...").then(msg => {
         const ping = msg.createdTimestamp - message.createdTimestamp;
         msg.edit(`Bot Latency: ${ping}ms, API Latency: ${client.ws.ping}ms`);
       });
@@ -99,7 +98,7 @@ if (command === "watchtogether") {
     case "help":
       const commands = await commandSchema.find();
       //get the first 20 commands
-      const helpcommands = commands.slice(0, 20 );
+      const helpcommands = commands.slice(0, 20);
       const helpembed = new EmbedBuilder()
         .setTitle("Help")
         .setDescription(`Commands for ${guild.name} \n **Note Most of these are slash commands**`)
@@ -108,10 +107,10 @@ if (command === "watchtogether") {
         .setTimestamp()
         .setFooter({ text: `Help Command By: ${username}`, iconURL: iconURL });
       //loop through the commands and add them to the embed
-      helpcommands.forEach((command) => {
+      helpcommands.forEach(command => {
         helpembed.addFields({
           name: command.description,
-          value: `\`\`\`${command.name}\`\`\`` ,
+          value: `\`\`\`${command.name}\`\`\``,
         });
       });
 
@@ -124,8 +123,7 @@ if (command === "watchtogether") {
       if (!kickreason) return channel.send("Please provide a reason to kick");
       if (!member.permissions >= PermissionFlagsBits.KickMembers)
         return channel.send("You do not have permission to kick members");
-      if (!kickmember.kickable)
-        return channel.send("I do not have permission to kick this member");
+      if (!kickmember.kickable) return channel.send("I do not have permission to kick this member");
       kickmember.kick({ reason: kickreason });
       const kickembed = new EmbedBuilder()
         .setTitle("Kicked")
@@ -142,13 +140,9 @@ if (command === "watchtogether") {
       const voiceChannel = member.voice.channel;
       if (!voiceChannel) return channel.send("Please join a voice channel");
       if (!voiceChannel.joinable)
-        return channel.send(
-          "I do not have permission to join this voice channel"
-        );
+        return channel.send("I do not have permission to join this voice channel");
       if (!voiceChannel.speakable)
-        return channel.send(
-          "I do not have permission to speak in this voice channel"
-        );
+        return channel.send("I do not have permission to speak in this voice channel");
       let player = client.manager.players.get(guild.id);
       if (!player) {
         player = client.manager.create({
@@ -161,9 +155,8 @@ if (command === "watchtogether") {
 
       if (player.paused) {
         player.pause(false);
-     const  embesd = new EmbedBuilder()
-         .setDescription("Song Resumed")
-         
+        const embesd = new EmbedBuilder().setDescription("Song Resumed");
+
         channel.send({ embeds: [embesd] });
         return;
       }
@@ -174,12 +167,12 @@ if (command === "watchtogether") {
 
       player.queue.add(songs.tracks[0]);
       //get the duration of the song and convert it to a string
-     let dur;
-     if (songs.tracks[0].duration < Number.MAX_SAFE_INTEGER) {
-       dur = new Date(songs.tracks[0].duration).toISOString().slice(11, 19);
-     } else {
-       dur = "00000";
-     }
+      let dur;
+      if (songs.tracks[0].duration < Number.MAX_SAFE_INTEGER) {
+        dur = new Date(songs.tracks[0].duration).toISOString().slice(11, 19);
+      } else {
+        dur = "00000";
+      }
 
       const { title, author, duration, uri } = songs.tracks[0];
 
@@ -264,32 +257,29 @@ if (command === "watchtogether") {
     case "queue":
       const queueplayer = client.manager.players.get(guild.id);
       if (!queueplayer) return channel.send("There is no song playing");
-             
-             
-              const embedss = new EmbedBuilder();
-              const newdur = new Date(queueplayer.queue.duration).toISOString().slice(11,19)
-              embedss
-         .setTitle(`The Playlist is ${newdur} `)
 
-                .setColor("Purple")
-                .setAuthor({
-                  name: "The Blue Bot",
-                  iconURL: process.env.BOT_AVATAR,
-                })
-                .setTimestamp()
-                .setThumbnail(song.thumbnail);
-                 queueplayer.queue.forEach((song, index) => {
-                   const dur = new Date(song.duration)
-                     .toISOString()
-                     .slice(11, 19);
-                   const { title, author, duration, uri } = song;
-                   embedss.addFields(
-                     { name: "Author", value: author, inline: true },
-                     { name: "Duration", value: dur, inline: true }
-                   );
-                 });
-              channel.send({ embeds: [embedss] });
-     
+      const embedss = new EmbedBuilder();
+      const newdur = new Date(queueplayer.queue.duration).toISOString().slice(11, 19);
+      embedss
+        .setTitle(`The Playlist is ${newdur} `)
+
+        .setColor("Purple")
+        .setAuthor({
+          name: "The Blue Bot",
+          iconURL: process.env.BOT_AVATAR,
+        })
+        .setTimestamp()
+        .setThumbnail(song.thumbnail);
+      queueplayer.queue.forEach((song, index) => {
+        const dur = new Date(song.duration).toISOString().slice(11, 19);
+        const { title, author, duration, uri } = song;
+        embedss.addFields(
+          { name: "Author", value: author, inline: true },
+          { name: "Duration", value: dur, inline: true }
+        );
+      });
+      channel.send({ embeds: [embedss] });
+
       break;
     case "skip":
       const skipplayer = client.manager.players.get(guild.id);
@@ -309,8 +299,7 @@ if (command === "watchtogether") {
       if (!volumeplayer) return channel.send("There is no song playing");
       if (!args[1]) return channel.send("Please provide a volume");
       if (isNaN(args[1])) return channel.send("Please provide a valid number");
-      if (args[1] > 100)
-        return channel.send("Please provide a number between 1 and 100");
+      if (args[1] > 100) return channel.send("Please provide a number between 1 and 100");
       volumeplayer.setVolume(args[1]);
       const volumeembed = new EmbedBuilder()
         .setTitle("Volume")
@@ -329,14 +318,8 @@ if (command === "watchtogether") {
       if (!seekplayer) return channel.send("There is no song playing");
       const embed = new EmbedBuilder();
       const row = new ActionRowBuilder().addComponents(
-        new ButtonBuilder()
-          .setCustomId("song-forward")
-          .setLabel("Forward")
-          .setStyle("Primary"),
-        new ButtonBuilder()
-          .setCustomId("song-back")
-          .setLabel("Back")
-          .setStyle("Primary")
+        new ButtonBuilder().setCustomId("song-forward").setLabel("Forward").setStyle("Primary"),
+        new ButtonBuilder().setCustomId("song-back").setLabel("Back").setStyle("Primary")
       );
       embed
         .setTitle("Seek")
@@ -350,22 +333,10 @@ if (command === "watchtogether") {
     case "controls":
       const embedcont = new EmbedBuilder();
       const rowcont = new ActionRowBuilder().addComponents(
-        new ButtonBuilder()
-          .setCustomId("song-play")
-          .setLabel("Play")
-          .setStyle("Primary"),
-        new ButtonBuilder()
-          .setCustomId("song-pause")
-          .setLabel("Pause")
-          .setStyle("Primary"),
-        new ButtonBuilder()
-          .setCustomId("song-skip")
-          .setLabel("Skip")
-          .setStyle("Primary"),
-        new ButtonBuilder()
-          .setCustomId("song-volume")
-          .setLabel("Volume Up")
-          .setStyle("Primary"),
+        new ButtonBuilder().setCustomId("song-play").setLabel("Play").setStyle("Primary"),
+        new ButtonBuilder().setCustomId("song-pause").setLabel("Pause").setStyle("Primary"),
+        new ButtonBuilder().setCustomId("song-skip").setLabel("Skip").setStyle("Primary"),
+        new ButtonBuilder().setCustomId("song-volume").setLabel("Volume Up").setStyle("Primary"),
         new ButtonBuilder()
           .setCustomId("song-volume-down")
           .setLabel("Volume Down")
@@ -446,7 +417,7 @@ if (command === "watchtogether") {
       });
       const json2 = await response2.json();
 
-      const models = json2.data.map((model) => model.id);
+      const models = json2.data.map(model => model.id);
       const newmodel = models.splice(0, 20);
       const modelsembed = new EmbedBuilder()
         .setTitle("Models")
@@ -454,7 +425,7 @@ if (command === "watchtogether") {
         .setColor("Random")
         .setAuthor({ name: "The Blue Bot", iconURL: process.env.BOT_AVATAR })
         .setTimestamp();
-      newmodel.forEach((model) => {
+      newmodel.forEach(model => {
         modelsembed.addFields({ name: model, value: " " });
       });
       modelsembed.setFooter({
@@ -464,7 +435,6 @@ if (command === "watchtogether") {
       channel.send({ embeds: [modelsembed] });
       break;
     case "rank":
-   
       const user = message.mentions.users.first() || message.author;
 
       const userlevel = await Levels.fetch(user.id, message.guild.id);
@@ -476,9 +446,7 @@ if (command === "watchtogether") {
       } else {
         const embed = new EmbedBuilder()
           .setTitle("Rank")
-          .setDescription(
-            `**${username}** is level ${userlevel.level} and has ${userlevel.xp} xp!`
-          )
+          .setDescription(`**${username}** is level ${userlevel.level} and has ${userlevel.xp} xp!`)
           .setThumbnail(process.env.BOT_AVATAR)
           .setColor("Random")
           .setAuthor({ name: "The Blue Bot", iconURL: process.env.BOT_AVATAR });
@@ -491,97 +459,87 @@ if (command === "watchtogether") {
 
       break;
     case "leaderboard":
-
       const rank = await Levels.fetchLeaderboard(guild.id, 10); //We grab top 10 users with most xp in the current server.
 
       if (rank.length < 1) return message.reply("Nobody's in leaderboard yet.");
       const leaderboard = await Levels.computeLeaderboard(client, rank, true); //We process the leaderboard.
 
       const mappedRank = leaderboard.map(
-        (e) =>
+        e =>
           `${e.position}. ${e.username}#${e.discriminator}\nLevel: ${
             e.level
           }\nXP: ${e.xp.toLocaleString()}`
       ); //We map the outputs.
-     const leadembed = new EmbedBuilder()
-       .setTitle("Leaderboard")
-       .setDescription(mappedRank.join("\n\n"))
-       .setColor("Random")
-       .setAuthor({ name: "The Blue Bot", iconURL: process.env.BOT_AVATAR })
-       .setFooter({
-         text: `Requested By: ${username}`,
-         iconURL: iconURL,
-       });
+      const leadembed = new EmbedBuilder()
+        .setTitle("Leaderboard")
+        .setDescription(mappedRank.join("\n\n"))
+        .setColor("Random")
+        .setAuthor({ name: "The Blue Bot", iconURL: process.env.BOT_AVATAR })
+        .setFooter({
+          text: `Requested By: ${username}`,
+          iconURL: iconURL,
+        });
 
-       message.channel.send({embeds: [leadembed]})
+      message.channel.send({ embeds: [leadembed] });
       break;
-        case "joke":     
-    const joke = await fetch(process.env.JOKE_API);
-    const jokejson = await joke.json();
-    const { setup, delivery } = jokejson;
-    channel.send(setup).then(async (msg) => {
-      const mgg = msg;
-      await sleep(3000).then(() => {
-
-        mgg.edit(delivery);
+    case "joke":
+      const joke = await fetch(process.env.JOKE_API);
+      const jokejson = await joke.json();
+      const { setup, delivery } = jokejson;
+      channel.send(setup).then(async msg => {
+        const mgg = msg;
+        await sleep(3000).then(() => {
+          mgg.edit(delivery);
+        });
       });
-    });
-    break;
+      break;
     case "meme":
-       async function redditMeme() {
-          const response =   await fetch('https://www.reddit.com/r/memes/random/.json')
-            const meme = await response.json();
+      async function redditMeme() {
+        const response = await fetch("https://www.reddit.com/r/memes/random/.json");
+        const meme = await response.json();
 
-            const embed = new EmbedBuilder()
-                .setTitle(meme[0].data.children[0].data.title)
-                .setURL(`https://reddit.com${meme[0].data.children[0].data.permalink}`)
-                .setImage(meme[0].data.children[0].data.url)
-                .setAuthor({name: member.user.username, iconURL: member.user.avatarURL()})
-                .setFooter({text: `👍 ${meme[0].data.children[0].data.ups} | 💬 ${meme[0].data.children[0].data.num_comments}`})
-                .setTimestamp()
-            return message.reply({embeds: [embed]});
+        const embed = new EmbedBuilder()
+          .setTitle(meme[0].data.children[0].data.title)
+          .setURL(`https://reddit.com${meme[0].data.children[0].data.permalink}`)
+          .setImage(meme[0].data.children[0].data.url)
+          .setAuthor({ name: member.user.username, iconURL: member.user.avatarURL() })
+          .setFooter({
+            text: `👍 ${meme[0].data.children[0].data.ups} | 💬 ${meme[0].data.children[0].data.num_comments}`,
+          })
+          .setTimestamp();
+        return message.reply({ embeds: [embed] });
+      }
 
-            
+      async function giphyMeme() {
+        const response = await fetch(
+          "https://api.giphy.com/v1/gifs/random?api_key=yCCeJ38QdVX56QpnxgH8fZScUVR0m7S5&tag=meme&rating=g"
+        );
+        const meme = await response.json();
+
+        const embed = new EmbedBuilder()
+          .setTitle(meme.data.title)
+          .setURL(meme.data.url)
+          .setImage(meme.data.images.original.url)
+          .setAuthor({ name: member.user.username, iconURL: member.user.avatarURL() })
+          .setFooter({ text: `👍 ${meme.data.import_datetime} | 💬 ${meme.data.username}` })
+          .setTimestamp();
+        return message.reply({ embeds: [embed] });
+      }
+
+      if (platform === "reddit") {
+        redditMeme();
+      } else if (platform === "giphy") {
+        giphyMeme();
+      } else {
+        const random = Math.floor(Math.random() * 2);
+        console.log(random);
+        if (random === 0) {
+          redditMeme();
+        } else if (random === 1) {
+          giphyMeme();
         }
-
-        async function giphyMeme() {
-            const response = await fetch('https://api.giphy.com/v1/gifs/random?api_key=yCCeJ38QdVX56QpnxgH8fZScUVR0m7S5&tag=meme&rating=g');
-            const meme = await response.json();
-
-            const embed = new EmbedBuilder()
-                .setTitle(meme.data.title)
-                .setURL(meme.data.url)
-                .setImage(meme.data.images.original.url)
-                .setAuthor({name: member.user.username, iconURL: member.user.avatarURL()})
-                .setFooter({text: `👍 ${meme.data.import_datetime} | 💬 ${meme.data.username}`})
-                .setTimestamp()
-            return message.reply({embeds: [embed]});
-
-
-         
-        }
-        
-        if(platform === 'reddit') {
-            redditMeme();
-        }
-        else if(platform === 'giphy') {
-            giphyMeme();
-        }
-        else {
-            const random = Math.floor(Math.random() * 2);
-            console.log(random);
-            if(random === 0) {
-                redditMeme();
-            }
-            else if(random === 1) {
-                giphyMeme();
-            }
-        } 
-        break;
-        
-  
-
-
+      }
+      break;
   }
 }
 

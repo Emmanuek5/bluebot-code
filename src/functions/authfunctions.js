@@ -2,13 +2,13 @@ function checkAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
   } else {
-    res.redirect('/login');
+    res.redirect("/login");
   }
 }
 
 function checkNotAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
-    return res.redirect('/dashboard');
+    return res.redirect("/dashboard");
   } else {
     next();
   }

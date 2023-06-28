@@ -1,4 +1,4 @@
-const commandSchema = require('../models/commands');
+const commandSchema = require("../models/commands");
 
 function getCommands() {
   return commandSchema.find();

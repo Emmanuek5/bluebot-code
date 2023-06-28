@@ -1,12 +1,12 @@
-const { EmbedBuilder } = require('@discordjs/builders');
-const { SlashCommandBuilder, PermissionFlagsBits, PermissionsBitField } = require('discord.js');
-const serverSchema = require('../../models/server');
-require('dotenv').config();
+const { EmbedBuilder } = require("@discordjs/builders");
+const { SlashCommandBuilder, PermissionFlagsBits, PermissionsBitField } = require("discord.js");
+const serverSchema = require("../../models/server");
+require("dotenv").config();
 module.exports = {
-  usage: 'Add A Server to the bots Memory',
+  usage: "Add A Server to the bots Memory",
   data: new SlashCommandBuilder()
-    .setName('add-server')
-    .setDescription('Add A Server to the bots Memory')
+    .setName("add-server")
+    .setDescription("Add A Server to the bots Memory")
     .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator),
   async execute(interaction, client) {
     await interaction.deferReply();
@@ -35,7 +35,7 @@ module.exports = {
       const embed = new EmbedBuilder()
         .setTitle(`${server.guildName} Details`)
         .setDescription(`${server.guildName} Has ${server.guildMemberCount} Members`)
-        .addFields({ name: 'Created On', value: new Date(guild.createdAt).toISOString() })
+        .addFields({ name: "Created On", value: new Date(guild.createdAt).toISOString() })
         .setThumbnail(server.guildIcon)
         .setAuthor({
           name: process.env.BOT_NAME,
@@ -56,11 +56,11 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setTitle(`${guild.name} Has Been Added`)
-      .setDescription('Details')
+      .setDescription("Details")
       .addFields(
-        { name: 'Id', value: id, inline: true },
-        { name: 'Name', value: guild.name, inline: true },
-        { name: 'Members', value: guild.memberCount.toString(), inline: true }
+        { name: "Id", value: id, inline: true },
+        { name: "Name", value: guild.name, inline: true },
+        { name: "Members", value: guild.memberCount.toString(), inline: true }
       )
       .setThumbnail(guild.iconURL() || process.env.BOT_AVATAR);
     interaction.editReply({ embeds: [embed] });

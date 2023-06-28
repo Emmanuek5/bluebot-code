@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const localUsers = mongoose.Schema({
   username: { type: String, required: true },
@@ -8,4 +8,4 @@ const localUsers = mongoose.Schema({
   discordId: { type: String, required: false, default: null },
 });
 
-module.exports = mongoose.model('LocalUser', localUsers);
+module.exports = mongoose.model("LocalUser", localUsers);

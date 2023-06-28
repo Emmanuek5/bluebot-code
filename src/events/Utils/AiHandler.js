@@ -265,14 +265,23 @@ async function createPrompt(message, client) {
 
           const adata = res.data.choices[0].text;
           if (adata.length > 1999) {
+            const saidwords = [];
+            for (let q = 0; q < adata.length; q++) {
+              const word = array[q];
+              saidwords.push(word);
+              msg.edit({ content: ```${saidwords}``` });
+            }
             const data = adata.slice(0, 1900);
             msg.edit(`\`\`\`${data}\`\`\``);
             const newdata = adata.slice(1900, adata.length);
             if (newdata.length > 1990) {
-              const newdata2 = newdata.slice(1990, newdata.length);
-              channel.send(`\`\`\`${newdata2}\`\`\``);
+              const saidwords2 = [];
+              for (let q = 0; q < newdata.length; q++) {
+                const word = array[q];
+                saidwords2.push(word);
+                channel.send({ content: ```${saidwords2}``` });
+              }
             }
-            channel.send(`\`\`\`${newdata}\`\`\``);
           } else {
             msg.edit(`\`\`\`${adata}\`\`\``);
           }

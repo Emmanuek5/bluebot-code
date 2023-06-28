@@ -1,19 +1,21 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder } = require("@discordjs/builders");
+const { EmbedBuilder } = require("discord.js");
 
 module.exports = {
-  usage: 'Returns the latency of the bot',
+  usage: "Returns the latency of the bot",
   data: new SlashCommandBuilder()
-    .setName('ping')
+    .setName("ping")
 
-    .setDescription('Pings the bot'),
+    .setDescription("Pings the bot"),
   async execute(interaction, client) {
     const embed = new EmbedBuilder()
-      .setTitle('Ping of the Bot')
+      .setTitle("Ping of the Bot")
       .setDescription(
-        `Bot Latency: ${Date.now() - interaction.createdTimestamp}ms\nAPI Latency: ${Math.round(client.ws.ping)}ms`
+        `Bot Latency: ${Date.now() - interaction.createdTimestamp}ms\nAPI Latency: ${Math.round(
+          client.ws.ping
+        )}ms`
       )
-      .setColor('Random')
+      .setColor("Random")
       .setTimestamp();
     await interaction.reply({ embeds: [embed] });
   },

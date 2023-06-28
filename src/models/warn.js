@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const WarnSchema = new mongoose.Schema({
   GuildId: String,
@@ -9,4 +9,4 @@ const WarnSchema = new mongoose.Schema({
   WarnReason: String,
 });
 
-module.exports = mongoose.model('warns', WarnSchema);
+module.exports = mongoose.model("warns", WarnSchema);

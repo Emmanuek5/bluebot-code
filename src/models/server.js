@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const serverSchema = new mongoose.Schema({
   guildName: {
@@ -29,7 +29,7 @@ const serverSchema = new mongoose.Schema({
   serverColor: {
     type: String,
     required: false,
-    default: 'Random',
+    default: "Random",
   },
   swearWords: {
     type: Boolean,
@@ -38,22 +38,22 @@ const serverSchema = new mongoose.Schema({
   bullyMeChannel: {
     type: String,
     required: false,
-    default: '',
+    default: "",
   },
   welcomeChannel: {
     type: String,
     required: false,
-    default: '',
+    default: "",
   },
   goodbyeChannel: {
     type: String,
     required: false,
-    default: '',
+    default: "",
   },
   levelingChannel: {
     type: String,
     required: false,
-    default: '',
+    default: "",
   },
   welcomeMessage: {
     type: Boolean,
@@ -62,4 +62,4 @@ const serverSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Server', serverSchema);
+module.exports = mongoose.model("Server", serverSchema);

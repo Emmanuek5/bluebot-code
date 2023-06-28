@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const mintSchema = new mongoose.Schema({
   token: {
@@ -21,4 +21,4 @@ const mintSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('mints', mintSchema);
+module.exports = mongoose.model("mints", mintSchema);

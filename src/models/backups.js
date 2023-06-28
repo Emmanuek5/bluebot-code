@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const backupSchema = mongoose.Schema({
   guildId: {
@@ -19,4 +19,4 @@ const backupSchema = mongoose.Schema({
   },
 });
 
-const backUpSchema = mongoose.model('backups', backupSchema);
+const backUpSchema = mongoose.model("backups", backupSchema);
