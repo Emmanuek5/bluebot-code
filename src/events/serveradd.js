@@ -2,6 +2,13 @@ const { Client, GatewayIntentBits, Collection, Events, ClientPresence, ActivityT
 const {dmhandler} = require('./dmhandler');
 
 require('dotenv').config();
+/**
+ * Asynchronously adds a guild to the client.
+ *
+ * @param {Object} guild - The guild object to be added.
+ * @param {Object} client - The client object.
+ * @return {Promise<void>} A promise that resolves once the guild has been added.
+ */
 async function add(guild,client){
 
    

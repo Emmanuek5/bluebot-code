@@ -222,13 +222,13 @@ async function createPrompt(message, client) {
         }
       } else {
         try {
+          await sleep(2000);
           msg.edit({
             content: "🔍 Searching the depths of the internet...",
           });
 
           const a = humanFilter(message, msg);
           if (a) return;
-
           const res = await openai.createCompletion({
             model: "text-davinci-003",
             prompt: content,

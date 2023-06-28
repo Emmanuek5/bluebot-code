@@ -19,6 +19,80 @@ const Level = require("discord.js-leveling");
 const { add } = require("./serveradd");
 
 function client(client) {
+  client.on("ready", async () => {
+    const commandarray = client.commands;
+    commandarray.forEach(command => {
+      const data = {
+        name: command.data.name,
+        description: command.data.description,
+        permissions: command.data.permissions,
+        usage: command.usage,
+      };
+      commandSchema.findOne({ name: data.name }, async (err, res) => {
+        if (err) throw err;
+        if (res) {
+          res.name = data.name;
+          res.description = data.description;
+          res.permissions = data.permissions;
+          res.usage = data.usage;
+          res.save();
+        } else {
+          const newData = new commandSchema({
+            name: data.name,
+            description: data.description,
+            permissions: data.permissions,
+            usage: data.usage,
+          });
+          newData.save();
+        }
+      });
+    });
+
+    client.manager.init(client.user.id);
+    mongoose.set("strictQuery", false);
+    mongoose.connect(process.env.DATABASE_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    Level.setURL(process.env.DATABASE_URL);
+    var log = "";
+
+    const db = mongoose.connection;
+    db.on("error", error => console.error(error));
+    db.once("open", () => (log = "Connected To Database"));
+
+    console.log(`\u001b[32m ----------------------------------------
+\u001b[31m Bot: ${client.user.tag}
+\u001b[34m Servers: ${client.guilds.cache.size}
+\u001b[33m Users: ${client.users.cache.size}
+\u001b[36m Channels: ${client.channels.cache.size}
+\u001b[35m Webserver: ${process.env.URL + process.env.PORT}
+\u001b[35m Database: ${process.env.DATABASE_URL}
+\u001b[35m Number of Commands: ${client.commands.size}
+ \u001b[31m   Welcome  ${client.user.username}! 
+\u001b[32m ----------------------------------------`);
+
+    let botName = client.user.username;
+    process.env.BOT_NAME = botName;
+    let serverCount = client.guilds.cache.size;
+    process.env.SERVER_COUNT = serverCount;
+
+    let userCount = client.users.cache.size;
+    //
+    process.env.USER_COUNT = userCount;
+
+    let channelCount = client.channels.cache.size;
+    process.env.CHANNEL_COUNT = channelCount;
+    //set the bot status to Playing with {usercount} users
+    const options = {
+      type: ActivityType.Watching,
+      name: `${process.env.SERVER_COUNT} servers and >help`,
+      status: "idle",
+    };
+
+    client.user.setPresence({ activities: [options] });
+  });
+
   const CurrencySystem = require("currency-system");
   const cs = new CurrencySystem();
   CurrencySystem.cs
@@ -142,80 +216,7 @@ function client(client) {
     error: "❌",
   };
   client.on("raw", d => client.manager.updateVoiceState(d));
-  client.on("ready", async () => {
-    const commandarray = client.commands;
-    commandarray.forEach(command => {
-      const data = {
-        name: command.data.name,
-        description: command.data.description,
-        permissions: command.data.permissions,
-        usage: command.usage,
-      };
-      commandSchema.findOne({ name: data.name }, async (err, res) => {
-        if (err) throw err;
-        if (res) {
-          res.name = data.name;
-          res.description = data.description;
-          res.permissions = data.permissions;
-          res.usage = data.usage;
-          res.save();
-        } else {
-          const newData = new commandSchema({
-            name: data.name,
-            description: data.description,
-            permissions: data.permissions,
-            usage: data.usage,
-          });
-          newData.save();
-        }
-      });
-    });
-
-    client.manager.init(client.user.id);
-    mongoose.set("strictQuery", false);
-    mongoose.connect(process.env.DATABASE_URL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    Level.setURL(process.env.DATABASE_URL);
-    var log = "";
-
-    const db = mongoose.connection;
-    db.on("error", error => console.error(error));
-    db.once("open", () => (log = "Connected To Database"));
-
-    console.log(`\u001b[32m ----------------------------------------
-\u001b[31m Bot: ${client.user.tag}
-\u001b[34m Servers: ${client.guilds.cache.size}
-\u001b[33m Users: ${client.users.cache.size}
-\u001b[36m Channels: ${client.channels.cache.size}
-\u001b[35m Webserver: ${process.env.URL + process.env.PORT}
-\u001b[35m Database: ${process.env.DATABASE_URL}
-\u001b[35m Number of Commands: ${client.commands.size}
- \u001b[31m   Welcome  ${client.user.username}! 
-\u001b[32m ----------------------------------------`);
-
-    let botName = client.user.username;
-    process.env.BOT_NAME = botName;
-    let serverCount = client.guilds.cache.size;
-    process.env.SERVER_COUNT = serverCount;
-
-    let userCount = client.users.cache.size;
-    //
-    process.env.USER_COUNT = userCount;
-
-    let channelCount = client.channels.cache.size;
-    process.env.CHANNEL_COUNT = channelCount;
-    //set the bot status to Playing with {usercount} users
-    const options = {
-      type: ActivityType.Watching,
-      name: `${process.env.SERVER_COUNT} servers and >help`,
-      status: "idle",
-    };
-
-    client.user.setPresence({ activities: [options] });
-  });
-
+  
   const nodes = [
     {
       host: process.env.LAVALINK_HOST,

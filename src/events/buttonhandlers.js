@@ -3,6 +3,13 @@ const { EmbedBuilder } = require("discord.js");
 const ticketSchema = require("../models/tickets");
 const { getBadWords } = require("../commands/moderation/roles/badwords");
 
+/**
+ * Handles button interactions.
+ *
+ * @param {Interaction} interaction - The interaction object representing the button click event.
+ * @param {Client} client - The client object representing the Discord bot.
+ * @return {Promise<void>} - A promise that resolves when the function is finished executing.
+ */
 async function buttons(interaction, client) {
   if (interaction.isButton()) {
     if (interaction.customId == "close") {

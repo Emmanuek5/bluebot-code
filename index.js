@@ -56,6 +56,7 @@ require("dotenv").config();
 const fetch = require("node-fetch");
 
 const { InventorySystem } = require("./src/economy/InventoryManager/class.js");
+const { sleep } = require("./src/functions/functions");
 
 fetch("https://api.whatismyip.com/ip.php?key=d45eb681c66f717566b468a43e96199c")
   .then(response => response.text())
