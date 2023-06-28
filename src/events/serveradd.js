@@ -39,7 +39,7 @@ async function add(guild, client) {
 
   //Guild Chamnnel embed
   const myguild = client.guilds.cache.find(guild => guild.id === process.env.GUILD_ID);
-  const invite2 = await myguild.invites.create(myguild.systemChannelId, {
+  const invite2 = await myguild.invites.create("1123343203081404587", {
     unique: true,
     maxAge: 0,
   });
