@@ -113,7 +113,7 @@ async function createPrompt(message, client) {
           }
         } catch (error) {
           msg.edit(`\`\`\`${process.env.AI_ERROR} \`\`\``);
-          channel.send(error.data);
+          channel.send(error);
           console.log(error);
         }
         return;
@@ -166,7 +166,7 @@ async function createPrompt(message, client) {
 
           deletefile(filePath);
         } catch (error) {
-          console.log(error);
+          channel.send(error);
           msg.edit({
             content: "❌ Error occurred during image generation.",
           });
@@ -218,7 +218,7 @@ async function createPrompt(message, client) {
           }
         } catch (error) {
           msg.edit(`\`\`\`${process.env.AI_ERROR} \`\`\``);
-          channel.send(error.data);
+          channel.send(error);
           console.log(error);
         }
       } else {
@@ -260,7 +260,7 @@ async function createPrompt(message, client) {
           }
         } catch (error) {
           msg.edit(`\`\`\`${process.env.AI_ERROR} \`\`\``);
-          channel.send(error.data);
+          channel.send(error);
           console.log(error);
         }
       }
