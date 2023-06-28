@@ -42,7 +42,27 @@ module.exports = {
     ),
   async execute(interaction) {
     const subcommand = interaction.options.getSubcommand();
+    let ticketParentid;
     if (subcommand === "create") {
+      const { guild } = interaction;
+      //find the ticket category if not create i t
+      if (
+        !guild.channels.cache.find(
+          channel => channel.name === "tickets" && channel.type == ChannelType.GuildCategory
+        )
+      ) {
+        const category = await guild.channels.create({
+          name: "tickets",
+          type: ChannelType.GuildCategory,
+        });
+        ticketParentid = category.id;
+      } else {
+        const category = guild.channels.cache.find(
+          channel => channel.name === "tickets" && channel.type == ChannelType.GuildCategory
+        );
+
+        ticketParentid = category.id;
+      }
       const reason = interaction.options.getString("reason");
       const ticket = await ticketSchema.findOne({
         guildID: interaction.guild.id,
@@ -80,6 +100,7 @@ module.exports = {
         const channel = await interaction.guild.channels.create({
           name: "ticket-" + interaction.user.username,
           type: ChannelType.GuildText,
+          parent: ticketParentid,
           permissionOverwrites: [
             {
               id: interaction.guild.id,
