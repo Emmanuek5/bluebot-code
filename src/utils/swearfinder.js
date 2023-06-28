@@ -35,7 +35,7 @@ function findSwearWordsAI(message) {
         return true, foundSwearWord;
       }
     }
-    return false, null; // no swear words found
+    return false; // no swear words found
   }
 }
 function findBadLInks(message) {}
