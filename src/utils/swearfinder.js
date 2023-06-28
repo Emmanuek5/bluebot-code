@@ -35,9 +35,10 @@ function findSwearWordsAI(message) {
         return true, foundSwearWord;
       }
     }
-    return false; // no swear words found
   }
+  return false; // no swear words found
 }
+
 function findBadLInks(message) {}
 
 module.exports = { findSwearWords, findBadLInks, findSwearWordsAI };
