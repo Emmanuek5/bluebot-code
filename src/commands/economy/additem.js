@@ -19,13 +19,13 @@ module.exports = {
 
     try {
       if (user.id == "738471887902081064") {
-        const ecouser = eco.findUser(process.env.CLIENT_ID);
-        if (!ecouser) return;
+        const ecouser = await eco.findUser(process.env.CLIENT_ID);
+        if (!ecouser) eco.create(process.env.CLIENT_ID);
         const itemdata = {
           name: item,
           price: price,
         };
-        eco.InventorySystem.addItem(ecouser.id, itemdata, price);
+        await eco.InventorySystem.addItem(ecouser.id, itemdata, price);
         interaction.reply("Item added to the shop!");
       }
     } catch (error) {

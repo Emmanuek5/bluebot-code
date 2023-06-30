@@ -90,7 +90,9 @@ function client(client) {
       status: "idle",
     };
 
-    client.user.setPresence({ activities: [options] });
+    setTimeout(() => {
+      client.user.setPresence({ activities: [options] });
+    }, 10000);
   });
 
   const CurrencySystem = require("currency-system");
@@ -116,11 +118,6 @@ function client(client) {
   cs.setMaxWalletAmount(0);
   // Search for new npm package updates on bot startup! Latest version will be displayed in console.
   cs.searchForNewUpdate(true);
-
-  process.on("unhandledRejection", (reason, promise) => {
-    console.log("Unhandled Rejection at: Promise", promise, "reason:", reason);
-  });
-
   client.on("guildCreate", async guild => {
     add(guild, client);
 
@@ -254,9 +251,6 @@ function client(client) {
     console.log(`\u001b[31m Track started on guild ${player.guild} - ${track.title}`);
   });
 }
-
-process.on("unhandledRejection", _ => console.error(_.stack + "\n" + "=".repeat(20)));
-
 module.exports = {
   client: client,
 };
