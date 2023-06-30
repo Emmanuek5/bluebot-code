@@ -1,8 +1,9 @@
 const ytdl = require("ytdl-core");
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
 const ticketSchema = require("../models/tickets");
 const { getBadWords } = require("../commands/moderation/roles/badwords");
-
+const path = require("path");
+const fs = require("fs");
 /**
  * Handles button interactions.
  *
@@ -12,6 +13,27 @@ const { getBadWords } = require("../commands/moderation/roles/badwords");
  */
 async function buttons(interaction, client) {
   if (interaction.isButton()) {
+    if (interaction.customId === "send-voice-prompt") {
+      const message_id = interaction.message.id;
+      const audioFolder = path.join(__dirname, "../data/audio/");
+
+      // Read the contents of the audio folder
+      fs.readdir(audioFolder, (err, files) => {
+        if (err) {
+          console.error("Error reading audio folder:", err);
+          return;
+        }
+        const matchingFile = files.find(file => file.startsWith(message_id));
+        if (matchingFile) {
+          const filePath = path.join(audioFolder, matchingFile);
+          const attachment = new AttachmentBuilder().setName(matchingFile).setFile(filePath);
+          interaction.reply({ content: "Here is your voice prompt", files: [attachment] });
+          console.log("Matching file found:", filePath);
+        } else {
+          console.log("No matching file found for message ID:", message_id);
+        }
+      });
+    }
     if (interaction.customId == "close") {
       const ticket = await ticketSchema.findOne({
         guildID: interaction.guild.id,

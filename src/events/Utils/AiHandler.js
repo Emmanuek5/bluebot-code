@@ -18,10 +18,12 @@ const fs = require("fs");
 const configureration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
+const { createAudioFile } = require("simple-tts-mp3");
 const cheerio = require("cheerio");
 const { download, sleep, downloadtxt, rand, deletefile } = require("../../functions/functions");
 const { name } = require("ejs");
 const { findSwearWordsAI, findSwearWords } = require("../../utils/swearfinder");
+const path = require("path");
 const openai = new OpenAIApi(configureration);
 
 async function createPrompt(message, client) {
@@ -264,6 +266,12 @@ async function createPrompt(message, client) {
           });
 
           const adata = res.data.choices[0].text;
+          const audiofile = path.join(
+            __dirname,
+            "../../data/audio/" + msg.id + "-" + content.replace("-", "") + rand(0, 1111)
+          );
+          createAudioFile(adata, audiofile);
+          console.log(audiofile);
           if (adata.length > 1999) {
             const data = adata.slice(0, 1900);
             msg.edit(`\`\`\`${data}\`\`\``);
@@ -274,7 +282,16 @@ async function createPrompt(message, client) {
             }
             channel.send(`\`\`\`${newdata}\`\`\``);
           } else {
-            msg.edit(`\`\`\`${adata}\`\`\``);
+            const components = new ActionRowBuilder().addComponents(
+              new ButtonBuilder()
+                .setStyle("Primary")
+                .setCustomId("send-voice-prompt")
+                .setLabel("Get Voice Prompt")
+            );
+            msg.edit({
+              content: `\`\`\`${adata}\`\`\``,
+              components: [components],
+            });
           }
         } catch (error) {
           msg.edit(`\`\`\`${process.env.AI_ERROR} \`\`\``);
