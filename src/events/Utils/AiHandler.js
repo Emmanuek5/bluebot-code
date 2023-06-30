@@ -272,22 +272,30 @@ async function createPrompt(message, client) {
           );
           createAudioFile(adata, audiofile);
           console.log(audiofile);
+          const components = new ActionRowBuilder().addComponents(
+            new ButtonBuilder()
+              .setStyle("Primary")
+              .setCustomId("send-voice-prompt")
+              .setLabel("Get Voice Prompt")
+          );
           if (adata.length > 1999) {
             const data = adata.slice(0, 1900);
-            msg.edit(`\`\`\`${data}\`\`\``);
+            msg.edit({
+              content: `\`\`\`${data}\`\`\``,
+            });
             const newdata = adata.slice(1900, adata.length);
             if (newdata.length > 1990) {
               const newdata2 = newdata.slice(1990, newdata.length);
-              channel.send(`\`\`\`${newdata2}\`\`\``);
+              channel.send({
+                content: `\`\`\`${newdata2}\`\`\``,
+                components: [components],
+              });
             }
-            channel.send(`\`\`\`${newdata}\`\`\``);
+            channel.send({
+              content: `\`\`\`${newdata}\`\`\``,
+              components: [components],
+            });
           } else {
-            const components = new ActionRowBuilder().addComponents(
-              new ButtonBuilder()
-                .setStyle("Primary")
-                .setCustomId("send-voice-prompt")
-                .setLabel("Get Voice Prompt")
-            );
             msg.edit({
               content: `\`\`\`${adata}\`\`\``,
               components: [components],
