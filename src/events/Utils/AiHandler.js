@@ -77,69 +77,41 @@ async function createPrompt(message, client) {
     .then(async msg => {
       if (content.match("^(https?|ftp)://[^s/$.?#].[^s]*$")) {
         try {
-          await sleep(2000);
-          msg.edit({
-            content: "🔍 Searching the depths of the internet...",
-          });
           const webPagedata = fetch(content).then(res => res.text());
           const webPage = await webPagedata;
           const $ = cheerio.load(webPage);
           const metaTags = [];
-
+          $("meta").each((index, element) => {
+            const name = $(element).attr("name");
+            const content = $(element).attr("content");
+            if (name && content) {
+              metaTags.push({ name, content });
+            }
+          });
           const selectedPart = webPage ? webPage.slice(0, 1990) : webPage.slice(1999);
           console.log(metaTags);
+          const a = humanFilter(message, msg);
+          if (a) return;
           const res = await openai.createCompletion({
             model: "text-davinci-003",
             prompt: selectedPart,
             temperature: 1.5,
             max_tokens: 2048,
           });
-
-          msg.edit({
-            content: "🔬 Analyzing the information...",
-          });
-
+          const nulls = filterResponseForSwearWords(res, msg);
+          if (nulls) return;
           const adata = res.data.choices[0].text;
-          const audiofile = path.join(
-            __dirname,
-            "../../data/audio/" +
-              msg.id +
-              "-" +
-              content
-                .replace("-", "")
-                .replace(/(?:https?|ftp):\/\/[\w/\-?=%.]+\.[\w/\-?=%.]+/gi, "") +
-              rand(0, 1111)
-          );
-          createAudioFile(adata, audiofile);
-          console.log(audiofile);
-          const components = new ActionRowBuilder().addComponents(
-            new ButtonBuilder()
-              .setStyle("Primary")
-              .setCustomId("send-voice-prompt")
-              .setLabel("Get Voice Prompt")
-          );
           if (adata.length > 1999) {
             const data = adata.slice(0, 1900);
-            msg.edit({
-              content: `\`\`\`${data}\`\`\``,
-            });
+            msg.edit(`\`\`\`${data}\`\`\``);
             const newdata = adata.slice(1900, adata.length);
             if (newdata.length > 1990) {
               const newdata2 = newdata.slice(1990, newdata.length);
-              channel.send({
-                content: `\`\`\`${newdata2}\`\`\``,
-                components: [components],
-              });
+              channel.send(`\`\`\`${newdata2}\`\`\``);
             }
-            channel.send({
-              content: `\`\`\`${newdata}\`\`\``,
-              components: [components],
-            });
+            channel.send(`\`\`\`${newdata}\`\`\``);
           } else {
-            msg.edit({
-              content: `\`\`\`${adata}\`\`\``,
-              components: [components],
-            });
+            msg.edit(`\`\`\`${adata}\`\`\``);
           }
         } catch (error) {
           msg.edit(`\`\`\`${process.env.AI_ERROR} \`\`\``);
