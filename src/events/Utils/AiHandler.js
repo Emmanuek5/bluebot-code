@@ -101,17 +101,40 @@ async function createPrompt(message, client) {
           const nulls = filterResponseForSwearWords(res, msg);
           if (nulls) return;
           const adata = res.data.choices[0].text;
+          const audiofile = path.join(
+            __dirname,
+            "../../data/audio/" + msg.id + "-" + content.replace("-", "") + rand(0, 1111)
+          );
+          createAudioFile(adata, audiofile);
+          console.log(audiofile);
+          const components = new ActionRowBuilder().addComponents(
+            new ButtonBuilder()
+              .setStyle("Primary")
+              .setCustomId("send-voice-prompt")
+              .setLabel("Get Voice Prompt")
+          );
           if (adata.length > 1999) {
             const data = adata.slice(0, 1900);
-            msg.edit(`\`\`\`${data}\`\`\``);
+            msg.edit({
+              content: `\`\`\`${data}\`\`\``,
+            });
             const newdata = adata.slice(1900, adata.length);
             if (newdata.length > 1990) {
               const newdata2 = newdata.slice(1990, newdata.length);
-              channel.send(`\`\`\`${newdata2}\`\`\``);
+              channel.send({
+                content: `\`\`\`${newdata2}\`\`\``,
+                components: [components],
+              });
             }
-            channel.send(`\`\`\`${newdata}\`\`\``);
+            channel.send({
+              content: `\`\`\`${newdata}\`\`\``,
+              components: [components],
+            });
           } else {
-            msg.edit(`\`\`\`${adata}\`\`\``);
+            msg.edit({
+              content: `\`\`\`${adata}\`\`\``,
+              components: [components],
+            });
           }
         } catch (error) {
           msg.edit(`\`\`\`${process.env.AI_ERROR} \`\`\``);
