@@ -10,8 +10,9 @@ module.exports = {
   async execute(interaction, client) {
     const attachment = interaction.options.getAttachment("avatar");
 
-    if (interaction.user.id !== "738471887902081064") {
+    if (!interaction.user.id == "738471887902081064") {
       interaction.reply("You Are Not Allowed To Use This Command");
+      return;
     }
 
     try {
