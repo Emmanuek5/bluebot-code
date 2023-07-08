@@ -28,7 +28,6 @@ const serverSchema = new mongoose.Schema({
   },
   serverColor: {
     type: String,
-    required: false,
     default: "Random",
   },
   swearWords: {
@@ -37,7 +36,6 @@ const serverSchema = new mongoose.Schema({
   },
   bullyMeChannel: {
     type: String,
-    required: false,
     default: "",
   },
   welcomeChannel: {

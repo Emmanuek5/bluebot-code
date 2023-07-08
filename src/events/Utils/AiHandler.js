@@ -25,7 +25,8 @@ const { name } = require("ejs");
 const { findSwearWordsAI, findSwearWords } = require("../../utils/swearfinder");
 const path = require("path");
 const openai = new OpenAIApi(configureration);
-
+const aimodel = "gpt-3.5-turbo-instruct";
+const messages = [];
 async function createPrompt(message, client) {
   const channel = message.channel;
   const content = message.content;
@@ -93,9 +94,9 @@ async function createPrompt(message, client) {
           const a = humanFilter(message, msg);
           if (a) return;
           const res = await openai.createCompletion({
-            model: "text-davinci-003",
-            prompt: selectedPart,
-            temperature: 1.5,
+            model: aimodel,
+            prompt: `Generate a short summary for this page: ${content}\n\nSummary: ${selectedPart}`,
+            temperature: 0.5,
             max_tokens: 2048,
           });
           const nulls = filterResponseForSwearWords(res, msg);
@@ -197,7 +198,7 @@ async function createPrompt(message, client) {
           const a = humanFilter(message, msg);
           if (a) return;
           const res = await openai.createCompletion({
-            model: "text-davinci-003",
+            model: aimodel,
             prompt: filecontent,
             temperature: 0.5,
             max_tokens: 2048,
@@ -231,27 +232,37 @@ async function createPrompt(message, client) {
           });
           if (findSwearWords(content)) {
             try {
-              // Delete the message
-              await message.delete();
               // Create an embed message to show a warning
               const embed = new EmbedBuilder()
                 .setColor("#FF0000")
                 .setDescription("Please don't use swear words or ask for swear words");
 
               // Send the warning message in the same channel
-              await message.channel.send({ embeds: [embed], content: ":(" });
+              await msg.edit({ embeds: [embed], content: ":(" });
             } catch (error) {
               // Log any error that occurs while filtering the message
               console.error("Error while filtering human message:", error);
             }
             return true;
           }
-
-          const res = await openai.createCompletion({
-            model: "text-davinci-003",
-            prompt: content,
-            temperature: 0.5,
-            max_tokens: 2048,
+          const channel = message.channel;
+          channel.messages.fetch({ limit: 50 }).then(async messagesx => {
+            console.log(`Received ${messagesx.size} messages`);
+            //Iterate through the messages here with the variable "messages".
+            messagesx.forEach(message => {
+              if (message.author.id == client.user.id) {
+                messages.push({ role: "assistant", content: message.content });
+              }
+              messages.push({ role: "user", content: message.content });
+            });
+            console.log(messages);
+          });
+          const system_msg = "A Chill,Relaxed,Funny And Informative ";
+          messages.push({ role: "system", content: system_msg });
+          messages.push({ role: "user", content: content });
+          const res = await openai.createChatCompletion({
+            model: aimodel,
+            messages: messages,
           });
 
           msg.edit({
@@ -264,11 +275,16 @@ async function createPrompt(message, client) {
           msg.edit({
             content: "📊 Formatting the data...",
           });
+          console.log(res.data.choices[0]);
+          const adata = res.data.choices[0].message.content;
 
-          const adata = res.data.choices[0].text;
           const audiofile = path.join(
             __dirname,
-            "../../data/audio/" + msg.id + "-" + content.replace("-", "") + rand(0, 1111)
+            "../../data/audio/" +
+              msg.id +
+              "-" +
+              content.replace("-", "").replace(/[^\w\s]/g, "") +
+              rand(0, 1111)
           );
           createAudioFile(adata, audiofile);
           console.log(audiofile);

@@ -166,7 +166,6 @@ async function messages(client, message) {
     }
     if (message.channel.name === "bully-me" || message.channel.id == serverInfo.bullyMeChannel)
       return;
-    message.delete();
     channel.send(
       `${author} Swearing is not allowed in this server please refrain from doing so in the future or you will be Muted`
     );
@@ -201,7 +200,6 @@ async function messages(client, message) {
         }
 
         if (member.permissions.has(PermissionsBitField.Flags.Administrator)) {
-          channel.send({ content: "I Can't Mute This User :sob:" });
           warns.WarnCount = 0;
           await warns.save();
           return;
