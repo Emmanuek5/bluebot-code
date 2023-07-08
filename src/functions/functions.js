@@ -110,6 +110,33 @@ function deletefile(filepath) {
   fs.unlinkSync(filepath);
 }
 
+/**
+ * Logs a GPT message to a JSON file.
+ *
+ * @param {string} role - The role of the message.
+ * @param {string} message - The content of the message.
+ * @param {string} channelid - The ID of the channel.
+ * @return {Array} - The updated array of logged messages.
+ */
+function logGptMessage(role, message, channelid) {
+  const file = path.join(__dirname, "../data/gpt-conversations/log-" + channelid + ".json");
+
+  if (!fs.existsSync(file)) {
+    fs.writeFileSync(file, "[]");
+  }
+
+  const data = JSON.parse(fs.readFileSync(file));
+
+  data.push({
+    role: role,
+    message: message,
+  });
+
+  fs.writeFileSync(file, JSON.stringify(data));
+
+  return data;
+}
+
 module.exports = {
   sleep,
   rand,
@@ -118,4 +145,5 @@ module.exports = {
   download,
   deletefile,
   downloadtxt,
+  logGptMessage,
 };

@@ -20,7 +20,14 @@ const configureration = new Configuration({
 });
 const { createAudioFile } = require("simple-tts-mp3");
 const cheerio = require("cheerio");
-const { download, sleep, downloadtxt, rand, deletefile } = require("../../functions/functions");
+const {
+  download,
+  sleep,
+  downloadtxt,
+  rand,
+  deletefile,
+  logGptMessage,
+} = require("../../functions/functions");
 const { name } = require("ejs");
 const { findSwearWordsAI, findSwearWords } = require("../../utils/swearfinder");
 const path = require("path");
@@ -244,23 +251,12 @@ async function createPrompt(message, client) {
             }
             return true;
           }
-          const messages = [];
           const channel = message.channel;
-          const messagesx = await channel.messages.fetch({ limit: 10 });
-          console.log(`Received ${messagesx.size} messages`);
-
-          messagesx.forEach(message => {
-            if (message.author.id === client.user.id) {
-              messages.push({ role: "assistant", content: message.content });
-            }
-            messages.push({ role: "user", content: message.content });
-          });
+          const messages = logGptMessage("user", content, channel.id);
 
           const system_msg = "A Chill,Relaxed,Funny And Informative ";
-          messages.push({ role: "system", content: system_msg });
-          messages.push({ role: "user", content: content });
-
-          fs.writeFileSync("./message.json", JSON.stringify(messages));
+          messages.unshift({ role: "system", content: system_msg });
+          console.log(messages);
           const res = await openai.createChatCompletion({
             model: aimodel,
             messages: messages,
@@ -278,7 +274,7 @@ async function createPrompt(message, client) {
           });
           console.log(res.data.choices[0]);
           const adata = res.data.choices[0].message.content;
-
+          logGptMessage("assistant", adata, channel.id);
           const audiofile = path.join(
             __dirname,
             "../../data/audio/" +

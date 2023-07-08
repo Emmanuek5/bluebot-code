@@ -1,6 +1,7 @@
 # This .gitignore file specially written by MrSpeedy from AtlasDevelopmentLLC for Craftilities.
 inventory.json
 downloads
+gpt-conversations
 qrcodes
 audio
 # Logs
