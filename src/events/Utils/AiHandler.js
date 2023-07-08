@@ -25,8 +25,7 @@ const { name } = require("ejs");
 const { findSwearWordsAI, findSwearWords } = require("../../utils/swearfinder");
 const path = require("path");
 const openai = new OpenAIApi(configureration);
-const aimodel = "gpt-3.5-turbo-instruct";
-const messages = [];
+const aimodel = "gpt-3.5-turbo";
 async function createPrompt(message, client) {
   const channel = message.channel;
   const content = message.content;
@@ -245,21 +244,23 @@ async function createPrompt(message, client) {
             }
             return true;
           }
+          const messages = [];
           const channel = message.channel;
-          channel.messages.fetch({ limit: 50 }).then(async messagesx => {
-            console.log(`Received ${messagesx.size} messages`);
-            //Iterate through the messages here with the variable "messages".
-            messagesx.forEach(message => {
-              if (message.author.id == client.user.id) {
-                messages.push({ role: "assistant", content: message.content });
-              }
-              messages.push({ role: "user", content: message.content });
-            });
-            console.log(messages);
+          const messagesx = await channel.messages.fetch({ limit: 10 });
+          console.log(`Received ${messagesx.size} messages`);
+
+          messagesx.forEach(message => {
+            if (message.author.id === client.user.id) {
+              messages.push({ role: "assistant", content: message.content });
+            }
+            messages.push({ role: "user", content: message.content });
           });
+
           const system_msg = "A Chill,Relaxed,Funny And Informative ";
           messages.push({ role: "system", content: system_msg });
           messages.push({ role: "user", content: content });
+
+          fs.writeFileSync("./message.json", JSON.stringify(messages));
           const res = await openai.createChatCompletion({
             model: aimodel,
             messages: messages,

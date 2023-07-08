@@ -120,7 +120,6 @@ async function messages(client, message) {
         .setTitle("Level Up!")
         .setDescription(`GG ${author}!, You Just Leveled Up to Level ${user.level}`)
         .setColor("Random")
-        .setAuthor({ name: "The Blue Bot", iconURL: process.env.BOT_AVATAR })
         .setTimestamp()
         .setFooter({
           text: `Level Up By: ${username}`,
@@ -147,7 +146,6 @@ async function messages(client, message) {
         `Hey ${author}, We Don't Allow Invite Links In This Server, Please Don't Do It Again!`
       )
       .setColor("Red")
-      .setAuthor({ name: "The Blue Bot", iconURL: process.env.BOT_AVATAR })
       .setTimestamp()
       .setFooter({
         text: `Invite Link Detected By: ${username}`,
