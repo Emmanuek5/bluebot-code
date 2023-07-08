@@ -272,7 +272,7 @@ async function createPrompt(message, client) {
 
           const nulls = findSwearWordsAI(res, msg);
           if (nulls) return;
-
+          messages = [];
           msg.edit({
             content: "📊 Formatting the data...",
           });
