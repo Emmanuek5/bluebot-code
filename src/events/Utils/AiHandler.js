@@ -277,11 +277,7 @@ async function createPrompt(message, client) {
           logGptMessage("assistant", adata, channel.id);
           const audiofile = path.join(
             __dirname,
-            "../../data/audio/" +
-              msg.id +
-              "-" +
-              content.replace("-", "").replace(/[^\w\s]/g, "") +
-              rand(0, 1111)
+            "../../data/audio/" + msg.id + "-" + rand(0, 1111)
           );
           createAudioFile(adata, audiofile);
           console.log(audiofile);
