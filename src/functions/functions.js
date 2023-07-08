@@ -129,7 +129,7 @@ function logGptMessage(role, message, channelid) {
 
   data.push({
     role: role,
-    message: message,
+    content: message,
   });
 
   fs.writeFileSync(file, JSON.stringify(data));

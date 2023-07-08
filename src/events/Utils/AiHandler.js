@@ -32,7 +32,7 @@ const { name } = require("ejs");
 const { findSwearWordsAI, findSwearWords } = require("../../utils/swearfinder");
 const path = require("path");
 const openai = new OpenAIApi(configureration);
-const aimodel = "gpt-3.5-turbo";
+const aimodel = "gpt-3.5-turbo-16k";
 async function createPrompt(message, client) {
   const channel = message.channel;
   const content = message.content;
@@ -252,7 +252,7 @@ async function createPrompt(message, client) {
             return true;
           }
           const channel = message.channel;
-          const messages = logGptMessage("user", content, channel.id);
+          let messages = logGptMessage("user", content, channel.id);
 
           const system_msg = "A Chill,Relaxed,Funny And Informative ";
           messages.unshift({ role: "system", content: system_msg });
