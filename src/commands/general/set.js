@@ -115,7 +115,7 @@ module.exports = {
         .setTimestamp();
       return interaction.reply({ embeds: [embed] });
     }
-    if (!server.serverColor) server.serverColor = "Random";
+    server.serverColor = server.serverColor || "Random";
     if (subcommand === "color") {
       const mess = option.toLowerCase();
       const color = option[0].toUpperCase();
