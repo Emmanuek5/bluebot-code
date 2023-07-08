@@ -78,7 +78,7 @@ async function messages(client, message) {
     createPrompt(message, client);
     return;
   }
-
+  serverInfo.bullyMeChannel = serverInfo.bullyMeChannel || "";
   if (message.channel.name === "bully-me" || message.channel.id == serverInfo.bullyMeChannel) {
     bully(client, message);
     return;
