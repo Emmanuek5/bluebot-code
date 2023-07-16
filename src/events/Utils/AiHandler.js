@@ -219,7 +219,7 @@ async function createPrompt(message, client) {
           }
           const res = await openai.createCompletion({
             model: "text-davinci-003",
-            prompt: filecontent,
+            prompt: filecontent.trim(),
             temperature: 0.5,
             max_tokens: 2048,
           });
@@ -232,11 +232,11 @@ async function createPrompt(message, client) {
             const newdata = adata.slice(1900, adata.length);
             if (newdata.length > 1990) {
               const newdata2 = newdata.slice(1990, newdata.length);
-              channel.send(`\`\`\`${newdata2}\`\`\``);
+              channel.send(`\`\`\`${newdata2.trim()}\`\`\``);
             }
-            channel.send(`\`\`\`${newdata}\`\`\``);
+            channel.send(`\`\`\`${newdata.trim()}\`\`\``);
           } else {
-            msg.edit(`\`\`\`${adata}\`\`\``);
+            msg.edit(`\`\`\`${adata.trim()}\`\`\``);
           }
         } catch (error) {
           msg.edit(`\`\`\`${process.env.AI_ERROR} \`\`\``);
