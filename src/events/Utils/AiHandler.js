@@ -94,19 +94,10 @@ async function createPrompt(message, client) {
           const webPage = await webPagedata;
           const $ = cheerio.load(webPage);
           const metaTags = [];
-          $("meta").each((index, element) => {
-            const name = $(element).attr("name");
-            const content = $(element).attr("content");
-            if (name && content) {
-              metaTags.push({ name, content });
-            }
-          });
+
           const selectedPart = webPage ? webPage.slice(0, 1990) : webPage.slice(1999);
-          console.log(metaTags);
-          const a = humanFilter(message, msg);
-          if (a) return;
           const res = await openai.createCompletion({
-            model: aimodel,
+            model: "text-davinci-003",
             prompt: `Generate a short summary for this page: ${content}\n\nSummary: ${selectedPart}`,
             temperature: 0.5,
             max_tokens: 2048,
@@ -248,8 +239,6 @@ async function createPrompt(message, client) {
           } else {
             msg.edit(`\`\`\`${adata}\`\`\``);
           }
-
-          msg.edit(`${emojis.success} AI response sent successfully!`);
         } catch (error) {
           msg.edit(`\`\`\`${process.env.AI_ERROR} \`\`\``);
           channel.send(`${emojis.error} An error occurred: ${error.message}`);
