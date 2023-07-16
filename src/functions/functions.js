@@ -79,27 +79,33 @@ async function download(link) {
  * @param {string} link - The URL of the file to be downloaded.
  * @return {Promise<string>} Returns a Promise containing the filepath of the downloaded file.
  */
-async function downloadtxt(link) {
-  //download the file from the link and save it locally to the downloads folder in data folder
+async function downloadfile(link) {
   const filename = path.basename(link);
-  /**
-   * Downloads a file from a given link and saves it locally to the downloads folder in the data folder.
-   *
-   * @param {string} link - The URL of the file to be downloaded.
-   * @return {Promise<string>} Returns a Promise containing the filepath of the downloaded file.
-   */
+
   console.log(filename);
-  const file = fs.createWriteStream(path.join(__dirname, "../data/downloads/" + filename));
-  request(link).pipe(file);
-  file.on("finish", () => {
-    file.close();
+
+  return new Promise((resolve, reject) => {
+    const file = fs.createWriteStream(path.join(__dirname, "../data/downloads/" + filename));
+    const downloadRequest = request(link);
+
+    downloadRequest.on("response", response => {
+      if (response.statusCode !== 200) {
+        reject(new Error("Failed to download the file. Status code: " + response.statusCode));
+      }
+    });
+
+    downloadRequest.pipe(file);
+
+    file.on("finish", () => {
+      file.close();
+      resolve(path.join(__dirname, "../data/downloads/" + filename));
+    });
+
+    file.on("error", err => {
+      reject(err);
+    });
   });
-  await sleep(5000);
-  const filepath = path.join(__dirname, "../data/downloads/" + filename);
-
-  return filepath;
 }
-
 /**
  * Deletes a file from the given file path.
  *
@@ -144,6 +150,6 @@ module.exports = {
   checkNotAuthenticated,
   download,
   deletefile,
-  downloadtxt,
+  downloadfile,
   logGptMessage,
 };
