@@ -102,8 +102,7 @@ async function createPrompt(message, client) {
             temperature: 0.5,
             max_tokens: 2048,
           });
-          const nulls = filterResponseForSwearWords(res, msg);
-          if (nulls) return;
+
           const adata = res.data.choices[0].text;
           if (adata.length > 1999) {
             const data = adata.slice(0, 1900);
