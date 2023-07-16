@@ -82,7 +82,7 @@ async function createPrompt(message, client) {
   channel
     .send(selectedReply)
     .then(async msg => {
-      if (content.match("^(https?|ftp)://[^s/$.?#].[^s]*$")) {
+      if (content.match(/^(https?|ftp):\/\/[^\\s/$.?#].[^\\s]*$/)) {
         try {
           const webPagedata = fetch(content).then(res => res.text());
           const webPage = await webPagedata;
@@ -197,7 +197,8 @@ async function createPrompt(message, client) {
           return;
         }
 
-        const url = await downloadtxt(file);
+        const url = await downloadfile(file);
+        console.log(url);
         const filecontent = fs.readFileSync(url, "utf-8");
         if (filecontent > 2000) filecontent.splice(0, 2018);
         try {
