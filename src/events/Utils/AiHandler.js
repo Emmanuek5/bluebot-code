@@ -79,7 +79,11 @@ async function createPrompt(message, client) {
     "Transforming data into wisdom...",
     "Crafting responses with precision...",
   ];
-
+  const emojis = {
+    loading: "⏳",
+    success: "✅",
+    error: "❌",
+  };
   const selectedReply = ReplyOptions[Math.floor(Math.random() * ReplyOptions.length)];
   channel
     .send(selectedReply)
@@ -187,35 +191,51 @@ async function createPrompt(message, client) {
       } else if (message.attachments.size > 0) {
         const file = message.attachments.first().url;
         const extension = file.split(".").pop().toLowerCase();
-        if (
-          extension !== "txt" &&
-          extension !== "js" &&
-          extension !== "css" &&
-          extension !== "theme" &&
-          extension !== "c" &&
-          extension !== "java"
-        ) {
+
+        if (!["txt", "js", "css", "theme", "c", "java"].includes(extension)) {
           msg.edit("The Bot can only receive .txt, .js, .css, .theme, .c, and .java files");
           return;
         }
 
-        const url = await downloadfile(file);
-        console.log(url);
-        const filecontent = fs.readFileSync(url, "utf-8");
-        if (filecontent > 2000) filecontent.splice(0, 2018);
         try {
-          const a = humanFilter(message, msg);
-          if (a) return;
+          // Download the file
+          msg.edit(`Downloading the file... ${emojis.loading}`);
+          const url = await downloadfile(file);
+          console.log(url);
+
+          // Read the file content
+          msg.edit(`Reading the file... ${emojis.loading}`);
+          const filecontent = fs.readFileSync(url, "utf-8");
+          if (filecontent.length > 2000) filecontent.slice(0, 2000);
+          console.log(filecontent);
+          // Generate response using AI model
+          msg.edit(`Generating response... ${emojis.loading}`);
+          if (findSwearWords(filecontent)) {
+            try {
+              // Create an embed message to show a warning
+              const embed = new EmbedBuilder()
+                .setColor("#FF0000")
+                .setDescription("Please don't use swear words or ask for swear words");
+
+              // Send the warning message in the same channel
+              await msg.edit({ embeds: [embed], content: ":(" });
+            } catch (error) {
+              // Log any error that occurs while filtering the message
+              console.error("Error while filtering human message:", error);
+            }
+            return true;
+          } else {
+            console.log("No Word Found");
+          }
           const res = await openai.createCompletion({
-            model: aimodel,
+            model: "text-davinci-003",
             prompt: filecontent,
             temperature: 0.5,
             max_tokens: 2048,
           });
-          const nulls = filterResponseForSwearWords(res, msg);
-          if (nulls) return;
 
           const adata = res.data.choices[0].text;
+          // Split and send long responses
           if (adata.length > 1999) {
             const data = adata.slice(0, 1900);
             msg.edit(`\`\`\`${data}\`\`\``);
@@ -228,11 +248,14 @@ async function createPrompt(message, client) {
           } else {
             msg.edit(`\`\`\`${adata}\`\`\``);
           }
+
+          msg.edit(`${emojis.success} AI response sent successfully!`);
         } catch (error) {
           msg.edit(`\`\`\`${process.env.AI_ERROR} \`\`\``);
-          channel.send(error);
+          channel.send(`${emojis.error} An error occurred: ${error.message}`);
           console.log(error);
         }
+        return;
       } else {
         try {
           await sleep(2000);

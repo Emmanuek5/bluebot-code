@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon --ext js,mjs index.js && prettier -w ./src",
+    "start": "nodemon --ext js,mjs index.js --ignore src/data  && prettier -w ./src",
     "deploy": "node deploy-commands.js",
     "delete": "node delete-commands.js",
     "tojson": "node src/server/changeenv.js json ",
