@@ -27,6 +27,8 @@ const {
   rand,
   deletefile,
   logGptMessage,
+  isValidURL,
+  downloadfile,
 } = require("../../functions/functions");
 const { name } = require("ejs");
 const { findSwearWordsAI, findSwearWords } = require("../../utils/swearfinder");
@@ -82,7 +84,7 @@ async function createPrompt(message, client) {
   channel
     .send(selectedReply)
     .then(async msg => {
-      if (content.match(/^(https?|ftp):\/\/[^\\s/$.?#].[^\\s]*$/)) {
+      if (isValidURL(content)) {
         try {
           const webPagedata = fetch(content).then(res => res.text());
           const webPage = await webPagedata;

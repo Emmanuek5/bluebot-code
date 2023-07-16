@@ -74,6 +74,21 @@ async function download(link) {
 }
 
 /**
+ * Check if a given content is a valid URL.
+ *
+ * @param {string} content - The content to be checked.
+ * @return {boolean} Returns true if the content is a valid URL, false otherwise.
+ */
+function isValidURL(content) {
+  try {
+    new URL(content);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
+/**
  * Downloads a file from a given link and saves it locally to the downloads folder in the data folder.
  *
  * @param {string} link - The URL of the file to be downloaded.
@@ -152,4 +167,5 @@ module.exports = {
   deletefile,
   downloadfile,
   logGptMessage,
+  isValidURL,
 };
