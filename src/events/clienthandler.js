@@ -17,8 +17,6 @@ const {
 require("dotenv").config();
 const Level = require("discord.js-leveling");
 const { add } = require("./serveradd");
-const axios = require("axios");
-const qs = require("qs");
 
 function client(client) {
   client.on("ready", async () => {
@@ -50,6 +48,12 @@ function client(client) {
       });
     });
 
+    const axios = require("axios");
+    const qs = require("qs");
+    let data = qs.stringify({
+      server_count: process.env.SERVER_COUNT,
+    });
+
     let config = {
       method: "post",
       maxBodyLength: Infinity,
@@ -59,7 +63,7 @@ function client(client) {
           "4367bac5939ad6963a7997b825a0f98e6d396730f617c6a7565ad1825c0b41ffc6455827f5397c2c6b191411cb4154f790a18cb3839c80560bc8d898a99b7628",
         "Content-Type": "application/x-www-form-urlencoded",
       },
-      data: { server_count: process.env.SERVER_COUNT },
+      data: data,
     };
 
     axios
@@ -182,6 +186,8 @@ function client(client) {
       status: "idle",
     };
     client.user.setPresence({ activities: [options] });
+    const axios = require("axios");
+    const qs = require("qs");
     let data = qs.stringify({
       server_count: process.env.SERVER_COUNT,
     });
@@ -222,6 +228,8 @@ function client(client) {
         }
       }
     );
+    const axios = require("axios");
+    const qs = require("qs");
     let data = qs.stringify({
       server_count: process.env.SERVER_COUNT,
     });
