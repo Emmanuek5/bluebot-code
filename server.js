@@ -76,7 +76,7 @@ wss.on("connection", ws => {
     console.log("Received Message" + message);
   });
 });
-console.log(app.routes);
+console.log(app._router);
 app.listen(port, () => {});
 
 module.exports = {
