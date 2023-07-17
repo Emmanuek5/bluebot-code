@@ -52,6 +52,7 @@ const leaveandjoinhandler = require("./src/events/leaveandjoinhandler");
 const mongoose = require("mongoose");
 const messagehand = require("./src/events/messagehandler.js");
 
+new Api(client, process.env.TOKEN, server.app).start();
 require("dotenv").config();
 const fetch = require("node-fetch");
 
@@ -134,4 +135,3 @@ client.on("guildMemberRemove", member => {
 commandhandler.createcommands(client);
 
 client.login(process.env.TOKEN);
-new Api(client, process.env.TOKEN, server.app).start();
