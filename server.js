@@ -22,6 +22,7 @@ const { Server } = require("ws");
 const wss = new Server({
   server: server,
 });
+const { Api } = require("./load");
 
 app.use(express.urlencoded({ extended: false }));
 app.set("view-engine", "ejs");
@@ -30,7 +31,12 @@ app.set("view-engine", "ejs");
 //connect to database
 
 app.set("views", path.join(__dirname, "src/views"));
-
+if (process.env.DEV) {
+  const api = new Api();
+  api.start();
+  app.use(api.getRouter());
+  console.log(app._router);
+}
 require("./src/functions/passport-discord");
 
 app.use(
@@ -69,6 +75,7 @@ const dashboardRoutes = require("./src/routes/dashboard");
 app.use("/dashboard", dashboardRoutes);
 
 const loginRoutes = require("./src/routes/login");
+
 app.use("/login", loginRoutes);
 
 wss.on("connection", ws => {
@@ -76,8 +83,12 @@ wss.on("connection", ws => {
     console.log("Received Message" + message);
   });
 });
-console.log(app._router);
-app.listen(port, () => {});
+
+app.listen(port, () => {
+  if (process.env.DEV) {
+    console.log("Server Started");
+  }
+});
 
 module.exports = {
   app: app,

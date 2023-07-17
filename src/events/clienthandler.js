@@ -233,6 +233,7 @@ function client(client) {
     let data = qs.stringify({
       server_count: process.env.SERVER_COUNT,
     });
+    console.log(data);
 
     let config = {
       method: "post",

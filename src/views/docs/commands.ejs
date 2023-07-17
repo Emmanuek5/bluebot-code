@@ -11,7 +11,7 @@
   </head>
   <style>
     body {
-      font-family: 'Poppins', sans-serif !important;
+      font-family: "Poppins", sans-serif !important;
       background-color: #1d1e28;
       color: #fff;
       -webkit-font-smoothing: antialiased;
@@ -25,6 +25,7 @@
       justify-content: center;
       flex-direction: column;
     }
+
     h1 {
       font-size: 2.5rem;
       font-weight: 700;
@@ -32,6 +33,7 @@
       position: absolute;
       top: 10px;
     }
+
     p {
       font-size: 1.5rem;
       font-weight: 700;
@@ -47,19 +49,40 @@
       border-collapse: collapse;
       border-spacing: 0;
       background-color: #2c4185;
+      border-radius: 8px;
+      overflow: hidden;
     }
+
     tr:hover {
       background-color: #2b0c81;
     }
+
     th,
     td {
       text-align: left;
       padding: 16px;
     }
+
     th {
       background-color: #2b0c81;
       border: 1px solid #ddd;
       color: white;
+    }
+
+    td {
+      border: 1px solid #ddd;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #1d1e28;
+    }
+
+    tbody tr:nth-child(odd) {
+      background-color: #292c3e;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
     }
   </style>
   <body>
