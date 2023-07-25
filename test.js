@@ -1,29 +1,17 @@
-// Imports the Google Cloud client library
-const textToSpeech = require("@google-cloud/text-to-speech");
+require("axios");
+require("dotenv").config();
 
-// Import other required libraries
-const fs = require("fs");
-const util = require("util");
-// Creates a client
-const client = new textToSpeech.TextToSpeechClient();
-async function quickStart() {
-  // The text to synthesize
-  const text = "hello, world!";
+setTimeout(() => {
+  fetch("https://discords.com/bots/api/bot/1058300450253832272", {
+    method: "post",
+    headers: {
+      Authorization: `Bearer adb612a7ee7ea9e9b69a25a3d298e96e09faa10525b4833784fe6a1781dd07cb46069018b3e001ce196327bd066043f56ff3e99b67c52cd180042ac75d91829b`,
+    },
+    data: {
+      server_count: process.env.SERVER_COUNT,
+    },
+  }).then(e => {
+    console.log(e);
+  });
 
-  // Construct the request
-  const request = {
-    input: { text: text },
-    // Select the language and SSML voice gender (optional)
-    voice: { languageCode: "en-US", ssmlGender: "NEUTRAL" },
-    // select the type of audio encoding
-    audioConfig: { audioEncoding: "MP3" },
-  };
-
-  // Performs the text-to-speech request
-  const [response] = await client.synthesizeSpeech(request);
-  // Write the binary audio content to a local file
-  const writeFile = util.promisify(fs.writeFile);
-  await writeFile("output.mp3", response.audioContent, "binary");
-  console.log("Audio content written to file: output.mp3");
-}
-quickStart();
+}, 2000);
