@@ -31,11 +31,11 @@ app.set("view-engine", "ejs");
 //connect to database
 
 app.set("views", path.join(__dirname, "src/views"));
+
 if (process.env.DEV) {
-  const api = new Api();
+  const api = new Api((client = {}), process.env.TOKEN, app);
   api.start();
-  app.use(api.getRouter());
-  console.log(app._router);
+  console.log(api);
 }
 require("./src/functions/passport-discord");
 
