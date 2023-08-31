@@ -40,7 +40,6 @@ const clienthandler = require("./src/events/clienthandler");
 clienthandler.client(client);
 let botName = client.username;
 process.env.BOT_NAME = botName;
-const { Api } = require("./load.js");
 require("./updater");
 const fs = require("fs");
 const last_used = new Map();
@@ -51,9 +50,8 @@ const server = require("./server");
 const leaveandjoinhandler = require("./src/events/leaveandjoinhandler");
 const mongoose = require("mongoose");
 const messagehand = require("./src/events/messagehandler.js");
+const {Api} = require("./load")
 
-const api = new Api(client, process.env.TOKEN, server.app);
-api.start();
 require("dotenv").config();
 const fetch = require("node-fetch");
 
@@ -135,4 +133,6 @@ client.on("guildMemberRemove", member => {
 
 commandhandler.createcommands(client);
 
+const api = new Api(client,client.token,server.app);
+api.start()
 client.login(process.env.TOKEN);

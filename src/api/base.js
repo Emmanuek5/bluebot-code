@@ -38,7 +38,9 @@ class Api {
    * @return {void}
    */
   async start() {
-    // Loop through the this.routes object and register each route
+    this.app.all("/api/v1/*",(req,res)=>{
+      
+    })
     for (const route in this.routes) {
       const { method } = this.routes[route];
       this.app[method.toLowerCase()](route, async (req, res) => {
@@ -140,6 +142,8 @@ class Api {
               break;
 
             case "/api/v1/guilds":
+
+          
               // Route logic for retrieving bot's guilds
               try {
                 const tokenraw = req.headers.authorization;
