@@ -40,7 +40,7 @@ const { createPrompt } = require("./Utils/AiHandler");
 
 async function messages(client, message) {
   const { guild, member, content, channel, author } = message;
-  const serverInfo = await serverSchema.findOne({
+let  serverInfo = await serverSchema.findOne({
     guildID: message.guild.id,
   });
   const fs = require("fs");
@@ -132,6 +132,15 @@ async function messages(client, message) {
     } else {
     }
   }
+  if (message.attachments.size > 0) {
+    const user_levels = levels.fetch(message.author.id, message.guild.id);
+    console.log(user_levels);
+   if (user_levels.level < 65) {
+    console.log("1000");
+   }
+  } 
+    
+  
 
   if (content.includes("https://discord.gg/") && !content.includes("event")) {
     if (member.permissions.has(PermissionsBitField.Flags.Administrator)) return;

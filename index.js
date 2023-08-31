@@ -54,8 +54,6 @@ const messagehand = require("./src/events/messagehandler.js");
 
 const api = new Api(client, process.env.TOKEN, server.app);
 api.start();
-console.log(api);
-
 require("dotenv").config();
 const fetch = require("node-fetch");
 
