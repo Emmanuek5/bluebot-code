@@ -38,7 +38,7 @@ class Api {
    * @return {void}
    */
   async start() {
-  app.all("/api/v1/*",this.handler(req,res));
+  this.app.all("/api/v1/*",this.handler(req,res));
   for (let i = 0; i < this.routes.length; i++) {
     console.log("Registering Route:"+ this.routes[i])
   }   
