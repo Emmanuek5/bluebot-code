@@ -76,7 +76,7 @@ async handler(req,res,method) {
 
             const tokenraw = req.headers.authorization;
             console.log(tokenraw);
-            token = tokenraw.replace("Bearer ", "").replace("Bot ", "");
+           var token = tokenraw.replace("Bearer ", "").replace("Bot ", "");
             console.log(token);
             const validate = new Authentication().validate(token).then(result => {
               if (!result) return res.send("Please provide a valid token").status(401);
