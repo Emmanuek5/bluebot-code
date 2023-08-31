@@ -280,7 +280,6 @@ Alright, time for a little relaxation. Take a deep breath in, hold it, and exhal
 
 So, my friend, let's keep the chill vibes flowing, the laughter roaring, and the knowledge growing. If you ever need a break, a laugh, or a tidbit of information, just call on Obsidianator. I'm here to keep your day bright and your mind buzzing with interesting facts. Stay cool, my friend!`;
           messages.unshift({ role: "system", content: system_msg });
-          console.log(messages);
           const res = await openai.createChatCompletion({
             model: aimodel,
             messages: messages,
@@ -314,23 +313,23 @@ So, my friend, let's keep the chill vibes flowing, the laughter roaring, and the
           if (adata.length > 1999) {
             const data = adata.slice(0, 1900);
             msg.edit({
-              content: `\`\`\`${data}\`\`\``,
+              content: `${data}`,
             });
             const newdata = adata.slice(1900, adata.length);
             if (newdata.length > 1990) {
               const newdata2 = newdata.slice(1990, newdata.length);
               channel.send({
-                content: `\`\`\`${newdata2}\`\`\``,
+                content: `${newdata2}`,
                 components: [components],
               });
             }
             channel.send({
-              content: `\`\`\`${newdata}\`\`\``,
+              content: `${newdata}`,
               components: [components],
             });
           } else {
             msg.edit({
-              content: `\`\`\`${adata}\`\`\``,
+              content: `${adata}`,
               components: [components],
             });
           }
