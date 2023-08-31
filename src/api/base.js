@@ -38,29 +38,36 @@ class Api {
    * @return {void}
    */
   async start() {
-  this.app.all("/api/v1/*",this.handler(req,res));
   for (let i = 0; i < this.routes.length; i++) {
     console.log("Registering Route:"+ this.routes[i])
   }   
   }
 
+  setClient(client){
+    this.client = client
+  }
 
 
-async handler(req,res) {
+
+async handler(req,res,method) {
  
       try {
         const { Authentication } = require("./Authentication/Auth");
         const path = req.path
-        const method = req.method
         switch (path) {
           case "/api/v1/auth/create":
             // Route logic for creating authentication tokens
-            const id = req.body.id;
+            if (this.routes["/api/v1/auth/create"].method == method) {
+                 const id = req.body.id;
             let token = new Authentication().create(id).then(token => {
               console.log(id, token);
               res.send(token).status(200);
             });
             token = "";
+          }else{
+            res.send("Usage: "+this.routes["/api/v1/auth/create"].method.toUpperCase + ": "+ path)
+          }
+      
             break;
 
           case "/api/v1/user":
@@ -158,9 +165,14 @@ async handler(req,res) {
             break;
 
           case "/api/v1/guilds":
+          if(this.routes["/api/v1/guilds"].method == method){
             // Route logic for retrieving bot's guilds
             try {
               const tokenraw = req.headers.authorization;
+              if (!tokenraw) {
+                res.status(400).send("No Authoriation Provied");
+                return;
+              }
               const token = tokenraw.replace("Bearer ", "").replace("Bot ", "");
               const validate = new Authentication().validate(token).then(result => {
                 if (!result) return res.send("Please provide a valid token").status(401);
@@ -180,29 +192,37 @@ async handler(req,res) {
               console.log(error);
               res.send("An error occurred while retrieving the guilds").status(500);
             }
+          }else{
+            res.send("Usage: "+this.routes["/api/v1/guilds"].method + ": "+ path)
+          }
             break;
 
           case "/api/v1/guild/invite":
             // Route logic for creating guild invites
-            try {
-              const tokenraw = req.headers.authorization;
-              const token = tokenraw.replace("Bearer ", "").replace("Bot ", "");
-              const validate = new Authentication().validate(token).then(async result => {
-                if (!result) return res.send("Please provide a valid token").status(401);
-                const id = req.body.id;
-                if (!id) return res.send("Please provide a valid id").status(401);
-                const guild = this.client.guilds.cache.get(id);
+         if (this.routes["/api/v1/guild/invite"].method == method) {
+             try {
+               const tokenraw = req.headers.authorization;
+               const token = tokenraw.replace("Bearer ", "").replace("Bot ", "");
+               const validate = new Authentication().validate(token).then(async result => {
+                 if (!result) return res.send("Please provide a valid token").status(401);
+                 const id = req.body.id;
+                 if (!id) return res.send("Please provide a valid id").status(401);
+                 const guild = this.client.guilds.cache.get(id);
 
-                const invite = await guild.invites.create(guild.systemChannelId, {
-                  unique: true,
-                  maxAge: 0,
-                });
-                res.send(invite).status(200);
-              });
-            } catch (error) {
-              console.log(error);
-              res.send("An error occurred while creating the invite").status(500);
-            }
+                 const invite = await guild.invites.create(guild.systemChannelId, {
+                   unique: true,
+                   maxAge: 0,
+                 });
+                 res.send(invite).status(200);
+               });
+             } catch (error) {
+               console.log(error);
+               res.send("An error occurred while creating the invite").status(500);
+             }
+          
+         }else{
+            res.send("Usage: "+this.routes["/api/v1/guild/invite"].method + ": "+ path)
+         }
             break;
 
           // Add more cases for other routes if needed

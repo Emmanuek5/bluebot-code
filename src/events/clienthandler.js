@@ -48,32 +48,6 @@ function client(client) {
       });
     });
 
-    const axios = require("axios");
-    const qs = require("qs");
-    let data = qs.stringify({
-      server_count: process.env.SERVER_COUNT,
-    });
-
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: "https://discords.com/bots/api/bot/1058300450253832272",
-      headers: {
-        Authorization:
-          "4367bac5939ad6963a7997b825a0f98e6d396730f617c6a7565ad1825c0b41ffc6455827f5397c2c6b191411cb4154f790a18cb3839c80560bc8d898a99b7628",
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      data: data,
-    };
-
-    axios
-      .request(config)
-      .then(response => {
-        console.log(JSON.stringify(response.data));
-      })
-      .catch(error => {
-        console.log(error);
-      });
 
     client.manager.init(client.user.id);
     mongoose.set("strictQuery", false);
