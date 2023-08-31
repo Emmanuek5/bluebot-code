@@ -34,7 +34,7 @@ const { name } = require("ejs");
 const { findSwearWordsAI, findSwearWords } = require("../../utils/swearfinder");
 const path = require("path");
 const openai = new OpenAIApi(configureration);
-const aimodel = "gpt-4-32k";
+const aimodel = "gpt-3.5-turbo-16k";
 async function createPrompt(message, client) {
   const channel = message.channel;
   const content = message.content;
