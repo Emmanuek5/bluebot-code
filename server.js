@@ -32,6 +32,9 @@ app.set("view-engine", "ejs");
 
 app.set("views", path.join(__dirname, "src/views"));
 
+const api = new Api({},"",server.app);
+api.start()
+
 
 require("./src/functions/passport-discord");
 
@@ -64,8 +67,6 @@ app.use("/", webRoutes);
 
 //const authRoutes = require('./src/routes/auth');
 //app.use('/api/v1/auth', authRoutes);
-const apiRoutes = require("./src/routes/apisockets");
-app.use("/api/v1", apiRoutes);
 
 const dashboardRoutes = require("./src/routes/dashboard");
 app.use("/dashboard", dashboardRoutes);
@@ -86,6 +87,13 @@ app.listen(port, () => {
   }
 });
 
+app.all("/api/v1/*", (req, res) => {
+  var method = req.method.toUpperCase();
+ api.handler(req,res, method); 
+});
+
+
 module.exports = {
   app: app,
+  api:api,
 };

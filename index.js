@@ -133,6 +133,5 @@ client.on("guildMemberRemove", member => {
 
 commandhandler.createcommands(client);
 
-const api = new Api(client,client.token,server.app);
-api.start()
+server.api.setClient(client);
 client.login(process.env.TOKEN);
