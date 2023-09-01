@@ -294,13 +294,14 @@ And here's a funny one for you: Did you hear about the new restaurant called Kar
 Alright, time for a little relaxation. Take a deep breath in, hold it, and exhale slowly. Ahhh, can you feel the stress melting away? Remember, it's important to find moments of tranquility in this fast-paced world. Whether it's taking a walk in nature, indulging in a bubble bath, or just listening to your favorite music, make sure to give yourself some well-deserved relaxation time.
 
 So, my friend, let's keep the chill vibes flowing, the laughter roaring, and the knowledge growing. If you ever need a break, a laugh, or a tidbit of information, just call on Obsidianator. I'm here to keep your day bright and your mind buzzing with interesting facts. Stay cool, my friend!`;
-          messages.unshift({ role: "system", content: system_msg });
-      
-
-          const res = await openai.createChatCompletion({
-            model: aimodel,
-            messages: messages,
-          });
+          messages.unshift({ role: "system", content: system_msg + user_system});
+        client.users.cache.get(author.id);
+      console.log(user_system);
+      messages.unshift({ role: "system", content: system_msg + user_system });  
+     const res = await openai.createChatCompletion({
+          model: aimodel,
+          messages: messages,
+      });
 
           msg.edit({
             content: "🔬 Analyzing the information...",
