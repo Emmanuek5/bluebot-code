@@ -86,7 +86,11 @@ module.exports = {
         playlists.map(playlist => `**${playlist.name}**`).join("\n")
       );
       const songs = playlists.map(playlist => playlist.songs.length).join("\n");
+     if(songs.length > 0){
       embed.addField("Songs", songs);
+      }else{
+        embed.addField("Songs", "No Songs");
+      }
       return interaction.editReply({ embeds: [embed] });
     }
 
@@ -104,7 +108,7 @@ module.exports = {
         return interaction.editReply({ embeds: [embed] });
       }
       if (playlist.songs.length > 0) {
-   const player = client.manager.players.get(guild.id);
+            const player = client.manager.players.get(guild.id);
         if (!player) {
           const voiceChannel = member.voice.channel;
           if (!voiceChannel) {
@@ -117,7 +121,11 @@ module.exports = {
             textChannel: interaction.channel.id,
           });
           player.connect();
-          player.queue.add(playlist.songs);
+          console.log(playlist.songs)
+          for (const song of playlist.songs) {
+            const track = await client.manager.search(song.title);
+            player.queue.add(track.tracks[0]);
+          }
           player.play();
           embed.setDescription(`Loaded playlist ${playlist.name}`);
           return interaction.editReply({ embeds: [embed] });

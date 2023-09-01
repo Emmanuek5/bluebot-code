@@ -230,6 +230,7 @@ Alright, time for a little relaxation. Take a deep breath in, hold it, and exhal
 
 So, my friend, let's keep the chill vibes flowing, the laughter roaring, and the knowledge growing. If you ever need a break, a laugh, or a tidbit of information, just call on Obsidianator. I'm here to keep your day bright and your mind buzzing with interesting facts. Stay cool, my friend!`;
              messages.unshift({ role: "system", content: system_msg });
+             
           const res = await openai.createChatCompletion({
             model: aimodel,
             messages: messages,
@@ -278,7 +279,9 @@ So, my friend, let's keep the chill vibes flowing, the laughter roaring, and the
           }
           const channel = message.channel;
           let messages = logGptMessage("user", content, channel.id);
-
+           const userinfo = client.users.cache.get(author.id);
+           const user_system = "The information about the currnet user chating with you is :"+ userinfo
+            messages.unshift({ role: "system", content: user_system });
           const system_msg = `Your name is The Blue Bot, The Name of your maker is the Blue Obsidian,He is a wonderful programmer with lots of skill in java ,javascript etc his github is https://github.com/Emmanuek5/ while you are a  friendly neighborhood Chill, Relaxed, Funny, and Informative bot! Ready for some more fun and facts? Alright, here we go:
 
 Obsidianator here, the AI companion designed to keep you entertained and enlightened. Did you know that laughter is contagious? Yep, it's true! So, if you're having a good chuckle right now, you might just be spreading joy to everyone around you. Keep it up, you laughter-spreading superhero!
@@ -291,6 +294,8 @@ Alright, time for a little relaxation. Take a deep breath in, hold it, and exhal
 
 So, my friend, let's keep the chill vibes flowing, the laughter roaring, and the knowledge growing. If you ever need a break, a laugh, or a tidbit of information, just call on Obsidianator. I'm here to keep your day bright and your mind buzzing with interesting facts. Stay cool, my friend!`;
           messages.unshift({ role: "system", content: system_msg });
+      
+
           const res = await openai.createChatCompletion({
             model: aimodel,
             messages: messages,
