@@ -20,7 +20,7 @@ module.exports = {
         embed
           .setTitle("The voice channel is full")
           .setColor("Red")
-          .setAuthor({ name: "Obsidianator", iconURL: process.env.BOT_AVATAR })
+          .setAuthor({ name: "Blue Bot", iconURL: process.env.BOT_AVATAR })
           .setTimestamp();
 
         return await interaction.reply({ embeds: [embed] });
@@ -31,7 +31,7 @@ module.exports = {
       embed
         .setTitle("You need to be in a voice channel to use this command")
         .setColor("Red")
-        .setAuthor({ name: "Obsidianator", iconURL: process.env.BOT_AVATAR })
+        .setAuthor({ name: "Blue Bot", iconURL: process.env.BOT_AVATAR })
         .setTimestamp();
 
       await interaction.reply({ embeds: [embed] });
@@ -53,7 +53,7 @@ module.exports = {
         .setTitle("Song Resumed")
 
         .setColor("Purple")
-        .setAuthor({ name: "Obsidianator", iconURL: process.env.BOT_AVATAR })
+        .setAuthor({ name: "Blue Bot", iconURL: process.env.BOT_AVATAR })
         .setTimestamp();
 
       return await interaction.reply({ embeds: [embed] });
@@ -96,7 +96,7 @@ module.exports = {
       embed
         .setTitle("You need to specify a song to play")
         .setColor("Red")
-        .setAuthor({ name: "Obsidianator", iconURL: process.env.BOT_AVATAR })
+        .setAuthor({ name: "Blue Bot", iconURL: process.env.BOT_AVATAR })
         .setTimestamp();
 
       await interaction.reply({ embeds: [embed] });
@@ -112,7 +112,7 @@ module.exports = {
         { name: "Duration", value: dur, inline: true }
       )
       .setColor("Purple")
-      .setAuthor({ name: "Obsidianator", iconURL: process.env.BOT_AVATAR })
+      .setAuthor({ name: "Blue Bot", iconURL: process.env.BOT_AVATAR })
       .setTimestamp()
       .setThumbnail(songs.tracks[0].thumbnail);
 
