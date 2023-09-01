@@ -39,6 +39,7 @@ module.exports = {
         )
         .addStringOption(option =>
           option.setName("playlist").setDescription("The Playlist You Want To Add To")
+          .setRequired(true)
         )
     ),
 
@@ -145,7 +146,7 @@ module.exports = {
         embed.setDescription("That playlist does not exist");
         return interaction.editReply({ embeds: [embed] });
       }
-      const songinfp = await client.manager.search(option, member.user);
+      const songinfp = await client.manager.search(option.getString("song-or-yt-url"));
       if (!songinfp) {
         embed.setDescription("That song does not exist");
         return interaction.editReply({ embeds: [embed] });
