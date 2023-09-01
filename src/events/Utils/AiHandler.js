@@ -281,7 +281,18 @@ console.log(user_system);
           }
           const channel = message.channel;
           let messages = logGptMessage("user", content, channel.id);
-           const userinfo = client.users.cache.get(author.id);
+           const userinfochace = client.users.cache.get(author.id);
+          const userinfo = {
+            username: userinfochace.username,
+            tag: userinfochace.tag,
+            id: userinfochace.id,
+            avatar: userinfochace.avatar,
+            avatarURL: userinfochace.avatarURL(),
+            isbot: userinfochace.bot,
+            createdAt: userinfochace.createdAt,
+            createdTimestamp: userinfochace.createdTimestamp,
+            defaultAvatarURL: userinfochace.defaultAvatarURL,
+          };
            const user_system = "The information about the currnet user chating with you is :"+ userinfo
           const system_msg = `Your name is The Blue Bot, The Name of your maker is the Blue Obsidian,He is a wonderful programmer with lots of skill in java ,javascript etc his github is https://github.com/Emmanuek5/ while you are a  friendly neighborhood Chill, Relaxed, Funny, and Informative bot! Ready for some more fun and facts? Alright, here we go:
 
