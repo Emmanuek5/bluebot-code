@@ -33,7 +33,7 @@ module.exports = {
         .setDescription("Add A Song To a PLaylist")
         .addStringOption(option =>
           option
-            .setName("song-or-yt-url")
+            .setName("name")
             .setDescription("The Song Or Playlist You Want To Add")
             .setRequired(true)
         )
@@ -52,7 +52,7 @@ module.exports = {
       guildID: guild.id,
     });
     const subcommand = interaction.options.getSubcommand();
-    const option = options.getString("name") || options.getString("yt-url");
+    const option = options.getString("name") || options.getString("yt-url") ;
 
     if (subcommand === "create") {
       const playlistName = options.getString("name");
@@ -146,7 +146,7 @@ module.exports = {
         embed.setDescription("That playlist does not exist");
         return interaction.editReply({ embeds: [embed] });
       }
-      const songinfp = await client.manager.search(option.getString("song-or-yt-url"));
+      const songinfp = await client.manager.search(option);
       if (!songinfp) {
         embed.setDescription("That song does not exist");
         return interaction.editReply({ embeds: [embed] });
