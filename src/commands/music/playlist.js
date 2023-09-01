@@ -19,13 +19,13 @@ module.exports = {
         )
     )
     .addSubcommand(subcommand =>
-      subcommand.setName("list").setDescription("List A Users Playlists")
+      subcommand.setName("list").setDescription("List All Your Playlists")
     )
     .addSubcommand(subcommand =>
       subcommand
         .setName("load")
-        .setDescription("Load A Users Playlist Into The Queue or Playist From Youtube")
-        .addStringOption(option => option.setName("yt-url").setDescription("Playlist"))
+        .setDescription("Load A Playlist")
+        .addStringOption(option => option.setName("name").setDescription("Playlist"))
     )
     .addSubcommand(subcommand =>
       subcommand
@@ -37,14 +37,14 @@ module.exports = {
             .setDescription("The Song Or Playlist You Want To Add")
             .setRequired(true)
         )
+        .addStringOption(option =>
+          option.setName("playlist").setDescription("The Playlist You Want To Add To")
+        )
     ),
 
   async execute(interaction, client, args) {
-    console.log(playlistSchema);
     const embed = new EmbedBuilder();
-
     await interaction.deferReply();
-
     const { guild, member, options } = interaction;
     const user = {};
     const serverInfo = await serverSchema.findOne({
@@ -52,158 +52,114 @@ module.exports = {
     });
     const subcommand = interaction.options.getSubcommand();
     const option = options.getString("name") || options.getString("yt-url");
-    console.log(option);
 
-    if (subcommand == "create") {
-      const user = await playlistSchema.findOne({
-        userId: interaction.user.id,
+    if (subcommand === "create") {
+      const playlistName = options.getString("name");
+      const playlist = await playlistSchema.findOne({
+        guildID: guild.id,
+        name: playlistName,
       });
-      if (!user) {
-        const options = {
-          name: option,
-          userId: interaction.user.id,
-          songs: [],
-        };
-        const newUser = new playlistSchema(options);
-        await newUser.save();
-
-        embed
-          .setTitle("Playlist Created")
-          .setColor("Green")
-          .setAuthor({
-            name: "Obsidianator",
-            iconURL: process.env.BOT_AVATAR,
-          })
-          .setTimestamp();
-
-        return await interaction.editReply({ embeds: [embed] });
+      if (playlist) {
+        embed.setDescription("That playlist already exists");
+        return interaction.editReply({ embeds: [embed] });
       }
-    }
-    if (subcommand == "list") {
-      const user = await playlistSchema.findOne({
-        userId: interaction.user.id,
+      const newPlaylist = new playlistSchema({
+        guildID: guild.id,
+        name: playlistName,
+        songs: [],
       });
-      if (!user) {
-        embed
-          .setTitle("You have no songs in your playlist")
-          .setColor("Red")
-          .setAuthor({
-            name: "Obsidianator",
-            iconURL: process.env.BOT_AVATAR,
-          })
-          .setTimestamp();
-        return await interaction.editReply({ embeds: [embed] });
-      }
-
-      embed.setTitle(`${interaction.user.username}'s Playlist`);
-
-      const queue = user.songs;
-      if (queue.length > 24) {
-        const songList = queue.slice(0, 24);
-        songList.forEach((song, index) => {
-          embed.addFields({
-            name: `${index + 1}. ${song.title}`,
-            value: `${song.author} | ${new Date(song.duration).toISOString().slice(11, 19)}`,
-          });
-        });
-        return interaction.reply({
-          embeds: [embed],
-          components: [
-            new ActionRowBuilder().addComponents(
-              new ButtonBuilder()
-                .setCustomId("playlist-next")
-                .setLabel("Next >")
-                .setStyle("Primary")
-            ),
-          ],
-        });
-      } else {
-        queue.forEach((song, index) => {
-          embed.addFields({
-            name: `${index + 1}. ${song.title}`,
-            value: `${song.author} | ${new Date(song.duration).toISOString().slice(11, 19)}`,
-          });
-        });
-        return await interaction.editReply({ embeds: [embed] });
-      }
+      await newPlaylist.save();
+      embed.setDescription(`Created playlist ${playlistName}`);
+      return interaction.editReply({ embeds: [embed] });
     }
 
-    if (subcommand == "load") {
-      if (member.voice.channel) {
-        if (member.voice.channel.full) {
-          embed
-            .setTitle("The voice channel is full")
-            .setColor("Red")
-            .setAuthor({
-              name: "Obsidianator",
-              iconURL: process.env.BOT_AVATAR,
-            })
-            .setTimestamp();
+    if (subcommand === "list") {
+      const playlists = await playlistSchema.find({
+        guildID: guild.id,
+      });
+      if (!playlists) {
+        embed.setDescription("You have no playlists");
+        return interaction.editReply({ embeds: [embed] });
+      }
+      embed.setDescription(
+        playlists.map(playlist => `**${playlist.name}**`).join("\n")
+      );
+      return interaction.editReply({ embeds: [embed] });
+    }
 
-          await interaction.editReply({ embeds: [embed] });
-          return;
+    if (subcommand === "load") {
+      const playlist = await playlistSchema.findOne({
+        guildID: guild.id,
+        name: option,
+      });
+      if (!playlist) {
+        embed.setDescription("That playlist does not exist");
+        return interaction.editReply({ embeds: [embed] });
+      }
+      if (playlist.songs.length === 0) {
+        embed.setDescription("That playlist is empty");
+        return interaction.editReply({ embeds: [embed] });
+      }
+      if (playlist.songs.length > 0) {
+   const player = client.manager.players.get(guild.id);
+        if (!player) {
+          const voiceChannel = member.voice.channel;
+          if (!voiceChannel) {
+            embed.setDescription("You need to be in a voice channel");
+            return interaction.editReply({ embeds: [embed] });
+          }
+          const permissions = voiceChannel.permissionsFor(guild.me);
+          if (!permissions.has("CONNECT")) {
+            embed.setDescription("I don't have permission to join");
+            return interaction.editReply({ embeds: [embed] });
+          }
+          if (!permissions.has("SPEAK")) {
+            embed.setDescription("I don't have permission to speak");
+            return interaction.editReply({ embeds: [embed] });
+          }
+          const player = client.manager.create({
+            guild: guild.id,
+            voiceChannel: voiceChannel.id,
+            textChannel: interaction.channel.id,
+          });
+          player.connect();
+          player.queue.add(playlist.songs);
+          player.play();
+          embed.setDescription(`Loaded playlist ${playlist.name}`);
+          return interaction.editReply({ embeds: [embed] });
+        }else{
+          player.queue = playlist.songs;
+          console.log(player.queue)
+          embed.setDescription(`Loaded playlist ${playlist.name}`);
+          return interaction.editReply({ embeds: [embed] });
         }
       }
-
-      let player = client.manager.players.get(guild.id);
-      if (!player) {
-        player = client.manager.create({
-          guild: guild.id,
-          voiceChannel: member.voice.channel.id,
-          textChannel: interaction.channel.id,
-          selfDeafen: false,
-        });
-      }
-
-      const res = await client.manager.search(option);
-
-      if (res.loadType === "NO_MATCHES") {
-        embed
-          .setTitle("There were no results found")
-          .setColor("Red")
-          .setAuthor({ name: "Obsidianator", iconURL: process.env.BOT_AVATAR })
-          .setTimestamp();
-
-        await interaction.editReply({ embeds: [embed] });
-      } else if (res.loadType === "LOAD_FAILED") {
-        embed
-          .setTitle("There was an error loading your playlist")
-          .setColor("Red")
-          .setAuthor({ name: "Obsidianator", iconURL: process.env.BOT_AVATAR })
-          .setTimestamp();
-
-        return await interaction.editReply({ embeds: [embed] });
-      } else if (res.loadType === "PLAYLIST_LOADED") {
-        player.connect();
-        player.queue.add(res.tracks);
-        player.play();
-        embed
-          .setTitle("Playlist added to queue")
-
-          .setColor("Random")
-          .setAuthor({ name: "Obsidianator", iconURL: process.env.BOT_AVATAR })
-          .setTimestamp();
-
-        return await interaction.editReply({ embeds: [embed] });
-      }
     }
 
-    if (subcommand == "add-song") {
-      const song = options.getString("song");
-      const playlisttoadd = options.getString("playlist");
-      const playlist = user.playlist.find(x => x.name.toLowerCase() == playlisttoadd.toLowerCase());
-      if (!playlist) {
-        await interaction.editReply({
-          content: "You Don't Have A Playlist With That Name :sob:",
-        });
-      }
-      const res = await client.manager.search(playlist);
-      console.log(playlist);
-
-      playlist.songs.push(res);
-      user.playlist.interaction.editReply({
-        content: `Song/Playlist Added To ${playlist.name}`,
+    if (subcommand === "add-song") {
+      const playlist = await playlistSchema.findOne({
+        guildID: guild.id,
+        name: options.getString("playlist"),
       });
+      if (!playlist) {
+        embed.setDescription("That playlist does not exist");
+        return interaction.editReply({ embeds: [embed] });
+      }
+      const songinfp = await client.manager.search(option, member.user);
+      if (!songinfp) {
+        embed.setDescription("That song does not exist");
+        return interaction.editReply({ embeds: [embed] });
+      }
+      const song = songinfp.tracks[0];
+      playlist.songs.push(song);
+      await playlist.save();
+      embed.setDescription(`Added ${option} to ${playlist.name}`);
+      return interaction.editReply({ embeds: [embed] });
     }
+
+
+
+  
+    
   },
 };
