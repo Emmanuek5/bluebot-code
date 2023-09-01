@@ -281,7 +281,7 @@ console.log(user_system);
           }
           const channel = message.channel;
           let messages = logGptMessage("user", content, channel.id);
-           const userinfochace = client.users.cache.get(author.id);
+           const userinfochace = await client.users.cache.get(author.id);
           const userinfo = {
             username: userinfochace.username,
             tag: userinfochace.tag,
