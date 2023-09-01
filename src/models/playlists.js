@@ -1,16 +1,9 @@
 const mongoose = require("mongoose");
 
 const playlistSchema = mongoose.Schema({
-  userId: {
-    type: String,
-    unique: true,
-  },
-  name: {
-    type: String,
-    required: true,
-  },
-  songs: {
-    type: Array,
-    default: [],
-  },
+  guildID: String,
+  name: String,
+  songs: Array,
 });
+
+module.exports = mongoose.model("playlist", playlistSchema);
