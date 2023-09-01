@@ -33,9 +33,24 @@ module.exports = {
       await interaction.editReply("You already have a Chat GPT Conversation open!");
       return;
     }
+    var parentId = "";
+
+    if (guild.channels.cache.find(c => c.name === "gpt-consersations" && c.type === ChannelType.GuildCategory)) {
+      parentId = guild.channels.cache.find(c => c.name === "gpt-consersations" && c.type === ChannelType.GuildCategory).id;
+        
+    }else{
+      const category = await guild.channels.create({
+        name: "gpt-consersations",
+        type: ChannelType.GuildCategory,
+      });
+      parentId = category.id;
+    }
+
+      
 
     const channel = await interaction.guild.channels.create({
       name: "gpt-consersation-" + username,
+      parent: parentId,
       type: ChannelType.GuildText,
       permissionOverwrites: [
         {
