@@ -75,8 +75,13 @@ let  serverInfo = await serverSchema.findOne({
   if (message.author.bot || !message.guild) return;
 
   if (channel.name.includes("gpt-consersation-")) {
-    createPrompt(message, client);
-    return;
+    if(content.toLowerCase() == "close chat") {
+      channel.delete();
+      return;
+    }else{
+      createPrompt(message, client);
+      return;
+    }
   }
   serverInfo.bullyMeChannel = serverInfo.bullyMeChannel || "";
   if (message.channel.name === "bully-me" || message.channel.id == serverInfo.bullyMeChannel) {
