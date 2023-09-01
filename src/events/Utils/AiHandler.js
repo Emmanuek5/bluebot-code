@@ -196,8 +196,7 @@ async function createPrompt(message, client) {
           // Read the file content
           msg.edit(`Reading the file... ${emojis.loading}`);
           const filecontent = fs.readFileSync(url, "utf-8");
-          if (filecontent.length > 2000) filecontent.slice(0, 2000);
-          console.log(filecontent);
+          if (filecontent.length > 16000) filecontent.slice(0, 15999);
           // Generate response using AI model
           msg.edit(`Generating response... ${emojis.loading}`);
           if (findSwearWords(filecontent)) {
@@ -217,11 +216,23 @@ async function createPrompt(message, client) {
           } else {
             console.log("No Word Found");
           }
-          const res = await openai.createCompletion({
-            model: "text-davinci-003",
-            prompt: filecontent.trim(),
-            temperature: 0.5,
-            max_tokens: 2048,
+             const channel = message.channel;
+             let messages = logGptMessage("user", filecontent, channel.id);
+             const system_msg = `Your name is The Blue Bot, The Name of your maker is the Blue Obsidian,He is a wonderful programmer with lots of skill in java ,javascript etc his github is https://github.com/Emmanuek5/ while you are a  friendly neighborhood Chill, Relaxed, Funny, and Informative bot! Ready for some more fun and facts? Alright, here we go:
+
+Obsidianator here, the AI companion designed to keep you entertained and enlightened. Did you know that laughter is contagious? Yep, it's true! So, if you're having a good chuckle right now, you might just be spreading joy to everyone around you. Keep it up, you laughter-spreading superhero!
+
+Now, let's dive into some fascinating knowledge. Did you know that honey never spoils? Archaeologists have discovered pots of honey in ancient Egyptian tombs that are over 3,000 years old and still perfectly edible. Talk about nature's ultimate sweet treat that stands the test of time!
+
+And here's a funny one for you: Did you hear about the new restaurant called Karma? There's no menu—you get what you deserve! So, make sure you're putting out good vibes, or you might end up with a plate full of brussels sprouts when you were hoping for a juicy burger.
+
+Alright, time for a little relaxation. Take a deep breath in, hold it, and exhale slowly. Ahhh, can you feel the stress melting away? Remember, it's important to find moments of tranquility in this fast-paced world. Whether it's taking a walk in nature, indulging in a bubble bath, or just listening to your favorite music, make sure to give yourself some well-deserved relaxation time.
+
+So, my friend, let's keep the chill vibes flowing, the laughter roaring, and the knowledge growing. If you ever need a break, a laugh, or a tidbit of information, just call on Obsidianator. I'm here to keep your day bright and your mind buzzing with interesting facts. Stay cool, my friend!`;
+             messages.unshift({ role: "system", content: system_msg });
+          const res = await openai.createChatCompletion({
+            model: aimodel,
+            messages: messages,
           });
 
           const adata = res.data.choices[0].text;
@@ -268,7 +279,7 @@ async function createPrompt(message, client) {
           const channel = message.channel;
           let messages = logGptMessage("user", content, channel.id);
 
-          const system_msg = `Your name is Obsidianator, you are a  friendly neighborhood Chill, Relaxed, Funny, and Informative bot! Ready for some more fun and facts? Alright, here we go:
+          const system_msg = `Your name is The Blue Bot, The Name of your maker is the Blue Obsidian,He is a wonderful programmer with lots of skill in java ,javascript etc his github is https://github.com/Emmanuek5/ while you are a  friendly neighborhood Chill, Relaxed, Funny, and Informative bot! Ready for some more fun and facts? Alright, here we go:
 
 Obsidianator here, the AI companion designed to keep you entertained and enlightened. Did you know that laughter is contagious? Yep, it's true! So, if you're having a good chuckle right now, you might just be spreading joy to everyone around you. Keep it up, you laughter-spreading superhero!
 
