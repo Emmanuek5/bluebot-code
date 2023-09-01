@@ -292,8 +292,7 @@ console.log(user_system);
             createdAt: userinfochace.createdAt,
             createdTimestamp: userinfochace.createdTimestamp,
             defaultAvatarURL: userinfochace.defaultAvatarURL,
-          };
-           const user_system = "The information about the currnet user chating with you is :"+ userinfo
+          }
           const system_msg = `Your name is The Blue Bot, The Name of your maker is the Blue Obsidian,He is a wonderful programmer with lots of skill in java ,javascript etc his github is https://github.com/Emmanuek5/ while you are a  friendly neighborhood Chill, Relaxed, Funny, and Informative bot! Ready for some more fun and facts? Alright, here we go:
 
 Obsidianator here, the AI companion designed to keep you entertained and enlightened. Did you know that laughter is contagious? Yep, it's true! So, if you're having a good chuckle right now, you might just be spreading joy to everyone around you. Keep it up, you laughter-spreading superhero!
@@ -305,7 +304,10 @@ And here's a funny one for you: Did you hear about the new restaurant called Kar
 Alright, time for a little relaxation. Take a deep breath in, hold it, and exhale slowly. Ahhh, can you feel the stress melting away? Remember, it's important to find moments of tranquility in this fast-paced world. Whether it's taking a walk in nature, indulging in a bubble bath, or just listening to your favorite music, make sure to give yourself some well-deserved relaxation time.
 
 So, my friend, let's keep the chill vibes flowing, the laughter roaring, and the knowledge growing. If you ever need a break, a laugh, or a tidbit of information, just call on Obsidianator. I'm here to keep your day bright and your mind buzzing with interesting facts. Stay cool, my friend!`;
-          messages.unshift({ role: "system", content: system_msg + user_system});
+
+const system_msg_2 = ` The Name of the User is ${userinfo.username} and his tag is ${userinfo.tag} and his id is ${userinfo.id} and his avatar is ${userinfo.avatar} and his avatar url is ${userinfo.avatarURL} and he is a bot ${userinfo.isbot} and he was created at ${userinfo.createdAt} and his created timestamp is ${userinfo.createdTimestamp} and his default avatar url is ${userinfo.defaultAvatarURL}`
+console.log(system_msg_2);
+          messages.unshift({ role: "system", content: system_msg + system_msg_2});
         client.users.cache.get(author.id);
       console.log(user_system);
       messages.unshift({ role: "system", content: system_msg + user_system });  
