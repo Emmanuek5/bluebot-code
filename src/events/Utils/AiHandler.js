@@ -308,9 +308,6 @@ So, my friend, let's keep the chill vibes flowing, the laughter roaring, and the
 const system_msg_2 = ` The Name of the User is ${userinfo.username} and his tag is ${userinfo.tag} and his id is ${userinfo.id} and his avatar is ${userinfo.avatar} and his avatar url is ${userinfo.avatarURL} and he is a bot ${userinfo.isbot} and he was created at ${userinfo.createdAt} and his created timestamp is ${userinfo.createdTimestamp} and his default avatar url is ${userinfo.defaultAvatarURL}`
 console.log(system_msg_2);
           messages.unshift({ role: "system", content: system_msg + system_msg_2});
-        client.users.cache.get(author.id);
-      console.log(user_system);
-      messages.unshift({ role: "system", content: system_msg + user_system });  
      const res = await openai.createChatCompletion({
           model: aimodel,
           messages: messages,
