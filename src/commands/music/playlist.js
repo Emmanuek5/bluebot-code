@@ -85,6 +85,8 @@ module.exports = {
       embed.setDescription(
         playlists.map(playlist => `**${playlist.name}**`).join("\n")
       );
+      const songs = playlists.map(playlist => playlist.songs.length).join("\n");
+      embed.addField("Songs", songs);
       return interaction.editReply({ embeds: [embed] });
     }
 
@@ -107,15 +109,6 @@ module.exports = {
           const voiceChannel = member.voice.channel;
           if (!voiceChannel) {
             embed.setDescription("You need to be in a voice channel");
-            return interaction.editReply({ embeds: [embed] });
-          }
-          const permissions = voiceChannel.permissionsFor(guild.me);
-          if (!permissions.has("CONNECT")) {
-            embed.setDescription("I don't have permission to join");
-            return interaction.editReply({ embeds: [embed] });
-          }
-          if (!permissions.has("SPEAK")) {
-            embed.setDescription("I don't have permission to speak");
             return interaction.editReply({ embeds: [embed] });
           }
           const player = client.manager.create({
