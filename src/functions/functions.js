@@ -166,10 +166,7 @@ function createAudioFile(text,path) {
   const apiKey = "54a9b32843943c0cd4be27a787293946";
   const voiceId = "21m00Tcm4TlvDq8ikWAM";
 
-  voice.textToSpeechStream(apiKey, voiceId, text).then(res => {
-    res.pipe(fs.createWriteStream(path));
-  });
-  
+  voice.textToSpeech(apiKey,voiceId,path,text);
 }
 
 module.exports = {
