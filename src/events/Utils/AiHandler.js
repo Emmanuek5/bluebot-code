@@ -333,7 +333,7 @@ console.log(system_msg_2);
           logGptMessage("assistant", adata, channel.id);
           const audiofile = path.join(
             __dirname,
-            "../../data/audio/" + msg.id + "-" + rand(0, 1111)
+            "../../data/audio/" + msg.id + "-" + rand(0, 1111)+".mp3"
           );
           createAudioFile(adata,audiofile)
           console.log(audiofile);
