@@ -18,7 +18,7 @@ const fs = require("fs");
 const configureration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
-const { createAudioFile } = require("simple-tts-mp3");
+
 const cheerio = require("cheerio");
 const {
   download,
@@ -29,6 +29,7 @@ const {
   logGptMessage,
   isValidURL,
   downloadfile,
+  createAudioFile,
 } = require("../../functions/functions");
 const { name } = require("ejs");
 const { findSwearWordsAI, findSwearWords } = require("../../utils/swearfinder");
@@ -330,7 +331,7 @@ console.log(system_msg_2);
             __dirname,
             "../../data/audio/" + msg.id + "-" + rand(0, 1111)
           );
-          createAudioFile(adata, audiofile);
+          createAudioFile(adata,audiofile)
           console.log(audiofile);
           const components = new ActionRowBuilder().addComponents(
             new ButtonBuilder()

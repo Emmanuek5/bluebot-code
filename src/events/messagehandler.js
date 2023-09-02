@@ -75,7 +75,7 @@ let  serverInfo = await serverSchema.findOne({
   if (message.author.bot || !message.guild) return;
 
   if (channel.name.includes("gpt-consersation-")) {
-    if(content.toLowerCase() == "close chat") {
+    if(content.toLowerCase() == "close conversation") {
       channel.delete();
       return;
     }else{
