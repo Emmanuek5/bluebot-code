@@ -158,6 +158,20 @@ function logGptMessage(role, message, channelid) {
   return data;
 }
 
+
+function createAudioFile(text,path) {
+  const voice = require("elevenlabs-node")
+  const fs = require("fs")
+
+  const apiKey = "54a9b32843943c0cd4be27a787293946";
+  const voiceId = "21m00Tcm4TlvDq8ikWAM";
+
+  voice.textToSpeechStream(apiKey, voiceId, text).then(res => {
+    res.pipe(fs.createWriteStream(path));
+  });
+  
+}
+
 module.exports = {
   sleep,
   rand,
@@ -168,4 +182,5 @@ module.exports = {
   downloadfile,
   logGptMessage,
   isValidURL,
+  createAudioFile
 };
