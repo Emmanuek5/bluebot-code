@@ -330,12 +330,12 @@ console.log(system_msg_2);
           });
           console.log(res.data.choices[0]);
           const adata = res.data.choices[0].message.content;
-          logGptMessage("assistant", adata, channel.id);
           const audiofile = path.join(
             __dirname,
             "../../data/audio/" + msg.id + "-" + rand(0, 1111)+".mp3"
           );
           createAudioFile(adata,audiofile)
+           logGptMessage("assistant", adata, channel.id);
           console.log(audiofile);
           const components = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
