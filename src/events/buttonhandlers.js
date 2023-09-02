@@ -30,7 +30,7 @@ async function buttons(interaction, client) {
           interaction.reply({ content: "Here is your voice prompt", files: [attachment] });
           console.log("Matching file found:", filePath);
         } else {
-          interaction.reply({ content: "Your File is still being created, please wait." });
+          interaction.reply({ content: "Your File is still being created, please wait." , ephemeral: true});
           console.log("No matching file found for message ID:", message_id);
         }
       });
