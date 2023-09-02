@@ -309,6 +309,9 @@ So, my friend, let's keep the chill vibes flowing, the laughter roaring, and the
 const system_msg_2 = ` The Name of the User is ${userinfo.username} and his tag is ${userinfo.tag} and his id is ${userinfo.id} and his avatar is ${userinfo.avatar} and his avatar url is ${userinfo.avatarURL} and he is a bot ${userinfo.isbot} and he was created at ${userinfo.createdAt} and his created timestamp is ${userinfo.createdTimestamp} and his default avatar url is ${userinfo.defaultAvatarURL}, and his global name is ${userinfo.globalName} And the global name is the name that is used when the user asks for thier name`
 console.log(system_msg_2);
           messages.unshift({ role: "system", content: system_msg + system_msg_2});
+          if (messages.length > 16000) {
+            messages.slice(0, 15999);
+          }
      const res = await openai.createChatCompletion({
           model: aimodel,
           messages: messages,
