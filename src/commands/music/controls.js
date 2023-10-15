@@ -30,7 +30,7 @@ module.exports = {
       .setTimestamp()
       .setFooter({
         text: `Controls Command By: ${username}`,
-        iconURL: iconURL,
+        iconURL: interaction.user.displayAvatarURL(),
       });
     await interaction.reply({ embeds: [embedcont], components: [rowcont] });
   },

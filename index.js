@@ -33,6 +33,7 @@ const client = new Client({
     GatewayIntentBits.GuildMessageReactions,
     GatewayIntentBits.GuildMessageTyping,
     GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.DirectMessagesIntegrations,
   ],
 });
 
@@ -86,7 +87,6 @@ client.on("messageCreate", async message => {
         );
       }
       user_data.count++;
-      console.log(user_data.count);
       if (user_data.count > RATE_LIMIT) {
         const mute_role = message.guild.roles.cache.find(role => role.name === "Muted"); // Change this to the name of your muted role
         if (!mute_role) {
