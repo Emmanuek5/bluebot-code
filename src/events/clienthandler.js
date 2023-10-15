@@ -198,15 +198,14 @@ function client(client) {
     error: "❌",
   };
   client.on("raw", d => client.manager.updateVoiceState(d));
-
   const nodes = [
     {
       host: process.env.LAVALINK_HOST,
-      port: 443,
+      port: 40197,
       password: process.env.LAVALINK_PASSWORD,
-      secure: true,
+      secure: false,
     },
-  ];
+  ];1
 
   client.manager = new Manager({
     // The nodes to connect to, optional if using default lavalink options
