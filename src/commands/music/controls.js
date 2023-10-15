@@ -10,6 +10,7 @@ module.exports = {
     .setName("music-controls")
     .setDescription("Displays the music controls"),
   async execute(client, interaction) {
+    const username = interaction.user.username;
     const embedcont = new EmbedBuilder();
     const rowcont = new ActionRowBuilder().addComponents(
       new ButtonBuilder().setCustomId("song-play").setLabel("Play").setStyle("Primary"),
