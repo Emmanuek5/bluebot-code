@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { MessageEmbed, EmbedBuilder } = require("discord.js");
 const ServerSchema = require("../../models/server");
+require("dotenv").config();
 
 module.exports = {
   usage: "Usage: /dashboard - Creates a Link to the Dashboard for the Server Admin",
@@ -35,17 +36,17 @@ module.exports = {
       await interaction.reply({ embeds: [embed] });
       return;
     }
-    const url = "https://rtisserver.ml/dashboard";
+    const url = process.env.BOT_URL + "/dashboard";
     const guildid = interaction.guildId;
     const userid = interaction.user.id;
     const dashboard = `${url}/${guildid}`;
     const embed = new EmbedBuilder()
       .setTitle("Dashboard")
       .setDescription(`[Click Here](${dashboard}) to open the Dashboard`)
-      .setColor("BLURPLE")
+      .setColor("Purple")
       .setAuthor({
-        name: "Obsidianator",
-        url: "https://rtisserver.ml",
+        name: process.env.BOT_NAME,
+        url: process.env.BOT_URL,
         iconURL: process.env.BOT_AVATAR,
       })
       .setThumbnail(process.env.BOT_AVATAR);

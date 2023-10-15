@@ -15,7 +15,6 @@ require("dotenv").config();
 const commandSchema = require("../models/commands.js");
 const { Configuration, OpenAIApi } = require("openai");
 const ffmpeg = require("ffmpeg-static");
-const fetch = require("fetch");
 const ytdl = require("ytdl-core");
 async function MessageCommands(client, command, args, message) {
   const { guild, member, content, channel, author } = message;
@@ -29,7 +28,6 @@ async function MessageCommands(client, command, args, message) {
   const { roles } = guild;
   const { members } = guild;
   const path = require("path");
-  console.log(command, args);
 
   if (command === "watchtogether") {
     const {
@@ -52,6 +50,7 @@ async function MessageCommands(client, command, args, message) {
       channelId: svoiceChannel.id,
       guildId: svoiceChannel.guild.id,
       adapterCreator: svoiceChannel.guild.voiceAdapterCreator,
+      selfMute: false,
     });
     const audioResource = createAudioResource(
       `https://ia801008.us.archive.org/26/items/alicemertonnoroots_201907/Alice%20Merton%20-%20No%20Roots.mp3`

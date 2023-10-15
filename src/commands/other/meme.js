@@ -56,11 +56,11 @@ module.exports = {
     } else if (platform === "giphy") {
       giphyMeme();
     } else {
-      const random = Math.floor(Math.random() * 2);
+      const random = rand(1,100);
       console.log(random);
-      if (random === 0) {
+      if (random  <= 50) {
         redditMeme();
-      } else if (random === 1) {
+      } else {
         giphyMeme();
       }
     }

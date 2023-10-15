@@ -45,6 +45,7 @@ module.exports = {
 
   async execute(interaction, client, args) {
     const embed = new EmbedBuilder();
+    embed.setColor("Aqua");
     await interaction.deferReply();
     const { guild, member, options } = interaction;
     const user = {};
@@ -124,6 +125,7 @@ module.exports = {
           console.log(playlist.songs)
           for (const song of playlist.songs) {
             const track = await client.manager.search(song.title);
+            console.log(song);
             player.queue.add(track.tracks[0]);
           }
           player.play();
@@ -137,6 +139,7 @@ module.exports = {
         }
       }
     }
+
 
     if (subcommand === "add-song") {
       const playlist = await playlistSchema.findOne({

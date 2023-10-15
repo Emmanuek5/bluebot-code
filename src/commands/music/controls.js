@@ -10,6 +10,7 @@ module.exports = {
     .setName("music-controls")
     .setDescription("Displays the music controls"),
   async execute(client, interaction) {
+    const username = interaction.user.username;
     const embedcont = new EmbedBuilder();
     const rowcont = new ActionRowBuilder().addComponents(
       new ButtonBuilder().setCustomId("song-play").setLabel("Play").setStyle("Primary"),
@@ -29,7 +30,7 @@ module.exports = {
       .setTimestamp()
       .setFooter({
         text: `Controls Command By: ${username}`,
-        iconURL: iconURL,
+        iconURL: interaction.user.displayAvatarURL(),
       });
     await interaction.reply({ embeds: [embedcont], components: [rowcont] });
   },
