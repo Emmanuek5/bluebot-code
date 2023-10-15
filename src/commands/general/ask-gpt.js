@@ -4,11 +4,9 @@ const { Configuration, OpenAIApi } = require("openai");
 require("dotenv").config();
 
 const configureration = new Configuration({
-  apiKey: process.env.KEY,
+  apiKey: process.env.OPENAI_API_KEY,
 });
-
 const openai = new OpenAIApi(configureration);
-
 module.exports = {
   usage: "Ask Chat Gpt A Question",
   data: new SlashCommandBuilder()
@@ -35,6 +33,7 @@ module.exports = {
       console.log("dONE");
       await interaction.editReply({ embeds: [emeb] });
     } catch (error) {
+      console.log(error);
       await interaction.editReply({ content: `Request Faild With Code *${error}*` });
     }
   },

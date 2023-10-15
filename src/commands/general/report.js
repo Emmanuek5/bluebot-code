@@ -25,11 +25,7 @@ module.exports = {
           {
             id: interaction.guild.id,
             deny: [PermissionsBitField.Flags.ViewChannel],
-          },
-          {
-            id: interaction.user.id,
-            allow: [PermissionsBitField.Flags.ViewChannel],
-          },
+          }
         ],
       });
       channel.send(`The User ${user} Hat Been Reported for ${reason}`);
