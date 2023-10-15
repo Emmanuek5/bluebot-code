@@ -1,6 +1,7 @@
 const { EmbedBuilder } = require("@discordjs/builders");
 const { SlashCommandBuilder, Colors } = require("discord.js");
 const { Configuration, OpenAIApi } = require("openai");
+require("dotenv").config();
 
 const configureration = new Configuration({
   apiKey: process.env.KEY,
@@ -21,7 +22,6 @@ module.exports = {
     const question = interaction.options.getString("question");
 
     try {
-      console.log("gOTTEN");
       const res = await openai.createCompletion({
         model: "text-davinci-003",
         prompt: question,
