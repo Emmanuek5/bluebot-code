@@ -18,6 +18,7 @@ const runCommand = command => {
 
 const command = "git pull";
 runCommand(command);
+runCommand("npm run deploy");
 
 setInterval(() => {
   const command = "git pull";

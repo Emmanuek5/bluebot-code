@@ -30,24 +30,25 @@ module.exports = {
         const eco = new Economy();
         const ecouser = eco.findUser(process.env.CLIENT_ID);
         if (!ecouser) return interaction.reply({ content: "You Don't Have An Economy Account" });
-        console.log(eco.InventorySystem.getInventory(process.env.CLIENT_ID));
         let itemdata = eco.InventorySystem.getItemInfo(item);
-        console.log(itemdata);
         if (!itemdata)
           return interaction.reply({
             content: "The item Does not exist check the spelling and try again",
           });
         if (!ecouser.Wallet >= item.price)
           return interaction.reply({ content: "You Don't Have Enough Money in Your Wallet" });
-        const result = eco.buyItemfromShop(user.id, item, number);
-        if (result) {
+        const result = await eco.buyItemfromShop(user.id, item, number);
+        console.log(result);
+        if (result && result != "Item not found in the shop" && result != "Insufficient Funds") {
           const embed = new EmbedBuilder()
             .setTitle("Successful Purchase")
-            .setDescription(`You Have Purchased ${item} at $${item.price}`)
+            .setDescription(`You Have Purchased ${result.name} at $${result.price}`)
             .setColor("Green")
             .setTimestamp()
             .setFooter({ text: "Buy" });
           interaction.reply({ embeds: [embed] });
+        }else{
+          interaction.reply({ content: result });
         }
       }
 

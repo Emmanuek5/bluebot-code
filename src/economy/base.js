@@ -76,17 +76,36 @@ class Economy {
     return data;
   }
 
-  removeMoney(user, amount) {
-    const data = this.db.findOne({ User: user });
+  async removeMoney(user, amount) {
+    const data = await this.db.findOne({ User: user });
+    console.log(data);
     if (!data) return false;
-    if (!data.Wallet >= amount) return false;
+
+    // Check if data.Wallet is already NaN
+    if (isNaN(data.Wallet)) return false;
+
+    // Check if amount is a valid number
+    if (isNaN(amount) || !isFinite(amount)) return false;
+
+    // Ensure data.Wallet is a number
+    data.Wallet = Number(data.Wallet);
+
+    // Check if there's enough money
+    if (data.Wallet < amount) return false;
+
+    // Subtract amount from Wallet
+    console.log(data.Wallet);
     data.Wallet -= amount;
-    data.save();
+    console.log(data.Wallet);
+
+    // Save the updated data
+    await data.save();
+
     return data;
   }
 
-  getUserItems(user) {
-    const data = this.InventorySystem.getInventory(user);
+  async getUserItems(user) {
+    const data = await this.InventorySystem.getInventory(user);
     return data;
   }
 
@@ -99,13 +118,27 @@ class Economy {
     return gamble;
   }
 
-  buyItemfromShop(user, item, amount) {
-    const data = this.InventorySystem.getItemInfo(this.getshopid, item);
-    if (!data) return "Item not found";
-    if (this.getBalance(user, this.getshopid) < data.price)
-      return false, "You Dont Have Enough Money";
-    const users = this.removeMoney(user, data.price);
-    this.InventorySystem.buyItem(user, this.getshopid, item, amount);
+  async buyItemfromShop(user, item, amount) {
+    try {
+      // Check if the item exists in the shop (modify this based on your actual logic)
+      const shopItemInfo = await this.InventorySystem.getShopItemInfo(item);
+      if (!shopItemInfo) return "Item not found in the shop";
+
+      // Check if the user has sufficient funds
+      const userBalance = this.getBalance(user);
+      if (userBalance < shopItemInfo.price * amount) return "Insufficient Funds";
+
+      // Remove money from the user
+      await this.removeMoney(user, shopItemInfo.price * amount);
+
+      // Buy the item from the shop
+      this.InventorySystem.buyItem(user, process.env.CLIENT_ID, shopItemInfo, amount);
+
+      return shopItemInfo;
+    } catch (error) {
+      console.log(error);
+      return "An error occurred during the purchase";
+    }
   }
 }
 
