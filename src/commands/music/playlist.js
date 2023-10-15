@@ -88,7 +88,7 @@ module.exports = {
       );
       const songs = playlists.map(playlist => playlist.songs.length).join("\n");
      if(songs.length > 0){
-      embed.addField("Songs", songs);
+      embed.addFields("Songs:", songs);
       }else{
         embed.addField("Songs", "No Songs");
       }
