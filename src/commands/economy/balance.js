@@ -9,7 +9,6 @@ module.exports = {
     const { user, guild } = interaction;
     const eco = new Economy();
     let Data = await eco.findUser(user.id);
-    console.log(Data);
 
     if (!Data) {
       return interaction.reply({

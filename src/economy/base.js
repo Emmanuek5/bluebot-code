@@ -1,7 +1,8 @@
 require("dotenv").config();
+const eco = require("../models/economy");
 class Economy {
   constructor() {
-    this.db = require("../models/economy");
+    this.db = eco;
     this.startingbalance = 1000;
     this.maxbalance = 100000000;
     this.minbalance = 0;
@@ -13,7 +14,9 @@ class Economy {
     this.defaultItems = { name: "boot", price: 100, amount: 1 };
     this.InventorHandler = require("./InventoryManager/class");
     this.InventorySystem = new this.InventorHandler.InventorySystem();
+    this.createDefaultUser()
   }
+
   /**
    *
    * @param {String} user
@@ -25,26 +28,66 @@ class Economy {
   create(user, guild) {
     const { InventorySystem } = require("./InventoryManager/class");
     let inv = new InventorySystem();
+
+    // Check if the user already exists
+    const existingUser = this.findUser(user);
+    if (existingUser) {
+      console.log("User already exists:");
+      return false;
+    }
+
+    // Create a new entry
     const data = this.db.create({
       Guild: guild,
       User: user,
       Wallet: this.startingbalance,
       Bank: 0,
     });
+
+    console.log("User created:");
+
     if (!data) return false;
     if (inv.findUser(user)) return false;
     inv.saveUserWithDefaultItems(user, this.defaultItems);
     return data;
   }
 
+  createDefaultUser() {
+    const { InventorySystem } = require("./InventoryManager/class");
+    const mainShopUserId = process.env.CLIENT_ID; // Assuming CLIENT_ID is the main shop's user ID
+    // Check if the main shop user already exists
+    const existingMainShopUser = this.db.findOne({User: mainShopUserId})
+    if (existingMainShopUser) {
+      console.log("Main shop user already exists:");
+      return false;
+    }
+    // Create the main shop user with default values
+    const mainShopUserData = this.db.create({
+      Guild: process.env.DEV_GUILD_ID, // You may set this to the main shop's guild ID if needed
+      User: mainShopUserId,
+      Wallet: this.startingbalance,
+      Bank: 0,
+    });
+    console.log("Main shop user created:");
+
+    if (!mainShopUserData) return false;
+    return mainShopUserData;
+  }
+
   findUser(user) {
     const { InventorySystem } = require("./InventoryManager/class");
     let inv = new InventorySystem();
 
+    // Find the user
     const data = this.db.findOne({ User: user });
-    if (!data) return false;
-    inv.saveUserWithDefaultItems(user, this.defaultUser);
-    return data;
+
+    if (data) {
+      console.log("User found");
+      return data;
+    } else {
+      console.log("User not found");
+      return null;
+    }
   }
 
   getBalance(user) {
@@ -133,6 +176,7 @@ class Economy {
 
       // Buy the item from the shop
       this.InventorySystem.buyItem(user, process.env.CLIENT_ID, shopItemInfo, amount);
+      await this.addMoney(process.env.CLIENT_ID, shopItemInfo.price * amount);
 
       return shopItemInfo;
     } catch (error) {
