@@ -48,7 +48,6 @@ function client(client) {
       });
     });
 
-
     client.manager.init(client.user.id);
     mongoose.set("strictQuery", false);
     mongoose.connect(process.env.DATABASE_URL, {
@@ -96,7 +95,6 @@ function client(client) {
     }, 10000);
   });
 
- 
   client.on("guildCreate", async guild => {
     add(guild, client);
 
@@ -143,7 +141,6 @@ function client(client) {
     let data = qs.stringify({
       server_count: process.env.SERVER_COUNT,
     });
-
   });
 
   client.on("guildDelete", guild => {
@@ -160,7 +157,7 @@ function client(client) {
         }
       }
     );
- 
+
     let serverCount = client.guilds.cache.size;
     process.env.SERVER_COUNT = serverCount;
 
@@ -201,11 +198,12 @@ function client(client) {
   const nodes = [
     {
       host: process.env.LAVALINK_HOST,
-      port: 40197,
+      port: 10500,
       password: process.env.LAVALINK_PASSWORD,
       secure: false,
     },
-  ];1
+  ];
+  1;
 
   client.manager = new Manager({
     // The nodes to connect to, optional if using default lavalink options
