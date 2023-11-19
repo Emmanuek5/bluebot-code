@@ -1,12 +1,12 @@
 const { EmbedBuilder } = require("@discordjs/builders");
 const { SlashCommandBuilder, Colors } = require("discord.js");
-const { Configuration, OpenAIApi } = require("openai");
+const { Configuration, OpenAI } = require("openai");
 require("dotenv").config();
 
-const configureration = new Configuration({
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
-const openai = new OpenAIApi(configureration);
+
 module.exports = {
   usage: "Ask Chat Gpt A Question",
   data: new SlashCommandBuilder()
@@ -20,7 +20,7 @@ module.exports = {
     const question = interaction.options.getString("question");
 
     try {
-      const res = await openai.createCompletion({
+      const res = await openai.completions.create({
         model: "text-davinci-003",
         prompt: question,
         temperature: 0.5,

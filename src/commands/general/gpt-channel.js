@@ -6,13 +6,6 @@ const {
   PermissionFlagsBits,
   PermissionsBitField,
 } = require("discord.js");
-const { Configuration, OpenAIApi } = require("openai");
-
-const configureration = new Configuration({
-  apiKey: "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",
-});
-
-const openai = new OpenAIApi(configureration);
 
 module.exports = {
   usage: "Ask Chat Gpt A Question",
@@ -35,18 +28,21 @@ module.exports = {
     }
     var parentId = "";
 
-    if (guild.channels.cache.find(c => c.name === "gpt-consersations" && c.type === ChannelType.GuildCategory)) {
-      parentId = guild.channels.cache.find(c => c.name === "gpt-consersations" && c.type === ChannelType.GuildCategory).id;
-        
-    }else{
+    if (
+      guild.channels.cache.find(
+        c => c.name === "gpt-consersations" && c.type === ChannelType.GuildCategory
+      )
+    ) {
+      parentId = guild.channels.cache.find(
+        c => c.name === "gpt-consersations" && c.type === ChannelType.GuildCategory
+      ).id;
+    } else {
       const category = await guild.channels.create({
         name: "gpt-consersations",
         type: ChannelType.GuildCategory,
       });
       parentId = category.id;
     }
-
-      
 
     const channel = await interaction.guild.channels.create({
       name: "gpt-consersation-" + username,
