@@ -1,13 +1,11 @@
 const { EmbedBuilder } = require("@discordjs/builders");
 const { SlashCommandBuilder, Colors, AttachmentBuilder } = require("discord.js");
-const { Configuration, OpenAIApi } = require("openai");
+const { Configuration, OpenAI } = require("openai");
 const { rand, download } = require("../../functions/functions");
 
-const configureration = new Configuration({
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
-
-const openai = new OpenAIApi(configureration);
 
 module.exports = {
   usage: "Ask Chat Gpt A Question",
@@ -21,7 +19,7 @@ module.exports = {
     const prompt = interaction.options.getString("prompt");
     await interaction.deferReply();
     try {
-      const response = await openai.createImage({
+      const response = await openai.images.generate({
         prompt: prompt,
         n: 1,
         size: "1024x1024",

@@ -87,11 +87,10 @@ function client(client) {
     const options = {
       type: ActivityType.Watching,
       name: `${process.env.SERVER_COUNT} servers and >help`,
-      status: "idle",
     };
 
     setTimeout(() => {
-      client.user.setPresence({ activities: [options] });
+      client.user.setPresence({ status: "idle", activities: [options] });
     }, 10000);
   });
 
@@ -133,9 +132,8 @@ function client(client) {
     const options = {
       type: ActivityType.Watching,
       name: `${process.env.SERVER_COUNT} servers and >help`,
-      status: "idle",
     };
-    client.user.setPresence({ activities: [options] });
+    client.user.setPresence({ status: "idle", activities: [options] });
     const axios = require("axios");
     const qs = require("qs");
     let data = qs.stringify({
@@ -169,9 +167,8 @@ function client(client) {
     const options = {
       type: ActivityType.Watching,
       name: `${process.env.SERVER_COUNT} servers and >help`,
-      status: "idle",
     };
-    client.user.setPresence({ activities: [options] });
+    client.user.setPresence({ status: "idle", activities: [options] });
   });
 
   client.on("guildUpdate", async (oldGuild, newGuild) => {

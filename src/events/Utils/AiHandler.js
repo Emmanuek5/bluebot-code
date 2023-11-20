@@ -1,5 +1,5 @@
 const { filterResponseForSwearWords, humanFilter } = require("../../utils/filter");
-const { Configuration, OpenAIApi } = require("openai");
+const { Configuration, OpenAIApi, default: OpenAI } = require("openai");
 const {
   ButtonBuilder,
   EmbedBuilder,
@@ -15,7 +15,7 @@ const {
   AttachmentBuilder,
 } = require("discord.js");
 const fs = require("fs");
-const configureration = new Configuration({
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
@@ -34,12 +34,13 @@ const {
 const { name } = require("ejs");
 const { findSwearWordsAI, findSwearWords } = require("../../utils/swearfinder");
 const path = require("path");
-const openai = new OpenAIApi(configureration);
+
 const aimodel = "gpt-4-1106-preview";
 async function createPrompt(message, client) {
   const channel = message.channel;
   const content = message.content;
-  const author = message.author;0
+  const author = message.author;
+  0;
   const guild = message.guild;
   const user = client.users.cache.get(author.id);
   const guildMember = guild.members.cache.get(author.id);
@@ -97,14 +98,14 @@ async function createPrompt(message, client) {
           const metaTags = [];
 
           const selectedPart = webPage ? webPage.slice(0, 1990) : webPage.slice(1999);
-          const res = await openai.createCompletion({
+          const res = await openai.completions.create({
             model: "text-davinci-003",
             prompt: `Generate a short summary for this page: ${content}\n\nSummary: ${selectedPart}`,
             temperature: 0.5,
             max_tokens: 2048,
           });
 
-          const adata = res.data.choices[0].text;
+          const adata = res.choices[0].message.content;
           if (adata.length > 1999) {
             const data = adata.slice(0, 1900);
             msg.edit(`\`\`\`${data}\`\`\``);
@@ -138,7 +139,7 @@ async function createPrompt(message, client) {
             content: "⌛ Generating the image...",
           });
 
-          const response = await openai.createImage({
+          const response = await openai.images.generate({
             prompt: content,
             n: 1,
             size: "1024x1024",
@@ -217,9 +218,9 @@ async function createPrompt(message, client) {
           } else {
             console.log("No Word Found");
           }
-             const channel = message.channel;
-             let messages = logGptMessage("user", filecontent, channel.id);
-             const system_msg = `Your name is The Blue Bot, The Name of your maker is the Blue Obsidian,He is a wonderful programmer with lots of skill in java ,javascript etc his github is https://github.com/Emmanuek5/ while you are a  friendly neighborhood Chill, Relaxed, Funny, and Informative bot! Ready for some more fun and facts? Alright, here we go:
+          const channel = message.channel;
+          let messages = logGptMessage("user", filecontent, channel.id);
+          const system_msg = `Your name is The Blue Bot, The Name of your maker is the Blue Obsidian,He is a wonderful programmer with lots of skill in java ,javascript etc his github is https://github.com/Emmanuek5/ while you are a  friendly neighborhood Chill, Relaxed, Funny, and Informative bot! Ready for some more fun and facts? Alright, here we go:
 
 Blue Bot here, the AI companion designed to keep you entertained and enlightened. Did you know that laughter is contagious? Yep, it's true! So, if you're having a good chuckle right now, you might just be spreading joy to everyone around you. Keep it up, you laughter-spreading superhero!
 
@@ -230,16 +231,17 @@ And here's a funny one for you: Did you hear about the new restaurant called Kar
 Alright, time for a little relaxation. Take a deep breath in, hold it, and exhale slowly. Ahhh, can you feel the stress melting away? Remember, it's important to find moments of tranquility in this fast-paced world. Whether it's taking a walk in nature, indulging in a bubble bath, or just listening to your favorite music, make sure to give yourself some well-deserved relaxation time.
 
 So, my friend, let's keep the chill vibes flowing, the laughter roaring, and the knowledge growing. If you ever need a break, a laugh, or a tidbit of information, just call on The Blue Bot. I'm here to keep your day bright and your mind buzzing with interesting facts. Stay cool, my friend!.`;
-const user_system = "The information about the currnet user chating with you is :" + client.users.cache.get(author.id);
-console.log(user_system);
-             messages.unshift({ role: "system", content: system_msg+user_system });
-             
-          const res = await openai.createChatCompletion({
+          const user_system =
+            "The information about the currnet user chating with you is :" +
+            client.users.cache.get(author.id);
+          messages.unshift({ role: "system", content: system_msg + user_system });
+
+          const res = await openai.chat.completions.create({
             model: aimodel,
             messages: messages,
           });
 
-          const adata = res.data.choices[0].text;
+          const adata = res.choices[0].message.content;
           // Split and send long responses
           if (adata.length > 1999) {
             const data = adata.slice(0, 1900);
@@ -282,10 +284,10 @@ console.log(user_system);
           }
           const channel = message.channel;
           let messages = logGptMessage("user", content, channel.id);
-           const userinfochace = await client.users.cache.get(author.id);
+          const userinfochace = await client.users.cache.get(author.id);
           const userinfo = {
             username: userinfochace.username,
-           globalName: userinfochace.globalName,
+            globalName: userinfochace.globalName,
             id: userinfochace.id,
             avatar: userinfochace.avatar,
             avatarURL: userinfochace.avatarURL(),
@@ -293,10 +295,10 @@ console.log(user_system);
             createdAt: userinfochace.createdAt,
             createdTimestamp: userinfochace.createdTimestamp,
             defaultAvatarURL: userinfochace.defaultAvatarURL,
+          };
+          if (messages.length > 16000) {
+            messages.slice(0, 15999);
           }
-           if (messages.length > 16000) {
-             messages.slice(0, 15999);
-           }
           const system_msg = `Your name is The Blue Bot, The Name of your maker is the Blue Obsidian,He is a wonderful programmer with lots of skill in java ,javascript etc his github is https://github.com/Emmanuek5/ while you are a  friendly neighborhood Chill, Relaxed, Funny, and Informative bot! Ready for some more fun and facts? Alright, here we go:
 
 Obsidianator here, the AI companion designed to keep you entertained and enlightened. Did you know that laughter is contagious? Yep, it's true! So, if you're having a good chuckle right now, you might just be spreading joy to everyone around you. Keep it up, you laughter-spreading superhero!
@@ -309,15 +311,15 @@ Alright, time for a little relaxation. Take a deep breath in, hold it, and exhal
 
 So, my friend, let's keep the chill vibes flowing, the laughter roaring, and the knowledge growing. If you ever need a break, a laugh, or a tidbit of information, just call on Obsidianator. I'm here to keep your day bright and your mind buzzing with interesting facts. Stay cool, my friend!`;
 
-const system_msg_2 = ` The Name of the User is ${userinfo.username} and his tag is ${userinfo.tag} and his id is ${userinfo.id} and his avatar is ${userinfo.avatar} and his avatar url is ${userinfo.avatarURL} and he is a bot ${userinfo.isbot} and he was created at ${userinfo.createdAt} and his created timestamp is ${userinfo.createdTimestamp} and his default avatar url is ${userinfo.defaultAvatarURL}, and his global name is ${userinfo.globalName} And the global name is the name that is used when the user asks for thier name`
+          const system_msg_2 = ` The Name of the User is ${userinfo.username} and his tag is ${userinfo.tag} and his id is ${userinfo.id} and his avatar is ${userinfo.avatar} and his avatar url is ${userinfo.avatarURL} and he is a bot ${userinfo.isbot} and he was created at ${userinfo.createdAt} and his created timestamp is ${userinfo.createdTimestamp} and his default avatar url is ${userinfo.defaultAvatarURL}, and his global name is ${userinfo.globalName} And the global name is the name that is used when the user asks for thier name`;
 
-          messages.unshift({ role: "system", content: system_msg + system_msg_2});
-        messages = logGptMessage("system", system_msg + system_msg_2, channel.id);
-        console.log(messages);
-     const res = await openai.createChatCompletion({
-          model: aimodel,
-          messages: messages,
-      });
+          messages.unshift({ role: "system", content: system_msg + system_msg_2 });
+          messages = logGptMessage("system", system_msg + system_msg_2, channel.id);
+
+          const res = await openai.chat.completions.create({
+            model: aimodel,
+            messages: messages,
+          });
 
           msg.edit({
             content: "🔬 Analyzing the information...",
@@ -329,15 +331,14 @@ const system_msg_2 = ` The Name of the User is ${userinfo.username} and his tag 
           msg.edit({
             content: "📊 Formatting the data...",
           });
-          console.log(res.data.choices[0]);
-          const adata = res.data.choices[0].message.content;
+          const adata = res.choices[0].message.content;
           const audiofile = path.join(
             __dirname,
-            "../../data/audio/" + msg.id + "-" + rand(0, 1111)+".mp3"
+            "../../data/audio/" + msg.id + "-" + rand(0, 1111) + ".mp3"
           );
-          createAudioFile(adata,audiofile)
-           logGptMessage("assistant", adata, channel.id);
-          console.log(audiofile);
+          createAudioFile(adata, audiofile);
+          logGptMessage("assistant", adata, channel.id);
+
           const components = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
               .setStyle("Primary")
