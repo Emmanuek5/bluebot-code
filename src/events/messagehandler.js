@@ -40,7 +40,7 @@ const { createPrompt } = require("./Utils/AiHandler");
 
 async function messages(client, message) {
   const { guild, member, content, channel, author } = message;
-let  serverInfo = await serverSchema.findOne({
+  let serverInfo = await serverSchema.findOne({
     guildID: message.guild.id,
   });
   const fs = require("fs");
@@ -59,26 +59,20 @@ let  serverInfo = await serverSchema.findOne({
   const mentioncode = `<@${process.env.CLIENT_ID}>`;
   const alias = "b";
   if (content.startsWith(process.env.PREFIX)) {
-    const command = content.split(" ")[0].slice(process.env.PREFIX.length);
-    console.log(command);
-    const args = content.split(" ").slice(1);
+    const prefix = process.env.PREFIX;
+    const args = message.content.slice(prefix.length).trim().split(/ +/g);
+    const command = args.shift().toLowerCase();
     MessageCommands(client, command, args, message);
     return;
   }
 
-  const messageoptions = {
-    id: message.id,
-    createdTimestamp: message.createdTimestamp,
-    author: id,
-  };
-
   if (message.author.bot || !message.guild) return;
 
   if (channel.name.includes("gpt-consersation-")) {
-    if(content.toLowerCase() == "close conversation") {
+    if (content.toLowerCase() == "close conversation") {
       channel.delete();
       return;
-    }else{
+    } else {
       createPrompt(message, client);
       return;
     }
@@ -140,12 +134,10 @@ let  serverInfo = await serverSchema.findOne({
   if (message.attachments.size > 0) {
     const user_levels = levels.fetch(message.author.id, message.guild.id);
     console.log(user_levels);
-   if (user_levels.level < 65) {
-    console.log("1000");
-   }
-  } 
-    
-  
+    if (user_levels.level < 65) {
+      console.log("1000");
+    }
+  }
 
   if (content.includes("https://discord.gg/") && !content.includes("event")) {
     if (member.permissions.has(PermissionsBitField.Flags.Administrator)) return;

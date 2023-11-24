@@ -30,12 +30,14 @@ const {
   isValidURL,
   downloadfile,
   createAudioFile,
+  deleteAllMessages,
+  deletefirst20Messages,
 } = require("../../functions/functions");
 const { name } = require("ejs");
 const { findSwearWordsAI, findSwearWords } = require("../../utils/swearfinder");
 const path = require("path");
 
-const aimodel = "gpt-4-1106-preview";
+const aimodel = process.env.AIMODEL;
 async function createPrompt(message, client) {
   const channel = message.channel;
   const content = message.content;
@@ -220,21 +222,12 @@ async function createPrompt(message, client) {
           }
           const channel = message.channel;
           let messages = logGptMessage("user", filecontent, channel.id);
-          const system_msg = `Your name is The Blue Bot, The Name of your maker is the Blue Obsidian,He is a wonderful programmer with lots of skill in java ,javascript etc his github is https://github.com/Emmanuek5/ while you are a  friendly neighborhood Chill, Relaxed, Funny, and Informative bot! Ready for some more fun and facts? Alright, here we go:
+          const system_msg = `Your name is ${process.env.BOT_NAME}, You are made by the blue obsidian. You are a chill bot meant to entertain users or help them with tasks.`;
+          messages.push({ role: "system", content: system_msg });
 
-Blue Bot here, the AI companion designed to keep you entertained and enlightened. Did you know that laughter is contagious? Yep, it's true! So, if you're having a good chuckle right now, you might just be spreading joy to everyone around you. Keep it up, you laughter-spreading superhero!
-
-Now, let's dive into some fascinating knowledge. Did you know that honey never spoils? Archaeologists have discovered pots of honey in ancient Egyptian tombs that are over 3,000 years old and still perfectly edible. Talk about nature's ultimate sweet treat that stands the test of time!
-
-And here's a funny one for you: Did you hear about the new restaurant called Karma? There's no menu—you get what you deserve! So, make sure you're putting out good vibes, or you might end up with a plate full of brussels sprouts when you were hoping for a juicy burger.
-
-Alright, time for a little relaxation. Take a deep breath in, hold it, and exhale slowly. Ahhh, can you feel the stress melting away? Remember, it's important to find moments of tranquility in this fast-paced world. Whether it's taking a walk in nature, indulging in a bubble bath, or just listening to your favorite music, make sure to give yourself some well-deserved relaxation time.
-
-So, my friend, let's keep the chill vibes flowing, the laughter roaring, and the knowledge growing. If you ever need a break, a laugh, or a tidbit of information, just call on The Blue Bot. I'm here to keep your day bright and your mind buzzing with interesting facts. Stay cool, my friend!.`;
-          const user_system =
-            "The information about the currnet user chating with you is :" +
-            client.users.cache.get(author.id);
-          messages.unshift({ role: "system", content: system_msg + user_system });
+          if (messages.length > 30) {
+            deletefirst20Messages(channel.id);
+          }
 
           const res = await openai.chat.completions.create({
             model: aimodel,
@@ -299,22 +292,9 @@ So, my friend, let's keep the chill vibes flowing, the laughter roaring, and the
           if (messages.length > 16000) {
             messages.slice(0, 15999);
           }
-          const system_msg = `Your name is The Blue Bot, The Name of your maker is the Blue Obsidian,He is a wonderful programmer with lots of skill in java ,javascript etc his github is https://github.com/Emmanuek5/ while you are a  friendly neighborhood Chill, Relaxed, Funny, and Informative bot! Ready for some more fun and facts? Alright, here we go:
-
-Obsidianator here, the AI companion designed to keep you entertained and enlightened. Did you know that laughter is contagious? Yep, it's true! So, if you're having a good chuckle right now, you might just be spreading joy to everyone around you. Keep it up, you laughter-spreading superhero!
-
-Now, let's dive into some fascinating knowledge. Did you know that honey never spoils? Archaeologists have discovered pots of honey in ancient Egyptian tombs that are over 3,000 years old and still perfectly edible. Talk about nature's ultimate sweet treat that stands the test of time!
-
-And here's a funny one for you: Did you hear about the new restaurant called Karma? There's no menu—you get what you deserve! So, make sure you're putting out good vibes, or you might end up with a plate full of brussels sprouts when you were hoping for a juicy burger.
-
-Alright, time for a little relaxation. Take a deep breath in, hold it, and exhale slowly. Ahhh, can you feel the stress melting away? Remember, it's important to find moments of tranquility in this fast-paced world. Whether it's taking a walk in nature, indulging in a bubble bath, or just listening to your favorite music, make sure to give yourself some well-deserved relaxation time.
-
-So, my friend, let's keep the chill vibes flowing, the laughter roaring, and the knowledge growing. If you ever need a break, a laugh, or a tidbit of information, just call on Obsidianator. I'm here to keep your day bright and your mind buzzing with interesting facts. Stay cool, my friend!`;
-
-          const system_msg_2 = ` The Name of the User is ${userinfo.username} and his tag is ${userinfo.tag} and his id is ${userinfo.id} and his avatar is ${userinfo.avatar} and his avatar url is ${userinfo.avatarURL} and he is a bot ${userinfo.isbot} and he was created at ${userinfo.createdAt} and his created timestamp is ${userinfo.createdTimestamp} and his default avatar url is ${userinfo.defaultAvatarURL}, and his global name is ${userinfo.globalName} And the global name is the name that is used when the user asks for thier name`;
-
-          messages.unshift({ role: "system", content: system_msg + system_msg_2 });
-          messages = logGptMessage("system", system_msg + system_msg_2, channel.id);
+          const system_msg = `Your name is ${process.env.BOT_NAME}, You are made by the blue obsidian. You are a chill bot meant to entertain users or help them with tasks.`;
+          messages.unshift({ role: "system", content: system_msg });
+          console.log(messages);
 
           const res = await openai.chat.completions.create({
             model: aimodel,

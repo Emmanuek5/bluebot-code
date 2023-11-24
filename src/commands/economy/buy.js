@@ -47,7 +47,7 @@ module.exports = {
             .setTimestamp()
             .setFooter({ text: "Buy" });
           interaction.reply({ embeds: [embed] });
-        }else{
+        } else {
           interaction.reply({ content: result });
         }
       }

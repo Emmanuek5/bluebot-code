@@ -14,7 +14,7 @@ class Economy {
     this.defaultItems = { name: "boot", price: 100, amount: 1 };
     this.InventorHandler = require("./InventoryManager/class");
     this.InventorySystem = new this.InventorHandler.InventorySystem();
-    this.createDefaultUser()
+    this.createDefaultUser();
   }
 
   /**
@@ -56,7 +56,7 @@ class Economy {
     const { InventorySystem } = require("./InventoryManager/class");
     const mainShopUserId = process.env.CLIENT_ID; // Assuming CLIENT_ID is the main shop's user ID
     // Check if the main shop user already exists
-    const existingMainShopUser = this.db.findOne({User: mainShopUserId})
+    const existingMainShopUser = this.db.findOne({ User: mainShopUserId });
     if (existingMainShopUser) {
       console.log("Main shop user already exists:");
       return false;

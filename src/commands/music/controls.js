@@ -9,7 +9,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("music-controls")
     .setDescription("Displays the music controls"),
-  async execute(interaction,client) {
+  async execute(interaction, client) {
     const username = interaction.user.username;
     const embedcont = new EmbedBuilder();
     const rowcont = new ActionRowBuilder().addComponents(
