@@ -44,7 +44,31 @@ module.exports = {
             .setRequired(true)
         )
     )
-    .addSubcommand(subcommand => subcommand.a),
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName("remove-song")
+        .setDescription("Remove A Song From A Playlist")
+        .addStringOption(option =>
+          option
+            .setName("name")
+            .setDescription("The Song Or Playlist You Want To Remove")
+            .setRequired(true)
+        )
+        .addStringOption(option =>
+          option
+            .setName("playlist")
+            .setDescription("The Playlist You Want To Remove From")
+            .setRequired(true)
+        )
+    )
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName("delete")
+        .setDescription("Delete A Playlist")
+        .addStringOption(option =>
+          option.setName("name").setDescription("The Playlist You Want To Delete").setRequired(true)
+        )
+    ),
   async execute(interaction, client, args) {
     const embed = new EmbedBuilder();
     embed.setColor("Aqua");
@@ -74,6 +98,24 @@ module.exports = {
       });
       await newPlaylist.save();
       embed.setDescription(`Created playlist ${playlistName}`);
+      return interaction.editReply({ embeds: [embed] });
+    }
+
+    if (subcommand === "delete") {
+      const playlistName = option;
+      const playlist = await playlistSchema.findOne({
+        guildID: guild.id,
+        name: playlistName,
+      });
+      if (!playlist) {
+        embed.setDescription("That playlist does not exist");
+        return interaction.editReply({ embeds: [embed] });
+      }
+      await playlistSchema.deleteOne({
+        guildID: guild.id,
+        name: playlistName,
+      });
+      embed.setDescription(`Deleted playlist ${playlistName}`);
       return interaction.editReply({ embeds: [embed] });
     }
 
@@ -158,6 +200,32 @@ module.exports = {
       playlist.songs.push(song);
       await playlist.save();
       embed.setDescription(`Added ${option} to ${playlist.name}`);
+      return interaction.editReply({ embeds: [embed] });
+    }
+
+    if (subcommand === "remove-song") {
+      const playlist = await playlistSchema.findOne({
+        guildID: guild.id,
+        name: options.getString("playlist"),
+      });
+      if (!playlist) {
+        embed.setDescription("That playlist does not exist");
+        return interaction.editReply({ embeds: [embed] });
+      }
+      const songinfp = await client.manager.search(option);
+      if (!songinfp) {
+        embed.setDescription("That song does not exist");
+        return interaction.editReply({ embeds: [embed] });
+      }
+      const song = songinfp.tracks[0];
+      const index = playlist.songs.indexOf(song);
+      if (index === -1) {
+        embed.setDescription("That song is not in the playlist");
+        return interaction.editReply({ embeds: [embed] });
+      }
+      playlist.songs.splice(index, 1);
+      await playlist.save();
+      embed.setDescription(`Removed ${option} from ${playlist.name}`);
       return interaction.editReply({ embeds: [embed] });
     }
   },
