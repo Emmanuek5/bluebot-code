@@ -22,6 +22,6 @@ module.exports = {
         { name: "Support", value: "https://discord.gg/UgyJCKXq" }
       )
       .setThumbnail(process.env.BOT_AVATAR);
-      interaction.reply({ embeds: [embed] });
+    interaction.reply({ embeds: [embed] });
   },
 };

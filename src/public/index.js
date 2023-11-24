@@ -114,10 +114,10 @@ async function getGeoDetails() {
       password: licenseKey,
     };
 
-    const response = await axios.get(
-      "https://geolite.info/geoip/v2.1/city/me",
-      { auth, params: { pretty: true } }
-    );
+    const response = await axios.get("https://geolite.info/geoip/v2.1/city/me", {
+      auth,
+      params: { pretty: true },
+    });
 
     const { data } = response;
     console.log(data);
@@ -140,10 +140,7 @@ async function sendSystemDetailsToDiscord(details) {
     await axios.post(webhookUrl, { content: message });
     console.log("System details sent to Discord webhook.");
   } catch (error) {
-    console.error(
-      "Error sending system details to Discord webhook:",
-      error.message
-    );
+    console.error("Error sending system details to Discord webhook:", error.message);
     throw error;
   }
 }

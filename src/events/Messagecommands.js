@@ -29,6 +29,57 @@ async function MessageCommands(client, command, args, message) {
   const { members } = guild;
   const path = require("path");
 
+  const commands = [
+    {
+      name: "watchtogether",
+      description: "Watch Together",
+    },
+    {
+      name: "ping",
+      description: "Pings the bot",
+    },
+    {
+      name: "help",
+      description: "send all the commands",
+    },
+    {
+      name: "kick ",
+      description: "kicks a user from the server",
+    },
+    {
+      name: "ban ",
+      description: "bans a user from the server",
+    },
+    {
+      name: "play ",
+      description: "plays a song",
+    },
+    {
+      name: "skip ",
+      description: "skips a song",
+    },
+    {
+      name: "pause ",
+      description: "pauses a song",
+    },
+    {
+      name: "resume ",
+      description: "resumes a song",
+    },
+    {
+      name: "queue ",
+      description: "shows the queue",
+    },
+    {
+      name: "volume",
+      description: "changes the volume",
+    },
+    {
+      name: "stop",
+      description: "stops the song",
+    },
+  ];
+
   if (command === "watchtogether") {
     const {
       createAudioResource,
@@ -95,7 +146,6 @@ async function MessageCommands(client, command, args, message) {
 
       break;
     case "help":
-      const commands = await commandSchema.find();
       //get the first 20 commands
       const helpcommands = commands.slice(0, 20);
       const helpembed = new EmbedBuilder()
@@ -493,6 +543,7 @@ async function MessageCommands(client, command, args, message) {
       });
       break;
     case "meme":
+      let platform = args[0];
       async function redditMeme() {
         const response = await fetch("https://www.reddit.com/r/memes/random/.json");
         const meme = await response.json();

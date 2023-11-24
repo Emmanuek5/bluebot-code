@@ -52,40 +52,37 @@ class InventorySystem {
     }
   }
 
-async addShopItems() {
-  try {
-    for (const item of this.shop) {
-      // Check if the item already exists for the user
-      const existingItem = await InventoryItem.findOne({
-        userId: process.env.CLIENT_ID,
-        name: item.name,
-      });
-
-      if (existingItem) {
-        // Item exists, update the amount
-        existingItem.amount += item.amount * 1000;
-        await existingItem.save();
-       
-      } else {
-        // If the item doesn't exist, proceed to add it
-        const newItem = new InventoryItem({
+  async addShopItems() {
+    try {
+      for (const item of this.shop) {
+        // Check if the item already exists for the user
+        const existingItem = await InventoryItem.findOne({
           userId: process.env.CLIENT_ID,
-          itemId: this.generateItemId(),
           name: item.name,
-          amount: item.amount * 1000,
-          price: item.price,
         });
-        await newItem.save();
-     
-      }
-    }
-    return true;
-  } catch (error) {
-    console.error("Error adding/updating shop items in inventory:", error);
-    return false;
-  }
-}
 
+        if (existingItem) {
+          // Item exists, update the amount
+          existingItem.amount += item.amount * 1000;
+          await existingItem.save();
+        } else {
+          // If the item doesn't exist, proceed to add it
+          const newItem = new InventoryItem({
+            userId: process.env.CLIENT_ID,
+            itemId: this.generateItemId(),
+            name: item.name,
+            amount: item.amount * 1000,
+            price: item.price,
+          });
+          await newItem.save();
+        }
+      }
+      return true;
+    } catch (error) {
+      console.error("Error adding/updating shop items in inventory:", error);
+      return false;
+    }
+  }
 
   async getShopItemInfo(name) {
     for (const item of this.shop) {

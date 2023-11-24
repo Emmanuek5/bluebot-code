@@ -7,7 +7,6 @@ module.exports = {
   async execute(interaction, client) {
     await interaction.deferReply();
 
-
     interaction.editReply({ content: process.env.VERSION });
   },
 };

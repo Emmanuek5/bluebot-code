@@ -1,7 +1,8 @@
-const path = require("path");
 const fs = require("fs");
+const path = require("path");
 const request = require("request");
 const axios = require("axios");
+require("dotenv").config();
 function sleep(params) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -158,15 +159,42 @@ function logGptMessage(role, message, channelid) {
   return data;
 }
 
+function deletefirst20Messages(channelid) {
+  const file = path.join(__dirname, "../data/gpt-conversations/log-" + channelid + ".json");
 
-function createAudioFile(text,path) {
-  const voice = require("elevenlabs-node")
-  const fs = require("fs")
+  if (!fs.existsSync(file)) {
+    fs.writeFileSync(file, "[]");
+  }
 
-  const apiKey = "54a9b32843943c0cd4be27a787293946";
-  const voiceId = "21m00Tcm4TlvDq8ikWAM";
+  const data = JSON.parse(fs.readFileSync(file));
 
-  voice.textToSpeech(apiKey,voiceId,path,text);
+  data.splice(0, 20);
+
+  fs.writeFileSync(file, JSON.stringify(data));
+}
+
+async function createAudioFile(text, fpath) {
+  const { OpenAI } = require("openai");
+  const voice = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+  const fs = require("fs");
+  const model = rand(0, 5);
+  let models = ["nova", "alloy", "echo", "fable", "onyx", "shimmer"];
+
+  let speechFile = path.resolve(fpath);
+  const mp3 = await voice.audio.speech.create({
+    model: "tts-1",
+    voice: models[model],
+    input: text,
+  });
+
+  const buffer = Buffer.from(await mp3.arrayBuffer());
+  await fs.promises.writeFile(speechFile, buffer);
+}
+
+function rand(min = 0, max = 100) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 module.exports = {
@@ -179,5 +207,6 @@ module.exports = {
   downloadfile,
   logGptMessage,
   isValidURL,
-  createAudioFile
+  createAudioFile,
+  deletefirst20Messages,
 };
