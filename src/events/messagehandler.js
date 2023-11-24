@@ -66,6 +66,13 @@ async function messages(client, message) {
     return;
   }
 
+  if (message.content.includes(mentioncode)) {
+    const args = message.content.slice(mentioncode.length).trim().split(/ +/g);
+    const command = args.shift().toLowerCase();
+    MessageCommands(client, command, args, message);
+    return;
+  }
+
   if (message.author.bot || !message.guild) return;
 
   if (channel.name.includes("gpt-consersation-")) {
@@ -253,9 +260,6 @@ async function messages(client, message) {
     }
   }
 
-  if (message.content.includes(mentioncode)) {
-    channel.send(`Hey ${author}, How can i help? `);
-  }
   //find the channel named bully-me and send a message to it
 
   if (findBadLInks(message)) {

@@ -43,8 +43,8 @@ module.exports = {
             .setDescription("The Playlist You Want To Add To")
             .setRequired(true)
         )
-    ),
-
+    )
+    .addSubcommand(subcommand => subcommand.a),
   async execute(interaction, client, args) {
     const embed = new EmbedBuilder();
     embed.setColor("Aqua");
