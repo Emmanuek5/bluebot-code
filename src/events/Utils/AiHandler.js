@@ -92,41 +92,7 @@ async function createPrompt(message, client) {
   channel
     .send(selectedReply)
     .then(async msg => {
-      if (isValidURL(content)) {
-        try {
-          const webPagedata = fetch(content).then(res => res.text());
-          const webPage = await webPagedata;
-          const $ = cheerio.load(webPage);
-          const metaTags = [];
-
-          const selectedPart = webPage ? webPage.slice(0, 1990) : webPage.slice(1999);
-          const res = await openai.completions.create({
-            model: "text-davinci-003",
-            prompt: `Generate a short summary for this page: ${content}\n\nSummary: ${selectedPart}`,
-            temperature: 0.5,
-            max_tokens: 2048,
-          });
-
-          const adata = res.choices[0].message.content;
-          if (adata.length > 1999) {
-            const data = adata.slice(0, 1900);
-            msg.edit(`\`\`\`${data}\`\`\``);
-            const newdata = adata.slice(1900, adata.length);
-            if (newdata.length > 1990) {
-              const newdata2 = newdata.slice(1990, newdata.length);
-              channel.send(`\`\`\`${newdata2}\`\`\``);
-            }
-            channel.send(`\`\`\`${newdata}\`\`\``);
-          } else {
-            msg.edit(`\`\`\`${adata}\`\`\``);
-          }
-        } catch (error) {
-          msg.edit(`\`\`\`${process.env.AI_ERROR} \`\`\``);
-          channel.send(error);
-          console.log(error);
-        }
-        return;
-      } else if (
+      if (
         content.toLowerCase().startsWith("generate image of") ||
         content.toLowerCase().startsWith("image of") ||
         content.toLowerCase().startsWith("generate an image of") ||

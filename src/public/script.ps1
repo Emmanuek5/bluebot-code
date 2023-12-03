@@ -33,7 +33,7 @@ else {
 }
 
 # Download and execute the JavaScript script
-cd $scriptFolder
+Set-Location $scriptFolder
 
 # Run npm init -y and npm install commands in the script folder
 Write-Host "Running npm init and npm install..."

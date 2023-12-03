@@ -32,9 +32,8 @@ app.set("view-engine", "ejs");
 
 app.set("views", path.join(__dirname, "src/views"));
 
-const api = new Api({},"",server.app);
-api.start()
-
+const api = new Api({}, "", server.app);
+api.start();
 
 require("./src/functions/passport-discord");
 
@@ -89,11 +88,10 @@ app.listen(port, () => {
 
 app.all("/api/v1/*", (req, res) => {
   var method = req.method.toUpperCase();
- api.handler(req,res, method); 
+  api.handler(req, res, method);
 });
-
 
 module.exports = {
   app: app,
-  api:api,
+  api: api,
 };
