@@ -4,6 +4,7 @@ const ticketSchema = require("../models/tickets");
 const { getBadWords } = require("../commands/moderation/roles/badwords");
 const path = require("path");
 const fs = require("fs");
+const { createAudioFile } = require("../functions/functions");
 /**
  * Handles button interactions.
  *
@@ -14,28 +15,35 @@ const fs = require("fs");
 async function buttons(interaction, client) {
   if (interaction.isButton()) {
     if (interaction.customId === "send-voice-prompt") {
+      await interaction.deferReply({ ephemeral: true });
       const message_id = interaction.message.id;
+      const message_content = interaction.message.content;
       const audioFolder = path.join(__dirname, "../data/audio/");
 
-      // Read the contents of the audio folder
-      fs.readdir(audioFolder, (err, files) => {
-        if (err) {
-          console.error("Error reading audio folder:", err);
-          return;
-        }
-        const matchingFile = files.find(file => file.startsWith(message_id));
-        if (matchingFile) {
-          const filePath = path.join(audioFolder, matchingFile);
-          const attachment = new AttachmentBuilder().setName(matchingFile).setFile(filePath);
-          interaction.reply({ content: "Here is your voice prompt", files: [attachment] });
-        } else {
-          interaction.reply({
-            content: "Your File is still being created, please wait.",
-            ephemeral: true,
-          });
-          console.log("No matching file found for message ID:", message_id);
-        }
-      });
+      await createAudioFile(message_content, audioFolder + message_id + ".mp3");
+
+      if (!fs.existsSync(audioFolder)) {
+        fs.mkdirSync(audioFolder, { recursive: true });
+      }
+
+      if (!fs.existsSync(path.join(audioFolder, message_id + ".mp3"))) {
+        const File = await createAudioFile(message_content, audioFolder + message_id + ".mp3");
+        const attachment = new AttachmentBuilder().setName(message_id + ".mp3").setFile(File);
+        interaction.editReply({
+          content: "Here is your voice prompt",
+          files: [attachment],
+          ephemeral: true,
+        });
+      } else {
+        const attachment = new AttachmentBuilder()
+          .setName(message_id + ".mp3")
+          .setFile(path.join(audioFolder, message_id + ".mp3"));
+        interaction.editReply({
+          content: "Here is your voice prompt",
+          files: [attachment],
+          ephemeral: true,
+        });
+      }
     }
     if (interaction.customId == "close") {
       const ticket = await ticketSchema.findOne({

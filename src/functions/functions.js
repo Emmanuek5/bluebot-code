@@ -96,9 +96,8 @@ function isValidURL(content) {
  * @return {Promise<string>} Returns a Promise containing the filepath of the downloaded file.
  */
 async function downloadfile(link) {
-  const filename = path.basename(link);
-
-  console.log(filename);
+  const url = new URL(link);
+  const filename = path.basename(url.pathname);
 
   return new Promise((resolve, reject) => {
     const file = fs.createWriteStream(path.join(__dirname, "../data/downloads/" + filename));
@@ -191,6 +190,7 @@ async function createAudioFile(text, fpath) {
 
   const buffer = Buffer.from(await mp3.arrayBuffer());
   await fs.promises.writeFile(speechFile, buffer);
+  return speechFile;
 }
 
 function rand(min = 0, max = 100) {

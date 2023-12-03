@@ -74,6 +74,7 @@ function client(client) {
 
     let botName = client.user.username;
     process.env.BOT_NAME = botName;
+    process.env.BOT_AVATAR = client.user.displayAvatarURL();
     let serverCount = client.guilds.cache.size;
     process.env.SERVER_COUNT = serverCount;
 

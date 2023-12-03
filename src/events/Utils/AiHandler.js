@@ -184,7 +184,7 @@ async function createPrompt(message, client) {
         return;
       } else if (message.attachments.size > 0) {
         const file = message.attachments.first().url;
-        const extension = file.split(".").pop().toLowerCase();
+        const extension = message.attachments.first().name.split(".").pop().toLowerCase();
 
         if (!["txt", "js", "css", "theme", "c", "java"].includes(extension)) {
           msg.edit("The Bot can only receive .txt, .js, .css, .theme, .c, and .java files");
@@ -195,7 +195,6 @@ async function createPrompt(message, client) {
           // Download the file
           msg.edit(`Downloading the file... ${emojis.loading}`);
           const url = await downloadfile(file);
-          console.log(url);
 
           // Read the file content
           msg.edit(`Reading the file... ${emojis.loading}`);
@@ -203,23 +202,7 @@ async function createPrompt(message, client) {
           if (filecontent.length > 16000) filecontent.slice(0, 15999);
           // Generate response using AI model
           msg.edit(`Generating response... ${emojis.loading}`);
-          if (findSwearWords(filecontent)) {
-            try {
-              // Create an embed message to show a warning
-              const embed = new EmbedBuilder()
-                .setColor("#FF0000")
-                .setDescription("Please don't use swear words or ask for swear words");
 
-              // Send the warning message in the same channel
-              await msg.edit({ embeds: [embed], content: ":(" });
-            } catch (error) {
-              // Log any error that occurs while filtering the message
-              console.error("Error while filtering human message:", error);
-            }
-            return true;
-          } else {
-            console.log("No Word Found");
-          }
           const channel = message.channel;
           let messages = logGptMessage("user", filecontent, channel.id);
           const system_msg = `Your name is ${process.env.BOT_NAME}, You are made by the blue obsidian. You are a chill bot meant to entertain users or help them with tasks.`;
@@ -238,18 +221,18 @@ async function createPrompt(message, client) {
           // Split and send long responses
           if (adata.length > 1999) {
             const data = adata.slice(0, 1900);
-            msg.edit(`\`\`\`${data}\`\`\``);
+            msg.edit(`${data}`);
             const newdata = adata.slice(1900, adata.length);
             if (newdata.length > 1990) {
               const newdata2 = newdata.slice(1990, newdata.length);
-              channel.send(`\`\`\`${newdata2.trim()}\`\`\``);
+              channel.send(`${newdata2.trim()}`);
             }
-            channel.send(`\`\`\`${newdata.trim()}\`\`\``);
+            channel.send(`${newdata.trim()}`);
           } else {
-            msg.edit(`\`\`\`${adata.trim()}\`\`\``);
+            msg.edit(`${adata.trim()}`);
           }
         } catch (error) {
-          msg.edit(`\`\`\`${process.env.AI_ERROR} \`\`\``);
+          msg.edit(`${process.env.AI_ERROR} `);
           channel.send(`${emojis.error} An error occurred: ${error.message}`);
           console.log(error);
         }
@@ -292,9 +275,10 @@ async function createPrompt(message, client) {
           if (messages.length > 16000) {
             messages.slice(0, 15999);
           }
-          const system_msg = `Your name is ${process.env.BOT_NAME}, You are made by the blue obsidian. You are a chill bot meant to entertain users or help them with tasks.`;
+          const system_msg =
+            `Your name is ${process.env.BOT_NAME}, You are made by the blue obsidian. You are a chill bot meant to entertain users or help them with tasks.` +
+            `\n${JSON.stringify(userinfo)}`;
           messages.unshift({ role: "system", content: system_msg });
-          console.log(messages);
 
           const res = await openai.chat.completions.create({
             model: aimodel,
@@ -316,7 +300,7 @@ async function createPrompt(message, client) {
             __dirname,
             "../../data/audio/" + msg.id + "-" + rand(0, 1111) + ".mp3"
           );
-          createAudioFile(adata, audiofile);
+
           logGptMessage("assistant", adata, channel.id);
 
           const components = new ActionRowBuilder().addComponents(

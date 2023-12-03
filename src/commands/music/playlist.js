@@ -25,7 +25,17 @@ module.exports = {
       subcommand
         .setName("load")
         .setDescription("Load A Playlist")
-        .addStringOption(option => option.setName("name").setDescription("Playlist"))
+        .addStringOption(option =>
+          option.setName("name").setDescription("Playlist").setRequired(true)
+        )
+    )
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName("info")
+        .setDescription("Info About A Playlist")
+        .addStringOption(option =>
+          option.setName("name").setDescription("Playlist").setRequired(true)
+        )
     )
     .addSubcommand(subcommand =>
       subcommand
@@ -43,8 +53,32 @@ module.exports = {
             .setDescription("The Playlist You Want To Add To")
             .setRequired(true)
         )
+    )
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName("remove-song")
+        .setDescription("Remove A Song From A Playlist")
+        .addStringOption(option =>
+          option
+            .setName("name")
+            .setDescription("The Song Or Playlist You Want To Remove")
+            .setRequired(true)
+        )
+        .addStringOption(option =>
+          option
+            .setName("playlist")
+            .setDescription("The Playlist You Want To Remove From")
+            .setRequired(true)
+        )
+    )
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName("delete")
+        .setDescription("Delete A Playlist")
+        .addStringOption(option =>
+          option.setName("name").setDescription("The Playlist You Want To Delete").setRequired(true)
+        )
     ),
-
   async execute(interaction, client, args) {
     const embed = new EmbedBuilder();
     embed.setColor("Aqua");
@@ -73,7 +107,42 @@ module.exports = {
         songs: [],
       });
       await newPlaylist.save();
-      embed.setDescription(`Created playlist ${playlistName}`);
+      embed.setDescription(`Created playlist **${playlistName}**`);
+      return interaction.editReply({ embeds: [embed] });
+    }
+
+    if (subcommand === "info") {
+      const playlistName = option;
+      const playlist = await playlistSchema.findOne({
+        guildID: guild.id,
+        name: playlistName,
+      });
+      if (!playlist) {
+        embed.setDescription("That playlist does not exist");
+        return interaction.editReply({ embeds: [embed] });
+      }
+      const fields = playlist.songs.map(song => ({
+        name: song.name,
+        value: song.url,
+      }));
+      embed.addFields(fields.length > 0 ? fields : { name: "Songs", value: "No Songs" });
+      return interaction.editReply({ embeds: [embed] });
+    }
+    if (subcommand === "delete") {
+      const playlistName = option;
+      const playlist = await playlistSchema.findOne({
+        guildID: guild.id,
+        name: playlistName,
+      });
+      if (!playlist) {
+        embed.setDescription("That playlist does not exist");
+        return interaction.editReply({ embeds: [embed] });
+      }
+      await playlistSchema.deleteOne({
+        guildID: guild.id,
+        name: playlistName,
+      });
+      embed.setDescription(`Deleted playlist ${playlistName}`);
       return interaction.editReply({ embeds: [embed] });
     }
 
@@ -85,13 +154,12 @@ module.exports = {
         embed.setDescription("You have no playlists");
         return interaction.editReply({ embeds: [embed] });
       }
-      embed.setDescription(playlists.map(playlist => `**${playlist.name}**`).join("\n"));
-      const songs = playlists.map(playlist => playlist.songs.length).join("\n");
-      if (songs.length > 0) {
-        embed.addFields("Songs:", songs);
-      } else {
-        embed.addField("Songs", "No Songs");
-      }
+      const fields = playlists.map(playlist => ({
+        name: playlist.name,
+        value: playlist.songs.length.toString(),
+      }));
+      embed.addFields(fields.length > 0 ? fields : { name: "Songs", value: "No Songs" });
+      return interaction.editReply({ embeds: [embed] });
       return interaction.editReply({ embeds: [embed] });
     }
 
@@ -122,7 +190,6 @@ module.exports = {
             textChannel: interaction.channel.id,
           });
           player.connect();
-          console.log(playlist.songs);
           for (const song of playlist.songs) {
             const track = await client.manager.search(song.title);
             console.log(song);
@@ -158,6 +225,35 @@ module.exports = {
       playlist.songs.push(song);
       await playlist.save();
       embed.setDescription(`Added ${option} to ${playlist.name}`);
+      return interaction.editReply({ embeds: [embed] });
+    }
+
+    if (subcommand === "remove-song") {
+      const playlist = await playlistSchema.findOne({
+        guildID: guild.id,
+        name: options.getString("playlist"),
+      });
+      if (!playlist) {
+        embed.setDescription("That playlist does not exist");
+        return interaction.editReply({ embeds: [embed] });
+      }
+      const songinfp = await client.manager.search(option);
+      if (!songinfp) {
+        embed.setDescription("That song does not exist");
+        return interaction.editReply({ embeds: [embed] });
+      }
+      const song = songinfp.tracks[0];
+      const index = playlist.songs.find(
+        songf =>
+          songf.title === song.title && songf.author === song.author && songf.uri === song.uri
+      );
+      if (!index) {
+        embed.setDescription("That song is not in the playlist");
+        return interaction.editReply({ embeds: [embed] });
+      }
+      playlist.songs.splice(index, 1);
+      await playlist.save();
+      embed.setDescription(`Removed ${option} from ${playlist.name}`);
       return interaction.editReply({ embeds: [embed] });
     }
   },

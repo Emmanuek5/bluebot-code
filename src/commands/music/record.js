@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { EmbedBuilder, Colors } = require("discord.js");
-const { joinVoiceChannel, createAudioResource } = require("@discordjs/voice");
+const { joinVoiceChannel, entersState, VoiceConnectionStatus } = require("@discordjs/voice");
+const fs = require("fs");
 const serverSchema = require("../../models/server");
 module.exports = {
   usage: "Usage: /record - Records the current voice channel",
@@ -14,9 +15,9 @@ module.exports = {
     const serverInfo = await serverSchema.findOne({
       guildID: guild.id,
     });
-
-    const voiceChannel = member.voice.channel;
+    const voiceChannel = interaction.member.voice.channel;
     if (!voiceChannel) {
+      // User is not in a voice channel
       const embed = new EmbedBuilder()
         .setColor(Colors.Red)
         .setDescription("You Are Not In A Voice Channel");
@@ -25,26 +26,20 @@ module.exports = {
     }
 
     const connection = joinVoiceChannel({
-      channelId: interaction.member.voice.channel.id,
+      channelId: voiceChannel.id,
       guildId: interaction.guild.id,
       adapterCreator: interaction.guild.voiceAdapterCreator,
+      selfDeaf: false,
     });
-    const audioReceiver = connection.receiver;
-    const audioReadableStream = audioReceiver.createReadableStream(interaction.member.user.id, {
-      mode: "pcm",
-    });
-    const audioResource = createAudioResource(audioReadableStream, { inlineVolume: true });
-    const writableStream = fs.createWriteStream("recorded_audio.pcm");
 
-    audioResource.play();
-    audioResource.pipe(writableStream);
-
-    await interaction.editReply({ content: "Recording started!", ephemeral: true });
-    setTimeout(() => {
-      audioResource.stop();
+    // Wait for the connection to be ready
+    try {
+      await entersState(connection, VoiceConnectionStatus.Ready, 30e3);
+    } catch (error) {
+      // Handle errors, perhaps clean up the connection
+      console.error(error);
       connection.destroy();
-      writableStream.close();
-      interaction.followUp({ content: "Recording stopped!", ephemeral: true });
-    }, 10000);
+      return;
+    }
   },
 };
