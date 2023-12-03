@@ -29,8 +29,7 @@ module.exports = {
 
       const emeb = new EmbedBuilder()
         .setColor(Colors.Blue)
-        .setDescription(`\`\`\`${res.data.choices[0].text}\`\`\``);
-      console.log("dONE");
+        .setDescription(`\`\`\`${res.choices[0].text}\`\`\``);
       await interaction.editReply({ embeds: [emeb] });
     } catch (error) {
       console.log(error);
