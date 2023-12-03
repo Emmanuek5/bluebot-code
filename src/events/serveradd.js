@@ -84,7 +84,7 @@ async function add(guild, client) {
     console.log(channel);
     channel.send({ embeds: [embed] });
 
-    //systemChannel.send({ embeds: [embed2], components: [row] });
+    systemChannel.send({ embeds: [embed2], components: [row] });
 
     dmhandler(client, guild, "serveradd", 0, oid, gggs);
   } catch (error) {
