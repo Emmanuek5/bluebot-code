@@ -117,20 +117,18 @@ async function createPrompt(message, client) {
             content: "✅ Image Generation Complete.",
           });
           await sleep(2000);
-          const image_url = response.data.data[0].url;
+          const image_url = response.data[0].url;
 
           msg.edit({
             content: "⬇️ Downloading the image...",
           });
           const filePath = await download(image_url);
-          console.log(filePath);
 
           msg.edit({
             content: "✅ Download Complete. Preparing to upload to Discord.",
           });
 
           const attachment = new AttachmentBuilder().setFile(filePath).setName(content + ".png");
-          console.log(attachment);
 
           msg.edit({
             content: `🖼️ ${content.replace("generate image", "").replace("generate image of", "")}`,
@@ -141,6 +139,7 @@ async function createPrompt(message, client) {
 
           deletefile(filePath);
         } catch (error) {
+          console.log(error);
           channel.send(error);
           msg.edit({
             content: "❌ Error occurred during image generation.",
