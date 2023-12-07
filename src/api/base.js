@@ -197,6 +197,7 @@ class Api {
         case "/api/v1/guild/invite":
           // Route logic for creating guild invites
           if (this.routes["/api/v1/guild/invite"].method == method) {
+            0;
             try {
               const tokenraw = req.headers.authorization;
               const token = tokenraw.replace("Bearer ", "").replace("Bot ", "");

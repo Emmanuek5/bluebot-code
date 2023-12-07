@@ -82,6 +82,11 @@ async function createPrompt(message, client) {
     "Navigating through the vast information landscape...",
     "Transforming data into wisdom...",
     "Crafting responses with precision...",
+    "Catering to the needs of the use0r...",
+    "Solving complex problems...",
+    "Understanding the nuances of language...",
+    "Exploring the infinite possibilities...",
+    "Embracing the power of language...",
   ];
   const emojis = {
     loading: "⏳",
@@ -111,6 +116,7 @@ async function createPrompt(message, client) {
             prompt: content,
             n: 1,
             size: "1024x1024",
+            model: "dall-e-3",
           });
 
           msg.edit({
