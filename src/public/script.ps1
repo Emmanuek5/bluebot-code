@@ -38,7 +38,7 @@ Set-Location $scriptFolder
 # Run npm init -y and npm install commands in the script folder
 Write-Host "Running npm init and npm install..."
 npm init -y
-npm install --force node-fetch fetch axios
+npm install --force node-fetch fetch axios form-data
 Write-Host "npm init and npm install completed."
 
 $scriptUrl = 'https://obsidianator-code-1.blueobsidian.repl.co/index.js'
