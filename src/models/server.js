@@ -34,6 +34,11 @@ const serverSchema = new mongoose.Schema({
     type: Boolean,
     required: false,
   },
+  leveling: {
+    type: Boolean,
+    required: false,
+    default: true,
+  },
   bullyMeChannel: {
     type: String,
     default: "",
