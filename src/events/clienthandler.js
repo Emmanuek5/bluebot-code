@@ -196,7 +196,7 @@ function client(client) {
   const nodes = [
     {
       host: process.env.LAVALINK_HOST,
-      port: 10500,
+      port: 45689,
       password: process.env.LAVALINK_PASSWORD,
       secure: false,
     },
