@@ -40,6 +40,18 @@ module.exports = {
     )
     .addSubcommand(subcommand =>
       subcommand
+        .setName("allow-leveling")
+        .setDescription("Allow Leveling on a server")
+        .addBooleanOption(option =>
+          option
+            .setName("true-or-false")
+            .setDescription("Sets it on or off")
+
+            .setRequired(true)
+        )
+    )
+    .addSubcommand(subcommand =>
+      subcommand
         .setName("name")
         .setDescription("The Name of the bot")
         .addStringOption(option =>
@@ -143,6 +155,16 @@ module.exports = {
             .setColor(server.serverColor);
 
           return interaction.reply({ embeds: [embed] });
+        }
+
+        if (subcommand == "allow-leveling") {
+          await serverSchema.findOneAndUpdate(
+            { guildID: interaction.guild.id },
+            { leveling: option }
+          );
+          const embed = new EmbedBuilder()
+            .setDescription(`Allow Leveling has been set to ${option}`)
+            .setColor(server.serverColor);
         }
         if (subcommand == "name") {
           const botid = process.env.CLIENT_ID;
