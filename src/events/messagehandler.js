@@ -58,6 +58,8 @@ async function messages(client, message) {
   const fetch = require("fetch");
   const mentioncode = `<@${process.env.CLIENT_ID}>`;
   const alias = "b";
+
+  const serverinfo = await serverSchema.findOne({ guildID: guild.id });
   if (content.startsWith(process.env.PREFIX)) {
     const prefix = process.env.PREFIX;
     const args = message.content.slice(prefix.length).trim().split(/ +/g);
@@ -90,7 +92,7 @@ async function messages(client, message) {
     return;
   }
 
-  if (message.content.length > 3 && !findSwearWords(message)) {
+  if (message.content.length > 3 && !findSwearWords(message) && serverInfo.leveling) {
     const random = Math.floor(Math.random() * 100) + 1;
     const hasLeveledUp = await levels.appendXp(message.author.id, message.guild.id, random);
 
@@ -171,7 +173,6 @@ async function messages(client, message) {
   if (message.author.bot) return;
 
   if (findSwearWords(message)) {
-    const serverinfo = await serverSchema.findOne({ guildID: guild.id });
     if (serverinfo.swearWords == true) {
       return;
     }
