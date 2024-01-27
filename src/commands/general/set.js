@@ -165,6 +165,8 @@ module.exports = {
           const embed = new EmbedBuilder()
             .setDescription(`Allow Leveling has been set to ${option}`)
             .setColor(server.serverColor);
+
+          return interaction.reply({ embeds: [embed] });
         }
         if (subcommand == "name") {
           const botid = process.env.CLIENT_ID;
