@@ -58,11 +58,6 @@ const fetch = require("node-fetch");
 const { InventorySystem } = require("./src/economy/InventoryManager/class.js");
 const { sleep } = require("./src/functions/functions");
 
-fetch("https://api.whatismyip.com/ip.php?key=d45eb681c66f717566b468a43e96199c")
-  .then(response => response.text())
-  .then(data => console.log(data))
-  .catch(error => console.error(error));
-
 // Define the rate limit settings
 const RATE_LIMIT = 7; // Maximum number of messages allowed within a time period
 const RATE_PERIOD = 15; // Time period in seconds
@@ -70,7 +65,6 @@ const RATE_PERIOD = 15; // Time period in seconds
 if (process.env.TOKEN !== "undefined") {
   require("dotenv").config();
 }
-//every 5 mins delete all the files in the downloads folder
 
 client.on("messageCreate", async message => {
   if (message.author.bot || !message.guild) return;

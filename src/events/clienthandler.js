@@ -90,7 +90,7 @@ function client(client) {
       name: `${process.env.SERVER_COUNT} servers and ${process.env.PREFIX}help`,
     };
 
-    setTimeout(() => {
+    setInterval(() => {
       client.user.setPresence({ status: "idle", activities: [options] });
     }, 10000);
   });
