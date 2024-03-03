@@ -71,7 +71,7 @@ async function buttons(interaction, client) {
           .setCustomId("shop-next")
           .setLabel("Next >>")
           .setDisabled(true)
-          .setStyle(ButtonStyle.Primary)
+          .setStyle("Primary")
       );
       interaction.update({ embeds: [embed], components: [row] });
     }

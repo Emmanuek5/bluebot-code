@@ -29,7 +29,7 @@ module.exports = {
       .addFields(fields.slice(0, 15))
       .setFooter({ text: "Page 1/2" });
     const row = new ActionRowBuilder().addComponents(
-      new ButtonBuilder().setCustomId("shop-next").setLabel("Next >>").setStyle(ButtonStyle.Primary)
+      new ButtonBuilder().setCustomId("shop-next").setLabel("Next >>").setStyle("Primary")
     );
 
     interaction.reply({ embeds: [embed], components: [row] });

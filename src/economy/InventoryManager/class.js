@@ -73,8 +73,6 @@ class InventorySystem {
           name: item.name,
         });
 
-        console.log("existingItem:", existingItem);
-
         if (existingItem) {
           // Item exists, update the amount
           existingItem.amount += item.amount * 1000;
