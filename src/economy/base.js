@@ -184,6 +184,10 @@ class Economy {
       return "An error occurred during the purchase";
     }
   }
+
+  getShop() {
+    return this.InventorySystem.getShop();
+  }
 }
 
 module.exports = { Economy };
