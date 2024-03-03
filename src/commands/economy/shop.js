@@ -1,4 +1,10 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders");
+const {
+  SlashCommandBuilder,
+  EmbedBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+} = require("@discordjs/builders");
 const ecoSChema = require("../../models/economy.js");
 const { Colors } = require("discord.js");
 const { Economy } = require("../../economy/base");
@@ -20,8 +26,12 @@ module.exports = {
       .setColor(Colors.Blue)
       .setTitle("Shop")
       .setDescription("Items in the shop")
-      .addFields(fields);
+      .addFields(fields.slice(0, 15))
+      .setFooter({ text: "Page 1/2" });
+    const row = new ActionRowBuilder().addComponents(
+      new ButtonBuilder().setCustomId("shop-next").setLabel("Next >>").setStyle(ButtonStyle.Primary)
+    );
 
-    interaction.reply({ embeds: [embed] });
+    interaction.reply({ embeds: [embed], components: [row] });
   },
 };
