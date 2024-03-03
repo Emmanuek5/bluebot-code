@@ -1,4 +1,5 @@
 const InventoryItem = require("../../models/inventory");
+const ShopItem = require("../types/ShopItems");
 require("dotenv").config();
 class InventorySystem {
   constructor() {
@@ -52,23 +53,37 @@ class InventorySystem {
     }
   }
 
+  /**
+   * Retrieves the shop.
+   *
+   * @return {ShopItem[]} the shop
+   */
+  getShop() {
+    return this.shop;
+  }
+
   async addShopItems() {
     try {
+      const userId = "1025726091429695509";
+
       for (const item of this.shop) {
         // Check if the item already exists for the user
         const existingItem = await InventoryItem.findOne({
-          userId: process.env.CLIENT_ID,
+          userId: userId,
           name: item.name,
         });
+
+        console.log("existingItem:", existingItem);
 
         if (existingItem) {
           // Item exists, update the amount
           existingItem.amount += item.amount * 1000;
           await existingItem.save();
+          continue;
         } else {
           // If the item doesn't exist, proceed to add it
           const newItem = new InventoryItem({
-            userId: process.env.CLIENT_ID,
+            userId: userId,
             itemId: this.generateItemId(),
             name: item.name,
             amount: item.amount * 1000,
@@ -204,7 +219,6 @@ class InventorySystem {
       return false;
     }
   }
-
   getRandomIndex(probabilities) {
     const total = probabilities.reduce((acc, curr) => acc + curr, 0);
     const random = Math.random() * total;
