@@ -6,6 +6,7 @@ const {
   ButtonBuilder,
   ButtonStyle,
   ButtonInteraction,
+  Colors,
 } = require("discord.js");
 const ticketSchema = require("../models/tickets");
 const { getBadWords } = require("../commands/moderation/roles/badwords");
@@ -60,6 +61,7 @@ async function buttons(interaction, client) {
       shop.forEach(item => {
         fields.push({ name: item.name, value: `Price: $${item.price}` });
       });
+
       const embed = new EmbedBuilder()
         .setColor(Colors.Blue)
         .setTitle("Shop")
