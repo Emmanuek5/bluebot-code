@@ -9,6 +9,19 @@ module.exports = {
   async execute(interaction, client) {
     const { guild, user } = interaction;
     const eco = new Economy();
-    let Data = eco.findUser(client.user.id);
+    let Data = eco.getShop();
+
+    let fields = [];
+    Data.forEach(item => {
+      fields.push({ name: item.name, value: `Price: $${item.price}` });
+    });
+
+    const embed = new EmbedBuilder()
+      .setColor(Colors.Blue)
+      .setTitle("Shop")
+      .setDescription("Items in the shop")
+      .addFields(fields);
+
+    interaction.reply({ embeds: [embed] });
   },
 };

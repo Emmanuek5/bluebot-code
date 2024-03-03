@@ -1,4 +1,5 @@
 const InventoryItem = require("../../models/inventory");
+const ShopItem = require("../types/ShopItems");
 require("dotenv").config();
 class InventorySystem {
   constructor() {
@@ -52,6 +53,11 @@ class InventorySystem {
     }
   }
 
+  /**
+   * Retrieves the shop.
+   *
+   * @return {ShopItem[]} the shop
+   */
   getShop() {
     return this.shop;
   }
