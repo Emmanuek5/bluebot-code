@@ -111,11 +111,17 @@ class Economy {
     return data;
   }
 
-  addMoney(user, guild, amount) {
-    const data = this.db.findOne({ User: user });
-    if (!data) return false;
+  async addMoney(user, guild, amount) {
+    // Use findOne() from the Mongoose model instance
+    const data = await this.db.findOne({ User: user });
+
+    // Check if data exists and has the save() method
+    if (!data || typeof data.save !== "function") return false;
+
+    // Modify data and save it
     data.Bank += amount;
-    data.save();
+    await data.save();
+
     return data;
   }
 

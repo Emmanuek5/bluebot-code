@@ -30,7 +30,7 @@ module.exports = {
     const command = interaction.options.getSubcommand();
 
     let Data = await ecoSChema.findOne({ User: user.id });
-    console.log(Data);
+
     if (!Data)
       return interaction.reply({ content: "You don't have an Economy Account", ephemeral: true });
 
