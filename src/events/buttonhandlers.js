@@ -1,14 +1,22 @@
 const ytdl = require("ytdl-core");
-const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
+const {
+  EmbedBuilder,
+  AttachmentBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  ButtonInteraction,
+} = require("discord.js");
 const ticketSchema = require("../models/tickets");
 const { getBadWords } = require("../commands/moderation/roles/badwords");
 const path = require("path");
 const fs = require("fs");
 const { createAudioFile } = require("../functions/functions");
+const { Economy } = require("../economy/base");
 /**
  * Handles button interactions.
  *
- * @param {Interaction} interaction - The interaction object representing the button click event.
+ * @param {ButtonInteraction} interaction - The interaction object representing the button click event.
  * @param {Client} client - The client object representing the Discord bot.
  * @return {Promise<void>} - A promise that resolves when the function is finished executing.
  */
@@ -45,6 +53,29 @@ async function buttons(interaction, client) {
         });
       }
     }
+
+    if (interaction.customId === "shop-next") {
+      const shop = new Economy().getShop().slice(15);
+      let fields = [];
+      shop.forEach(item => {
+        fields.push({ name: item.name, value: `Price: $${item.price}` });
+      });
+      const embed = new EmbedBuilder()
+        .setColor(Colors.Blue)
+        .setTitle("Shop")
+        .setDescription("Items in the shop")
+        .addFields(fields)
+        .setFooter({ text: "Page 2/2" });
+      const row = new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
+          .setCustomId("shop-next")
+          .setLabel("Next >>")
+          .setDisabled(true)
+          .setStyle(ButtonStyle.Primary)
+      );
+      interaction.update({ embeds: [embed], components: [row] });
+    }
+
     if (interaction.customId == "close") {
       const ticket = await ticketSchema.findOne({
         guildID: interaction.guild.id,
