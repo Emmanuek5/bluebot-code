@@ -97,12 +97,14 @@ class Economy {
   async work(user, jobName) {
     try {
       // Hire the worker for the specified job
-      const result = await this.WorkSystem.hireWorker({ name: user.username }, jobName);
-
-      if (Array.isArray(result)) {
-        return result;
+      const result = await this.WorkSystem.hireWorker({ name: user.username }, jobName).catch(
+        error => {
+          return error;
+        }
+      );
+      if (result[0] === false) {
+        return result[1];
       }
-
       const job = this.WorkSystem.getJob(jobName);
 
       // Check if the worker was hired successfully
@@ -113,8 +115,8 @@ class Economy {
       // Return some message indicating job completion and payment
       return `Job ${jobName} completed by ${user.username}. You earned $${job.salary} .`;
     } catch (error) {
-      console.error("Error during work:", error);
-      return [false, error];
+      console.error("Error working:", error);
+      return false;
     }
   }
 

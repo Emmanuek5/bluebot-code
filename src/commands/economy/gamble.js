@@ -9,10 +9,10 @@ module.exports = {
     .addNumberOption(option =>
       option.setName("amount").setDescription("Amount to gamble").setRequired(true)
     ),
-  async execute(interaction) {
+  async execute(interaction, client) {
     const { user, guild } = interaction;
     const amount = interaction.options.getNumber("amount");
-    let eco = new Economy();
+    const eco = client.economy;
     let ecoUser = eco.findUser(user.id);
     if (!ecoUser) {
       return interaction.reply({
@@ -50,7 +50,7 @@ module.exports = {
           return;
         }
 
-        emebed.setTitle("Gambling - Won $" + amount);
+        emebed.setTitle("Gambling - Won $" + amount * 2);
         emebed.setDescription(message.toString());
         emebed.setColor(Colors.Green);
 

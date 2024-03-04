@@ -27,7 +27,7 @@ module.exports = {
 
     try {
       if (command == "shop") {
-        const eco = new Economy();
+        const eco = client.economy;
         const ecouser = eco.findUser(process.env.CLIENT_ID);
         if (!ecouser) return interaction.reply({ content: "You Don't Have An Economy Account" });
         let itemdata = eco.InventorySystem.getItemInfo(item);

@@ -21,9 +21,9 @@ module.exports = {
         )
     ),
 
-  async execute(interaction) {
+  async execute(interaction, client) {
     const { user, options } = interaction;
-    const eco = new Economy();
+    const eco = client.economy;
     let Data = await eco.findUser(user.id);
     const embed = new EmbedBuilder();
 
@@ -96,14 +96,8 @@ module.exports = {
       }, interval);
 
       await eco.work(user, jobName).then(async message => {
-        //check if message is an array
-        if (Array.isArray(message)) {
-          await interaction.editReply({
-            content: message[1],
-          });
-          return;
-        }
-        await interaction.editReply({
+        clearInterval(updateTimer);
+        interaction.editReply({
           content: message,
         });
       });

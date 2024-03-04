@@ -14,7 +14,7 @@ module.exports = {
   data: new SlashCommandBuilder().setName("shop").setDescription("Get the items in the shop"),
   async execute(interaction, client) {
     const { guild, user } = interaction;
-    const eco = new Economy();
+    const eco = client.economy;
     let Data = eco.getShop();
 
     let fields = [];

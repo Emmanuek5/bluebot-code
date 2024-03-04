@@ -17,9 +17,14 @@ const {
 require("dotenv").config();
 const Level = require("discord.js-leveling");
 const { add } = require("./serveradd");
+const { Economy } = require("../economy/base");
 
 function client(client) {
   client.on("ready", async () => {
+    const economy = new Economy();
+
+    client.economy = economy;
+
     const commandarray = client.commands;
     commandarray.forEach(command => {
       const data = {

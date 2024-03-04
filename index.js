@@ -38,6 +38,7 @@ const client = new Client({
 
 const clienthandler = require("./src/events/clienthandler");
 clienthandler.client(client);
+
 let botName = client.username;
 process.env.BOT_NAME = botName;
 require("./updater");
@@ -57,6 +58,7 @@ const fetch = require("node-fetch");
 
 const { InventorySystem } = require("./src/economy/InventoryManager/class.js");
 const { sleep } = require("./src/functions/functions");
+const { Economy } = require("./src/economy/base.js");
 
 // Define the rate limit settings
 const RATE_LIMIT = 7; // Maximum number of messages allowed within a time period
