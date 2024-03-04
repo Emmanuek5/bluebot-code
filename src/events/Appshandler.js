@@ -155,14 +155,13 @@ async function appHandler(interaction, client) {
   }
   if (commandName == "Balance") {
     const { Economy } = require("../economy/base");
-    const { user, guild } = interaction;
+    const { user, targetMember, guild } = interaction;
     const eco = new Economy();
-    let Data = await eco.findUser(user.id);
-    console.log(Data);
+    let Data = await eco.findUser(targetMember.id);
 
     if (!Data) {
       return interaction.reply({
-        content: "You dont have an economy profile yet",
+        content: "The user dont have an economy profile yet",
         ephemeral: true,
       });
     }

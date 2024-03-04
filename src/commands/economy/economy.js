@@ -26,8 +26,8 @@ module.exports = {
       );
 
     const embed2 = new EmbedBuilder()
-      .setColor("Blue")
-      .setTitle("Account Created")
+      .setColor("Green")
+
       .setDescription("Your account has been created")
       .addFields({
         name: "Success",
@@ -37,8 +37,8 @@ module.exports = {
       .setTimestamp();
 
     const embed3 = new EmbedBuilder()
-      .setColor("Blue")
-      .setTitle("Account Deleted")
+      .setColor("Green")
+
       .setDescription("Your account has been deleted")
       .addFields({ name: "Success", value: "Your account has been deleted" })
       .setFooter({ text: `Requested by ${interaction.user.username}` })

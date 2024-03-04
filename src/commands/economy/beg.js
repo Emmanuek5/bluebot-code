@@ -8,7 +8,6 @@ module.exports = {
     const { user, guild } = interaction;
 
     let Data = await ecoSChema.findOne({ User: user.id });
-    console.log(Data);
 
     const negative = Math.round(Math.random() * -300) - 10;
     const positive = Math.round(Math.random() * 300) + 10;
@@ -20,7 +19,7 @@ module.exports = {
 
     if (!value) return interaction.reply({ content: "No Money For You Today", ephemeral: true });
 
-    if (Data) {
+    if (Data && value > 0) {
       Data.Wallet += value;
       Data.save();
     }
@@ -58,7 +57,7 @@ module.exports = {
       const embed = new EmbedBuilder()
         .setTitle("Beggar")
         .setColor(Colors.Red)
-        .setDescription(`**${negativeChoice}**\n\n You Lost $${value} Coins`);
+        .setDescription(`**${negativeChoice}**\n`);
 
       await interaction.reply({ embeds: [embed] });
     }

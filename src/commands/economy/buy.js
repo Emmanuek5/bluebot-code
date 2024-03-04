@@ -38,11 +38,10 @@ module.exports = {
         if (!ecouser.Wallet >= item.price)
           return interaction.reply({ content: "You Don't Have Enough Money in Your Wallet" });
         const result = await eco.buyItemfromShop(user.id, item, number);
-        console.log(result);
         if (result && result != "Item not found in the shop" && result != "Insufficient Funds") {
           const embed = new EmbedBuilder()
             .setTitle("Successful Purchase")
-            .setDescription(`You Have Purchased ${result.name} at $${result.price}`)
+            .setDescription(`You Have Purchased **${number}** ${result.name}'s at $${result.price}`)
             .setColor("Green")
             .setTimestamp()
             .setFooter({ text: "Buy" });
