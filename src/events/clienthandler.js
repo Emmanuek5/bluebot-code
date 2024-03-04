@@ -87,7 +87,7 @@ function client(client) {
     //set the bot status to Playing with {usercount} users
     const options = {
       type: ActivityType.Watching,
-      name: `${process.env.SERVER_COUNT} servers and ${process.env.PREFIX}help`,
+      name: `${process.env.SERVER_COUNT} servers and /help`,
     };
 
     setInterval(() => {
@@ -132,7 +132,7 @@ function client(client) {
     process.env.CHANNEL_COUNT = channelCount;
     const options = {
       type: ActivityType.Watching,
-      name: `${process.env.SERVER_COUNT} servers and ${process.env.PREFIX}help`,
+      name: `${process.env.SERVER_COUNT} servers and /help`,
     };
     client.user.setPresence({ status: "idle", activities: [options] });
     const axios = require("axios");
@@ -167,7 +167,7 @@ function client(client) {
     process.env.CHANNEL_COUNT = channelCount;
     const options = {
       type: ActivityType.Watching,
-      name: `${process.env.SERVER_COUNT} servers and ${process.env.PREFIX}help`,
+      name: `${process.env.SERVER_COUNT} servers and /help`,
     };
     client.user.setPresence({ status: "idle", activities: [options] });
   });

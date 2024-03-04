@@ -98,6 +98,11 @@ class Economy {
     try {
       // Hire the worker for the specified job
       const result = await this.WorkSystem.hireWorker({ name: user.username }, jobName);
+
+      if (Array.isArray(result)) {
+        return result;
+      }
+
       const job = this.WorkSystem.getJob(jobName);
 
       // Check if the worker was hired successfully
