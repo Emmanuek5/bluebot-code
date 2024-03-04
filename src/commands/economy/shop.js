@@ -19,7 +19,7 @@ module.exports = {
 
     let fields = [];
     Data.forEach(item => {
-      fields.push({ name: item.name, value: `Price: $${item.price}` });
+      fields.push({ name: item.name, value: `Price: $${item.price}`, inline: true });
     });
 
     const embed = new EmbedBuilder()
