@@ -1,0 +1,32 @@
+[
+  {
+    "host": "lava-v3.ajieblogs.eu.org",
+    "port": 443,
+    "password": "https://dsc.gg/ajidevserver",
+    "secure": true,
+    "hosted_by": "@ LexM8#0424",
+    "version": "3.7.10"
+  },
+  {
+    "host": "lavalink.lexnet.cc",
+    "port": 443,
+    "password": "lexn3tl@val!nk",
+    "secure": true,
+    "version": "3.7.10"
+  },
+  {
+    "host": "eu-lavalink.lexnet.cc",
+    "port": 443,
+    "password": "lexn3tl@val!nk",
+    "secure": true,
+    "version": "3.7.10"
+  },
+  {
+    "host": "oce-lavalink.lexnet.cc",
+    "port": 443,
+    "password": "lexn3tl@val!nk",
+    "secure": true,
+    "hosted_by": "@ Weiss Owl",
+    "version": "3.7.10"
+  }
+]

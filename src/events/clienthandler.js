@@ -193,15 +193,7 @@ function client(client) {
     error: "❌",
   };
   client.on("raw", d => client.manager.updateVoiceState(d));
-  const nodes = [
-    {
-      host: process.env.LAVALINK_HOST,
-      port: 45689,
-      password: process.env.LAVALINK_PASSWORD,
-      secure: false,
-    },
-  ];
-  1;
+  const nodes = require("../../nodes.json");
 
   client.manager = new Manager({
     // The nodes to connect to, optional if using default lavalink options
@@ -213,22 +205,6 @@ function client(client) {
       // NOTE: FOR ERIS YOU NEED JSON.stringify() THE PAYLOAD
       if (guild) guild.shard.send(payload);
     },
-  });
-  // Emitted whenever a node connects
-  client.manager.on("nodeConnect", node => {
-    console.log(`\u001b[31m Node "${node.options.identifier}" connected.`);
-  });
-
-  // Emitted whenever a node encountered an error
-  client.manager.on("nodeError", (node, error) => {
-    console.log(
-      ` \u001b[31mNode "${node.options.identifier}" encountered an error: ${error.message}.`
-    );
-  });
-
-  // When a track starts
-  client.manager.on("trackStart", (player, track) => {
-    console.log(`\u001b[31m Track started on guild ${player.guild} - ${track.title}`);
   });
 }
 module.exports = {

@@ -20,7 +20,7 @@ module.exports = {
     const bank = Math.floor(Data.Bank);
     const total = wallet + bank;
     const embed = new EmbedBuilder()
-      .setTitle("Economy")
+      .setTitle(`Balance - ${user.username}`)
       .setColor(Colors.Blue)
       .setDescription(`**Wallet**: $${wallet}\n**Bank**: $${bank}\n**Total**: $${total}  `)
       .setTimestamp()

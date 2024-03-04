@@ -1,5 +1,5 @@
 const InventoryItem = require("../../models/inventory");
-const ShopItem = require("../types/ShopItems");
+const ShopItem = require("../../types/ShopItems");
 require("dotenv").config();
 class InventorySystem {
   constructor() {
@@ -39,9 +39,8 @@ class InventorySystem {
   }
   // Function to get a user's inventory
   async getInventory(userId) {
-    console.log("Getting inventory for user:", userId);
     try {
-      const inventory = await InventoryItem.find({ userId });
+      const inventory = await InventoryItem.find({ userId: userId });
       if (inventory) {
         return inventory;
       } else {
@@ -64,7 +63,7 @@ class InventorySystem {
 
   async addShopItems() {
     try {
-      const userId = "1025726091429695509";
+      const userId = process.env.CLIENT_ID;
 
       for (const item of this.shop) {
         // Check if the item already exists for the user
@@ -112,10 +111,10 @@ class InventorySystem {
   async addItem(userId, item) {
     try {
       // Check if the item already exists for the user
-      const existingItem = await InventoryItem.find({
+      const existingItem = await InventoryItem.findOne({
         userId,
         name: item.name,
-      });
+      }).exec();
 
       if (existingItem) {
         // Item exists, update the amount
@@ -282,7 +281,7 @@ class InventorySystem {
       },
     ];
     try {
-      const existingInventory = await InventoryItem.find({ userId });
+      const existingInventory = await InventoryItem.find({ userId }).exec();
       if (existingInventory.length > 0) {
         return false;
       } else {

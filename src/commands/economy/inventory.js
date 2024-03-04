@@ -31,8 +31,7 @@ module.exports = {
     for (const item of inventory) {
       embed.addFields({
         name: item.name,
-        value: `$${item.price}, Amount: ${item.amount}`,
-        inline: true,
+        value: ` Price: $${item.price} \n Amount: ${item.amount}`,
       });
     }
 

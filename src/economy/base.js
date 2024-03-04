@@ -1,8 +1,11 @@
 require("dotenv").config();
-const eco = require("../models/economy");
+const ecoSChema = require("../models/economy");
+const EconomyUser = require("../types/EconomyUser");
+const WorkH = require("./WorkSystem/class");
+
 class Economy {
   constructor() {
-    this.db = eco;
+    this.db = ecoSChema;
     this.startingbalance = 1000;
     this.maxbalance = 100000000;
     this.minbalance = 0;
@@ -12,6 +15,7 @@ class Economy {
     this.getshopid = process.env.CLIENT_ID;
     this.minitems = 1;
     this.defaultItems = { name: "boot", price: 100, amount: 1 };
+    this.WorkSystem = new WorkH();
     this.InventorHandler = require("./InventoryManager/class");
     this.InventorySystem = new this.InventorHandler.InventorySystem();
     this.createDefaultUser();
@@ -25,7 +29,7 @@ class Economy {
    * The User and Guild are both strings and the IDs
    */
 
-  create(user, guild) {
+  async create(user, guild) {
     const { InventorySystem } = require("./InventoryManager/class");
     let inv = new InventorySystem();
 
@@ -37,28 +41,27 @@ class Economy {
     }
 
     // Create a new entry
-    const data = this.db.create({
+    const data = await this.db.create({
       Guild: guild,
       User: user,
       Wallet: this.startingbalance,
       Bank: 0,
     });
 
-    console.log("User created:");
-
     if (!data) return false;
     if (inv.findUser(user)) return false;
-    inv.saveUserWithDefaultItems(user, this.defaultItems);
+    await inv.saveUserWithDefaultItems(user, this.defaultItems);
     return data;
   }
 
-  createDefaultUser() {
+  async createDefaultUser() {
     const { InventorySystem } = require("./InventoryManager/class");
     const mainShopUserId = process.env.CLIENT_ID; // Assuming CLIENT_ID is the main shop's user ID
+
     // Check if the main shop user already exists
-    const existingMainShopUser = this.db.findOne({ User: mainShopUserId });
+    const existingMainShopUser = await ecoSChema.findOne({ User: mainShopUserId }).exec();
+
     if (existingMainShopUser) {
-      console.log("Main shop user already exists:");
       return false;
     }
     // Create the main shop user with default values
@@ -74,24 +77,44 @@ class Economy {
     return mainShopUserData;
   }
 
-  findUser(user) {
-    const { InventorySystem } = require("./InventoryManager/class");
-    let inv = new InventorySystem();
-
-    // Find the user
-    const data = this.db.findOne({ User: user });
-
+  async findUser(user) {
+    const data = await this.db.findOne({ User: user });
     if (data) {
-      console.log("User found");
-      return data;
+      const user = new EconomyUser();
+      user.id = data.User;
+      user.Wallet = data.Wallet;
+      user.Bank = data.Bank;
+      user.total = data.Wallet + data.Bank;
+      user.inventory = await this.getUserItems(user.id);
+      user.MongoData = data;
+
+      return user;
     } else {
-      console.log("User not found");
       return null;
     }
   }
 
-  getBalance(user) {
-    const data = this.db.findOne({ User: user });
+  async work(user, jobName) {
+    try {
+      // Hire the worker for the specified job
+      const result = await this.WorkSystem.hireWorker({ name: user.username }, jobName);
+      const job = this.WorkSystem.getJob(jobName);
+
+      // Check if the worker was hired successfully
+
+      await this.addMoney(user.id, job.salary);
+      await this.removeMoney(job.employer, job.salary);
+
+      // Return some message indicating job completion and payment
+      return `Job ${jobName} completed by ${user.username}. You earned $${job.salary} .`;
+    } catch (error) {
+      console.error("Error during work:", error);
+      return [false, error];
+    }
+  }
+
+  async getBalance(user) {
+    const data = await this.db.findOne({ User: user }).exec();
     if (!data) return false;
     return data.Wallet + data.Bank;
   }
@@ -111,35 +134,48 @@ class Economy {
     return data;
   }
 
-  addMoney(user, guild, amount) {
-    const data = this.db.findOne({ User: user });
-    if (!data) return false;
-    data.Bank += amount;
-    data.save();
-    return data;
+  async addMoney(user, amount) {
+    try {
+      // Use findOne() from the Mongoose model instance
+      const data = await this.db.findOne({ User: user }).exec();
+      if (!data) {
+        return false;
+      }
+
+      data.Wallet += amount;
+      await data.save();
+
+      return data;
+    } catch (error) {
+      console.error("Error adding money:", error);
+      return false;
+    }
   }
 
   async removeMoney(user, amount) {
-    const data = await this.db.findOne({ User: user });
-    console.log(data);
+    const data = await this.db.findOne({ User: user }).exec();
+
     if (!data) return false;
 
-    // Check if data.Wallet is already NaN
-    if (isNaN(data.Wallet)) return false;
+    // Check if data.Bank is already NaN
+    if (isNaN(data.Bank)) return false;
 
     // Check if amount is a valid number
     if (isNaN(amount) || !isFinite(amount)) return false;
 
-    // Ensure data.Wallet is a number
-    data.Wallet = Number(data.Wallet);
+    // Ensure data.Bank is a number
+    data.Bank = Number(data.Bank);
 
-    // Check if there's enough money
-    if (data.Wallet < amount) return false;
-
-    // Subtract amount from Wallet
-    console.log(data.Wallet);
-    data.Wallet -= amount;
-    console.log(data.Wallet);
+    // Check if there's enough money in the wallet
+    if (data.Wallet < amount) {
+      // If wallet balance is insufficient, deduct the remaining amount from the bank
+      const remainingAmount = amount - data.Wallet;
+      data.Wallet = 0; // Set wallet balance to 0
+      data.Bank -= remainingAmount; // Deduct remaining amount from bank
+    } else {
+      // If wallet balance is sufficient, deduct the amount directly from the wallet
+      data.Wallet -= amount;
+    }
 
     // Save the updated data
     await data.save();
@@ -152,13 +188,24 @@ class Economy {
     return data;
   }
 
-  gable(user, item, amount) {
-    const gamble = this.InventorySystem.gambleItem(user);
-    if (!gamble) {
-      this.removeMoney(user, amount);
-      return false;
+  async gamble(user, amount) {
+    // Generate a random number to simulate the gambling outcome
+    const randomNumber = Math.random();
+    const multiplier = 2;
+
+    // Assuming 50% chance of winning
+    const winProbability = 0.5;
+
+    if (randomNumber < winProbability) {
+      // If the random number is less than the win probability, the user wins
+      const winnings = amount * multiplier; // Double the amount as winnings
+      await this.addMoney(user, winnings); // Add the winnings to the user's balance
+      return `Congratulations! You won $${winnings} with a multiplier of ${multiplier}!`;
+    } else {
+      // If the random number is greater than or equal to the win probability, the user loses
+      await this.removeMoney(user, amount); // Deduct the gambling amount from the user's balance
+      return "Sorry, you lost. Better luck next time!";
     }
-    return gamble;
   }
 
   async buyItemfromShop(user, item, amount) {
@@ -168,12 +215,11 @@ class Economy {
       if (!shopItemInfo) return "Item not found in the shop";
 
       // Check if the user has sufficient funds
-      const userBalance = this.getBalance(user);
+      const userBalance = await this.getBalance(user);
       if (userBalance < shopItemInfo.price * amount) return "Insufficient Funds";
 
       // Remove money from the user
       await this.removeMoney(user, shopItemInfo.price * amount);
-
       // Buy the item from the shop
       this.InventorySystem.buyItem(user, process.env.CLIENT_ID, shopItemInfo, amount);
       await this.addMoney(process.env.CLIENT_ID, shopItemInfo.price * amount);
