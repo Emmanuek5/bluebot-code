@@ -69,13 +69,112 @@ async function buttons(interaction, client) {
         .addFields(fields)
         .setFooter({ text: "Page 2/2" });
       const row = new ActionRowBuilder().addComponents(
-        new ButtonBuilder()
-          .setCustomId("shop-next")
-          .setLabel("Next >>")
-          .setDisabled(true)
-          .setStyle("Primary")
+        new ButtonBuilder().setCustomId("shop-previous").setLabel("<< Previous").setStyle("Primary")
       );
       interaction.update({ embeds: [embed], components: [row] });
+    }
+
+    if (interaction.customId === "shop-previous") {
+      const shop = new Economy().getShop().slice(0, 15);
+      let fields = [];
+      shop.forEach(item => {
+        fields.push({ name: item.name, value: `Price: $${item.price}` });
+      });
+
+      const embed = new EmbedBuilder()
+        .setColor(Colors.Blue)
+        .setTitle("Shop")
+        .setDescription("Items in the shop")
+        .addFields(fields)
+        .setFooter({ text: "Page 1/2" });
+      const row = new ActionRowBuilder().addComponents(
+        new ButtonBuilder().setCustomId("shop-next").setLabel("Next >>").setStyle("Primary")
+      );
+      interaction.update({ embeds: [embed], components: [row] });
+    }
+
+    if (interaction.customId === "work-next") {
+      const jobs = new Economy().WorkSystem.getJobs().slice(20);
+      const embed = new EmbedBuilder()
+        .setTitle("Work")
+        .setColor(Colors.Blue)
+        .setDescription("Available jobs")
+        .addFields(
+          jobs.map(job => {
+            return { name: job.name, value: `Pay: $${job.salary}, Time: ${job.duration} seconds` };
+          })
+        );
+
+      const row = new ActionRowBuilder().addComponents(
+        new ButtonBuilder().setCustomId("work-previous").setLabel("<< Previous").setStyle("Primary")
+      );
+
+      interaction.update({ embeds: [embed], components: [row] });
+    }
+
+    if (interaction.customId === "commands-next") {
+      let commands = client.commands;
+      let startIndex = 25;
+      let endIndex = Math.min(commands.size, startIndex + 20); // Limit endIndex to the size of the commands collection
+
+      let fields = [];
+      let count = 0;
+
+      // Iterate over the commands collection starting from the 25th command
+      for (const [name, command] of commands) {
+        if (count >= startIndex && count < endIndex) {
+          fields.push({ name: command.data.name, value: command.data.description, inline: true });
+        }
+        count++;
+      }
+
+      const embed = new EmbedBuilder()
+        .setColor(Colors.Blue)
+        .setTitle("Help (Page 2)")
+        .setDescription("List of commands")
+        .addFields(fields);
+
+      const components = [
+        new ActionRowBuilder().addComponents(
+          new ButtonBuilder()
+            .setCustomId("commands-previous")
+            .setLabel("<< Previous")
+            .setStyle("Primary")
+        ),
+      ];
+
+      await interaction.update({ embeds: [embed], components: components });
+    }
+
+    if (interaction.customId === "commands-previous") {
+      let commands = client.commands;
+      let startIndex = 0;
+      let endIndex = 25;
+
+      let fields = [];
+      let count = 0;
+
+      // Iterate over the commands collection starting from the 25th command
+      for (const [name, command] of commands) {
+        if (count >= startIndex && count < endIndex) {
+          fields.push({ name: command.data.name, value: command.data.description, inline: true });
+        }
+        count++;
+      }
+
+      const embed = new EmbedBuilder()
+        .setColor(Colors.Blue)
+        .setTitle("Help (Page 1)")
+        .setDescription("List of commands")
+        .addFields(fields);
+
+      const components = [
+        new ActionRowBuilder().addComponents(
+          new ButtonBuilder().setCustomId("commands-next").setLabel("Next >>").setStyle("Primary")
+        ),
+      ];
+
+      await interaction.update({ embeds: [embed], components: components });
     }
 
     if (interaction.customId == "close") {

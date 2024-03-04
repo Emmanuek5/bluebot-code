@@ -56,7 +56,7 @@ module.exports = {
       await Data.save();
       await targetData.save();
       const user = client.users.cache.get(target.id);
-      await user.send(`You have been transfered **$${amount}** from your ${interaction.user}`);
+      await user.send(`You have been transfered **$${amount}** from ${interaction.user}`);
 
       const embed = new EmbedBuilder()
         .setColor(Colors.Green)

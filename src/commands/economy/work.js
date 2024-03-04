@@ -51,11 +51,7 @@ module.exports = {
         fields = fields.slice(0, 20);
         components.push(
           new ActionRowBuilder().addComponents(
-            new ButtonBuilder()
-              .setCustomId("work-next")
-              .setLabel("Next >>")
-              .setStyle(ButtonStyle.PRIMARY)
-              .setDisabled(true)
+            new ButtonBuilder().setCustomId("work-next").setLabel("Next >>").setStyle("Primary")
           )
         );
       }
