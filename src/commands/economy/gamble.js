@@ -50,7 +50,7 @@ module.exports = {
           return;
         }
 
-        emebed.setTitle("Gambling - Won $" + amount);
+        emebed.setTitle("Gambling - Won $" + amount * 2);
         emebed.setDescription(message.toString());
         emebed.setColor(Colors.Green);
 
