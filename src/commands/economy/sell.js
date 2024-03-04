@@ -16,7 +16,7 @@ module.exports = {
     const { guild, options, user } = interaction;
     const item = options.getString("item");
     const userId = user.id.toString();
-    const eco = new Economy();
+    const eco = client.economy;
     const ecoUser = await eco.findUser(userId);
     if (!ecoUser) {
       return interaction.reply({

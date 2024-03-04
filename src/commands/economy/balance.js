@@ -5,9 +5,9 @@ const { Economy } = require("../../economy/base");
 
 module.exports = {
   data: new SlashCommandBuilder().setName("balance").setDescription("Check Your Balance"),
-  async execute(interaction) {
+  async execute(interaction, client) {
     const { user, guild } = interaction;
-    const eco = new Economy();
+    const eco = client.economy;
     let Data = await eco.findUser(user.id);
 
     if (!Data) {

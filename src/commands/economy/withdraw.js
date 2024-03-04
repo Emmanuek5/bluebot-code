@@ -1,7 +1,6 @@
 const { SlashCommandBuilder, Colors } = require("discord.js");
 const { Economy } = require("../../economy/base");
 const { EmbedBuilder } = require("@discordjs/builders");
-const eco = new Economy();
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -13,6 +12,7 @@ module.exports = {
   async execute(interaction) {
     const { user, guild } = interaction;
     const amount = interaction.options.getNumber("amount");
+    const eco = client.economy;
     const ecoUser = await eco.findUser(user.id);
 
     if (!ecoUser) {

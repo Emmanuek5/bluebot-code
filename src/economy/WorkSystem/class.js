@@ -197,7 +197,15 @@ class WorkSystem {
     const jobIndex = this.jobs.findIndex(job => job.name === jobName);
 
     if (jobIndex !== -1) {
-      const lastWorked = this.workCache.find(worker => worker.name === worker.name).lastWorked;
+      const existingWorkerIndex = this.workers.findIndex(worker => worker.name === worker.name);
+      if (existingWorkerIndex !== -1) {
+        return Promise.reject([
+          false,
+          `${worker.name} is already working. You can't work multiple jobs simultaneously.`,
+        ]);
+      }
+
+      const lastWorked = this.workCache.find(cache => cache.name === worker.name)?.lastWorked || 0;
 
       if (Date.now() - lastWorked < this.jobs[jobIndex].cooldown * 1000) {
         return Promise.reject([
@@ -206,13 +214,17 @@ class WorkSystem {
         ]);
       }
 
+      this.workCache.push({
+        name: worker.name,
+        lastWorked: Date.now(),
+      });
+      this.workers.push(worker); // Add worker to the list of current workers
       return new Promise((resolve, reject) => {
-        // Simulating job completion after the specified duration
         setTimeout(() => {
-          this.workCache.push({
-            name: worker,
-            lastWorked: Date.now(),
-          });
+          //remove worker from list of current workers
+          this.workers = this.workers.filter(w => w.name !== worker.name);
+          this.saveWorkers();
+          this.saveCache();
           resolve(`Job ${jobName} completed by ${worker.name}`);
         }, this.jobs[jobIndex].duration * 1000); // Convert duration to milliseconds
       });
@@ -256,6 +268,26 @@ class WorkSystem {
 
   saveJobs() {
     fs.writeFileSync("./src/economy/WorkSystem/jobs.json", JSON.stringify(this.jobs));
+  }
+
+  saveCache() {
+    fs.writeFileSync("./src/economy/WorkSystem/workCache.json", JSON.stringify(this.workCache));
+  }
+
+  saveWorkers() {
+    fs.writeFileSync("./src/economy/WorkSystem/workers.json", JSON.stringify(this.workers));
+  }
+
+  load() {
+    if (!fs.existsSync("./src/economy/WorkSystem/workCache.json")) {
+      fs.writeFileSync("./src/economy/WorkSystem/workCache.json", JSON.stringify(this.workCache));
+    }
+    if (!fs.existsSync("./src/economy/WorkSystem/workers.json")) {
+      fs.writeFileSync("./src/economy/WorkSystem/workers.json", JSON.stringify(this.workers));
+    }
+
+    this.workCache = JSON.parse(fs.readFileSync("./src/economy/WorkSystem/workCache.json"));
+    this.workers = JSON.parse(fs.readFileSync("./src/economy/WorkSystem/workers.json"));
   }
 }
 
