@@ -93,10 +93,12 @@ module.exports = {
 
     if (subcommand === "create") {
       const playlistName = options.getString("name");
-      const playlist = await playlistSchema.findOne({
-        guildID: guild.id,
-        name: playlistName,
-      });
+      const playlist = await playlistSchema
+        .findOne({
+          guildID: guild.id,
+          name: playlistName,
+        })
+        .exec();
       if (playlist) {
         embed.setDescription("That playlist already exists");
         return interaction.editReply({ embeds: [embed] });

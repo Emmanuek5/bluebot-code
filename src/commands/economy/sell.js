@@ -33,8 +33,8 @@ module.exports = {
     }
 
     if (itemData.amount < options.getNumber("amount")) {
-      return interaction.reply({
-        content: "You dont have that many " + item + " in your inventory",
+      return interaction.editReply({
+        content: "You dont have that many " + item + "'s in your inventory",
       });
     }
 
