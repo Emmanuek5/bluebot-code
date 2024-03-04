@@ -13,14 +13,6 @@ class WorkSystem {
         cooldown: 10,
       },
       {
-        name: "Miner",
-        salary: 20,
-        xp: 20,
-        duration: 20,
-        employer: process.env.CLIENT_ID,
-        cooldown: 10,
-      },
-      {
         name: "Blacksmith",
         salary: 30,
         xp: 30,
