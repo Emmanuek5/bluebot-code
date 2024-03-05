@@ -59,7 +59,7 @@ async function buttons(interaction, client) {
       const shop = new Economy().getShop().slice(15);
       let fields = [];
       shop.forEach(item => {
-        fields.push({ name: item.name, value: `Price: $${item.price}` });
+        fields.push({ name: item.name, value: `Price: $${item.price}`, inline: true });
       });
 
       const embed = new EmbedBuilder()
@@ -78,7 +78,7 @@ async function buttons(interaction, client) {
       const shop = new Economy().getShop().slice(0, 15);
       let fields = [];
       shop.forEach(item => {
-        fields.push({ name: item.name, value: `Price: $${item.price}` });
+        fields.push({ name: item.name, value: `Price: $${item.price}`, inline: true });
       });
 
       const embed = new EmbedBuilder()
