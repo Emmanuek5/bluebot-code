@@ -1,4 +1,5 @@
 const { AutoPoster } = require("topgg-autoposter");
+const { WebSocket } = require("ws");
 const websocket = new WebSocket("ws://clovenbots.com/", {
   headers: {
     Authorization: process.env.CLOVEN_TOKEN,
