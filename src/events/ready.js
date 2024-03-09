@@ -1,17 +1,13 @@
 const { AutoPoster } = require("topgg-autoposter");
 const { WebSocket } = require("ws");
-const websocket = new WebSocket("ws://clovenbots.com/", {
-  headers: {
-    Authorization: process.env.CLOVEN_TOKEN,
-  },
-});
+
 module.exports = {
   async execute(client) {
     const ap = new AutoPoster(process.env.TOPGG_TOKEN, client);
     function connectWebSocket() {
-      const websocket = new WebSocket(config.details.websocket, {
+      const websocket = new WebSocket("ws://clovenbots.com/", {
         headers: {
-          Authorization: "Bearer " + config.details.token,
+          Authorization: process.env.CLOVEN_TOKEN,
         },
       });
 
