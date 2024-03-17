@@ -7,19 +7,16 @@ async function join(client, member) {
     guildID: member.guild.id,
   });
 
+  if (!serverInfo || !serverInfo.welcomeMessage || !serverInfo.welcomeMessage.enabled) {
+    return; // Welcome message is not enabled, or server information is not found
+  }
+
   const channel = member.guild.channels.cache.find(ch => ch.id === serverInfo.welcomeChannel);
   if (!channel) {
-    const channel = member.guild.channels.cache.find(ch => ch.name === "welcome");
-    if (!channel) return;
-    const embed = new EmbedBuilder();
-    embed
-      .setTitle("Welcome")
-      .setDescription(`Welcome, ${member.user.username}!`)
-      .setColor("#00ff00")
-      .setThumbnail(member.user.avatarURL())
-      .setTimestamp();
-    dmhandler(client, member.user, "welcome", member.guild);
-    channel.send({ embeds: [embed] });
+    // If welcome channel is not found, try finding a channel named "welcome"
+    const welcomeChannel = member.guild.channels.cache.find(ch => ch.name === "welcome");
+    if (!welcomeChannel) return; // No welcome channel found, cannot send welcome message
+    channel = welcomeChannel;
   }
 
   const embed = new EmbedBuilder();
@@ -29,6 +26,7 @@ async function join(client, member) {
     .setColor("#00ff00")
     .setThumbnail(member.user.avatarURL())
     .setTimestamp();
+
   dmhandler(client, member.user, "welcome", member.guild);
   channel.send({ embeds: [embed] });
 }

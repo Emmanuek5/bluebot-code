@@ -216,17 +216,20 @@ module.exports = {
 
           interaction.reply({ embeds: [embed] });
         }
+
         if (subcommand == "welcome-messages") {
+          const option = interaction.options.getBoolean("on-or-off");
           await serverSchema.findOneAndUpdate(
             { guildID: interaction.guild.id },
-            { welcomeMessage: option }
+            { "welcomeMessage.enabled": option }
           );
           const embed = new EmbedBuilder().setDescription(
-            `Sending of Welocme Messages Has Been Set To  ${option}`
+            `Sending of Welcome Messages Has Been Set To ${option ? "enabled" : "disabled"}`
           );
 
           interaction.reply({ embeds: [embed] });
         }
+
         if (subcommand == "leveling-channel") {
           await serverSchema.findOneAndUpdate(
             { guildID: interaction.guild.id },

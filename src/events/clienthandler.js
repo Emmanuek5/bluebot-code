@@ -19,7 +19,7 @@ const Level = require("discord.js-leveling");
 const { add } = require("./serveradd");
 const { Economy } = require("../economy/base");
 
-function client(client) {
+function client(client, app) {
   client.on("ready", async () => {
     const economy = new Economy();
 
@@ -54,17 +54,9 @@ function client(client) {
     });
 
     client.manager.init(client.user.id);
-    mongoose.set("strictQuery", false);
-    mongoose.connect(process.env.DATABASE_URL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+
     Level.setURL(process.env.DATABASE_URL);
     var log = "";
-
-    const db = mongoose.connection;
-    db.on("error", error => console.error(error));
-    db.once("open", () => (log = "Connected To Database"));
 
     console.log(`\u001b[32m ----------------------------------------
 \u001b[31m Bot: ${client.user.username}

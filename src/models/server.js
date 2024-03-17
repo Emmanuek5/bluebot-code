@@ -10,6 +10,16 @@ const serverSchema = new mongoose.Schema({
     unique: true,
     required: true,
   },
+  botName: {
+    type: String,
+    required: true,
+    default: "Blue Bot",
+  },
+  prefix: {
+    type: String,
+    required: true,
+    default: ">",
+  },
   guildOwner: {
     type: String,
     required: true,
@@ -59,9 +69,26 @@ const serverSchema = new mongoose.Schema({
     default: "",
   },
   welcomeMessage: {
-    type: Boolean,
-    required: false,
-    default: true,
+    enabled: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    type: {
+      type: String,
+      required: false,
+      default: "embed",
+    },
+    text: {
+      type: String,
+      required: false,
+      default: "Welcome to the server!",
+    },
+    role: {
+      type: String,
+      required: false,
+      default: "",
+    },
   },
 });
 
