@@ -70,6 +70,10 @@ if (process.env.TOKEN !== "undefined") {
   require("dotenv").config();
 }
 
+client.on("ready", async () => {
+  execute(client, server.app);
+});
+
 mongoose.set("strictQuery", false);
 mongoose.connect(process.env.DATABASE_URL, {
   useNewUrlParser: true,
