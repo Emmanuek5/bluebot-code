@@ -64,7 +64,7 @@ function client(client) {
 
     const db = mongoose.connection;
     db.on("error", error => console.error(error));
-    db.once("open", () => (log = "Connected To Database"));
+    db.once("open", () => console.log("Connected To Database"));
 
     console.log(`\u001b[32m ----------------------------------------
 \u001b[31m Bot: ${client.user.username}

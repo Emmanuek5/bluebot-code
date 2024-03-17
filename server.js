@@ -25,6 +25,7 @@ const wss = new Server({
 const { Api } = require("./load");
 
 app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 app.set("view-engine", "ejs");
 // import the passport module
 // import the config module
@@ -44,8 +45,6 @@ app.use(
     saveUninitialized: true,
   })
 );
-
-const users = [];
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -80,15 +79,15 @@ wss.on("connection", ws => {
   });
 });
 
+app.all("/api/v1/*", (req, res) => {
+  var method = req.method.toUpperCase();
+  api.handler(req, res, method);
+});
+
 app.listen(port, () => {
   if (process.env.DEV) {
     console.log("Server Started");
   }
-});
-
-app.all("/api/v1/*", (req, res) => {
-  var method = req.method.toUpperCase();
-  api.handler(req, res, method);
 });
 
 module.exports = {

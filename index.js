@@ -35,9 +35,10 @@ const client = new Client({
     GatewayIntentBits.GuildMembers,
   ],
 });
-
+const server = require("./server");
+client.app = server.app;
 const clienthandler = require("./src/events/clienthandler");
-clienthandler.client(client);
+clienthandler.client(client, server.app);
 
 let botName = client.username;
 process.env.BOT_NAME = botName;
@@ -47,7 +48,7 @@ const last_used = new Map();
 
 const commandhandler = require("./src/events/createcommands");
 const serverSchema = require("./src/models/server");
-const server = require("./server");
+
 const leaveandjoinhandler = require("./src/events/leaveandjoinhandler");
 const mongoose = require("mongoose");
 const messagehand = require("./src/events/messagehandler.js");
@@ -69,9 +70,15 @@ if (process.env.TOKEN !== "undefined") {
   require("dotenv").config();
 }
 
-client.on("ready", async () => {
-  execute(client);
+mongoose.set("strictQuery", false);
+mongoose.connect(process.env.DATABASE_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 });
+
+const db = mongoose.connection;
+db.on("error", error => console.error(error));
+db.once("open", () => console.log("Connected To Database"));
 
 client.on("messageCreate", async message => {
   if (message.author.bot || !message.guild) return;
@@ -133,5 +140,10 @@ client.on("guildMemberRemove", member => {
 
 commandhandler.createcommands(client);
 
+const api = require("./src/routes/api.js");
+api.client = client;
+server.app.use("/api/", api);
+
 server.api.setClient(client);
+
 client.login(process.env.TOKEN);
