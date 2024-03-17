@@ -91,7 +91,7 @@ router.post("/server/:id/", async (req, res) => {
       const { botName, prefix } = settings;
       // Update server settings
       const guild = await router.client.guilds.cache.get(id);
-      const user = await guild.members.cache.find(member => member.id === botid);
+      const user = await guild.members.cache.find(member => member.id === router.client.user.id);
       user.setNickname(botName);
       await serverSchema.findOneAndUpdate({ guildID: guild.id }, { botName, prefix });
       res.status(200).json({ message: "Server settings updated" });
