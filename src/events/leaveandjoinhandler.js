@@ -77,6 +77,10 @@ async function leave(client, member) {
     guildID: member.guild.id,
   });
 
+  if (!serverInfo || !serverInfo.goodbyeMessage || !serverInfo.goodbyeMessage.enabled) {
+    return;
+  }
+
   const channel = member.guild.channels.cache.find(ch => ch.id === serverInfo.goodbyeChannel);
 
   if (!channel) {
