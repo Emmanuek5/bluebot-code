@@ -108,7 +108,7 @@ class InventorySystem {
     return InventoryItem.findOne({ name: item });
   }
   // Function to add an item to a user's inventory
-  async addItem(userId, item) {
+  async addItem(userId, item, amount) {
     try {
       // Check if the item already exists for the user
       const existingItem = await InventoryItem.findOne({
@@ -118,7 +118,7 @@ class InventorySystem {
 
       if (existingItem) {
         // Item exists, update the amount
-        existingItem.amount += item.amount;
+        existingItem.amount += amount;
         await existingItem.save();
         return true;
       }
@@ -128,7 +128,7 @@ class InventorySystem {
         userId,
         itemId: this.generateItemId(),
         name: item.name,
-        amount: item.amount,
+        amount: amount,
         price: item.price,
       });
 
