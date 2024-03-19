@@ -39,8 +39,8 @@ async function join(client, member) {
 
   if (role) {
     //fetch the role and give it to the new member
-    const role = member.guild.roles.cache.find(r => r.name === role);
-    member.roles.add(role);
+    const roletoadd = member.guild.roles.cache.find(r => r.id === role);
+    member.roles.add(roletoadd);
   }
 
   if (type === "embed") {
