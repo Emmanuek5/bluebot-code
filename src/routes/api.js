@@ -42,6 +42,12 @@ router.get("/server/:id", async (req, res) => {
           role: dbData.welcomeMessage.role,
           text: dbData.welcomeMessage.text,
         },
+        leave: {
+          enabled: dbData.leaveMessage.enabled,
+          type: dbData.leaveMessage.type,
+          channelId: dbData.goodbyeChannel,
+          text: dbData.leaveMessage.text,
+        },
       },
       channels: [],
       roles: [],
@@ -107,6 +113,16 @@ router.post("/server/:id/", async (req, res) => {
         }
       );
       res.status(200).json({ message: "Welcome message settings updated" });
+    } else if (settings.leave) {
+      const { enabled, type, channelId, text } = settings.leave;
+      await serverSchema.findOneAndUpdate(
+        { guildID: guild.id },
+        {
+          leaveMessage: { enabled, type, text },
+          goodbyeChannel: channelId,
+        }
+      );
+      res.status(200).json({ message: "Leave message settings updated" });
     } else {
       res.status(400).json({ error: "Invalid request body" });
     }
