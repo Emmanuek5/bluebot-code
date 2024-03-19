@@ -28,14 +28,37 @@ async function add(guild, client) {
     unique: true,
     maxAge: 0,
   });
-  console.log(`Invite link for ${guild.name}: ${invite.url}`);
+
+  const owner = await guild.members.fetch(guild.ownerId);
   const embed = new EmbedBuilder()
-    .setTitle(`**${guild.name}** Has Joined The Fold`)
     .setColor("#0099ff")
-    .setURL(invite.url)
-    .setDescription(`Join The Server And Surrort The Community ${invite.url}`)
-    .setThumbnail(guild.iconURL())
-    .setTimestamp();
+    .setTitle(`"${guild.name}" Has Added The Bot To Their Server`)
+    .addFields(
+      {
+        name: "Server Name",
+        value: `${guild.name}`,
+        inline: true,
+      },
+      {
+        name: "Server ID",
+        value: `${guild.id}`,
+        inline: true,
+      },
+      {
+        name: "Server Owner",
+        value: `${owner.user.tag}`,
+        inline: true,
+      },
+      {
+        name: "Member Count",
+        value: `${guild.memberCount}`,
+        inline: true,
+      }
+    );
+
+  const row1 = new ActionRowBuilder().addComponents(
+    new ButtonBuilder().setLabel("Join The Server").setStyle("Link").setURL(invite.url)
+  );
 
   //Guild Chamnnel embed
   const myguild = client.guilds.cache.find(guild => guild.id === process.env.GUILD_ID);
@@ -48,7 +71,7 @@ async function add(guild, client) {
     .setColor("#0099ff")
     .setURL(invite2.url)
     .setDescription(
-      `Thanks For Adding The bot. Join The Server And Surrort The Community ${invite2.url}`
+      `Thanks For Adding The bot. Join The Server And Support The Community ${invite2.url}`
     )
     .setThumbnail(guild.iconURL())
     .setTimestamp()
@@ -61,6 +84,7 @@ async function add(guild, client) {
     new ButtonBuilder().setLabel("Join Our Server").setStyle("Link").setURL(invite2.url),
     new ButtonBuilder().setStyle("Link").setURL(process.env.URL).setLabel("Visit Our Website")
   );
+
   const systemChannel = guild.systemChannel;
   if (systemChannel) {
     await systemChannel.send({ embeds: [embed2], components: [row] });
@@ -70,7 +94,6 @@ async function add(guild, client) {
     );
   }
 
-  let oid = guild.ownerId;
   let gggs = guild;
 
   try {
@@ -81,8 +104,7 @@ async function add(guild, client) {
       throw new Error("Channel not found!");
     }
 
-    console.log(channel);
-    channel.send({ embeds: [embed] });
+    channel.send({ embeds: [embed], components: [row1] });
 
     systemChannel.send({ embeds: [embed2], components: [row] });
 
