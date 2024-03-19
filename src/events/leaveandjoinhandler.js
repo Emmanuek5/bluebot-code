@@ -83,7 +83,7 @@ async function leave(client, member) {
     guildID: member.guild.id,
   });
 
-  if (!serverInfo || !serverInfo.goodbyeMessage || !serverInfo.leaveMessage.enabled) {
+  if (!serverInfo || !serverInfo.leaveMessage.enabled) {
     return;
   }
 
