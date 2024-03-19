@@ -97,8 +97,11 @@ async function leave(client, member) {
   const values = [member.user.tag, member.guild.name, member.guild.memberCount];
 
   const type = serverInfo.leaveMessage.type;
-  const Raw_message = serverInfo.leaveMessage.text;
-  let message = Raw_message;
+  const Raw_message = serverInfo.welcomeMessage.text;
+
+  let message = Raw_message; // Assign the raw message to the message variable
+
+  // Replace placeholders with actual values
   for (let i = 0; i < placeholders.length; i++) {
     message = message.replace(placeholders[i], values[i]);
   }
