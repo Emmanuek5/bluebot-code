@@ -33,13 +33,15 @@ async function join(client, member) {
 
   const type = serverInfo.welcomeMessage.type;
   const Raw_message = serverInfo.welcomeMessage.text;
-  const message = Raw_message.replace(
-    placeholders.reduce((acc, cur, i) => acc.replace(cur, values[i]), Raw_message)
-  );
+  let message = "";
+
+  for (let i = 0; i < placeholders.length; i++) {
+    message = message.replace(placeholders[i], values[i]);
+  }
 
   if (role) {
     //fetch the role and give it to the new member
-    const roletoadd = member.guild.roles.cache.find(r => r.id === role);
+    const roletoadd = member.guild.roles.cache.find(r => r.i === role);
     member.roles.add(roletoadd);
   }
 
