@@ -71,7 +71,7 @@ async function add(guild, client) {
     .setColor("#0099ff")
     .setURL(invite2.url)
     .setDescription(
-      `Thanks For Adding The bot. Join The Server And Surrort The Community ${invite2.url}`
+      `Thanks For Adding The bot. Join The Server And Support The Community ${invite2.url}`
     )
     .setThumbnail(guild.iconURL())
     .setTimestamp()
