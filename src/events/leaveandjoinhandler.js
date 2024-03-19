@@ -72,24 +72,32 @@ async function join(client, member) {
   }
 }
 
+/**
+ *
+ * @param {Client} client
+ * @param {GuildMember} member
+ * @returns
+ */
 async function leave(client, member) {
   const serverInfo = await serverSchema.findOne({
     guildID: member.guild.id,
   });
 
-  if (!serverInfo || !serverInfo.goodbyeMessage || !serverInfo.goodbyeMessage.enabled) {
+  if (!serverInfo || !serverInfo.goodbyeMessage || !serverInfo.leaveMessage.enabled) {
     return;
   }
 
-  const channel = member.guild.channels.cache.find(ch => ch.id === serverInfo.goodbyeChannel);
-
+  let channel = member.guild.channels.cache.find(ch => ch.id === serverInfo.goodbyeChannel);
   if (!channel) {
-    const channel = member.guild.channels.cache.find(ch => ch.name === "goodbye");
+    channel = member.guild.channels.cache.find(ch => ch.name === "goodbye");
     if (!channel) return;
   }
 
-  const type = serverInfo.goodbyeMessage.type;
-  const Raw_message = serverInfo.goodbyeMessage.text;
+  const placeholders = ["{user}", "{server}", "{count}"];
+  const values = [member.user.tag, member.guild.name, member.guild.memberCount];
+
+  const type = serverInfo.leaveMessage.type;
+  const Raw_message = serverInfo.leaveMessage.text;
   let message = Raw_message;
   for (let i = 0; i < placeholders.length; i++) {
     message = message.replace(placeholders[i], values[i]);
