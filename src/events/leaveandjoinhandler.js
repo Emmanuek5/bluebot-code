@@ -25,7 +25,6 @@ async function join(client, member) {
 
   const channel = member.guild.channels.cache.find(ch => ch.id === serverInfo.welcomeChannel);
   if (!channel) {
-    // If welcome channel is not found, try finding a channel named "welcome"
     const welcomeChannel = member.guild.channels.cache.find(ch => ch.name === "welcome");
     if (!welcomeChannel) return; // No welcome channel found, cannot send welcome message
     channel = welcomeChannel;
@@ -33,32 +32,43 @@ async function join(client, member) {
 
   const type = serverInfo.welcomeMessage.type;
   const Raw_message = serverInfo.welcomeMessage.text;
-  let message = "";
 
+  let message = Raw_message; // Assign the raw message to the message variable
+
+  // Replace placeholders with actual values
   for (let i = 0; i < placeholders.length; i++) {
     message = message.replace(placeholders[i], values[i]);
   }
 
   if (role) {
-    //fetch the role and give it to the new member
-    const roletoadd = member.guild.roles.cache.find(r => r.i === role);
-    member.roles.add(roletoadd);
+    // Fetch the role and check if it exists
+    const roletoadd = member.guild.roles.cache.get(role);
+    if (roletoadd) {
+      // Add the role to the new member
+      member.roles.add(roletoadd);
+    } else {
+      console.error(`Role with ID ${role} not found.`);
+    }
   }
 
   if (type === "embed") {
     const embed = new EmbedBuilder();
+    // Check if the message is not empty before setting it as the description
+    if (message.length > 0) {
+      embed.setDescription(message);
+    }
     embed
       .setTitle("Welcome")
-      .setDescription(message)
       .setColor("#00ff00")
       .setThumbnail(member.user.avatarURL())
       .setTimestamp();
 
-    //give role to new member
-
     channel.send({ embeds: [embed] });
   } else if (type === "message") {
-    channel.send(message);
+    // Check if the message is not empty before sending it
+    if (message.length > 0) {
+      channel.send(message);
+    }
   }
 }
 
