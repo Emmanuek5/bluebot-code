@@ -77,32 +77,38 @@ async function leave(client, member) {
     guildID: member.guild.id,
   });
 
-  const channel = member.guild.channels.cache.find(ch => ch.id === serverInfo.welcomeChannel);
+  const channel = member.guild.channels.cache.find(ch => ch.id === serverInfo.goodbyeChannel);
 
   if (!channel) {
     const channel = member.guild.channels.cache.find(ch => ch.name === "goodbye");
     if (!channel) return;
+  }
+
+  const type = serverInfo.goodbyeMessage.type;
+  const Raw_message = serverInfo.goodbyeMessage.text;
+  let message = Raw_message;
+  for (let i = 0; i < placeholders.length; i++) {
+    message = message.replace(placeholders[i], values[i]);
+  }
+
+  if (type === "embed") {
     const embed = new EmbedBuilder();
+    if (message.length > 0) {
+      embed.setDescription(message);
+    }
     embed
       .setTitle("Goodbye")
-      .setDescription(`Goodbye, ${member.user.username}!`)
       .setColor("#ff0000")
       .setThumbnail(member.user.avatarURL())
       .setTimestamp();
-    dmhandler(client, member.user, "goodbye", member.guild);
-
     channel.send({ embeds: [embed] });
   }
-  const embed = new EmbedBuilder();
-  embed
-    .setTitle("Goodbye")
-    .setDescription(`Goodbye, ${member.user.username}!`)
-    .setColor("#ff0000")
-    .setThumbnail(member.user.avatarURL())
-    .setTimestamp();
-  dmhandler(client, member.user, "goodbye", member.guild);
 
-  channel.send({ embeds: [embed] });
+  if (type === "message") {
+    if (message.length > 0) {
+      channel.send(message);
+    }
+  }
 }
 
 module.exports = {

@@ -90,6 +90,23 @@ const serverSchema = new mongoose.Schema({
       default: "",
     },
   },
+  leaveMessage: {
+    enabled: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    type: {
+      type: String,
+      required: false,
+      default: "embed",
+    },
+    text: {
+      type: String,
+      required: false,
+      default: "Goodbye! See you next time!",
+    },
+  },
 });
 
 module.exports = mongoose.model("Server", serverSchema);
