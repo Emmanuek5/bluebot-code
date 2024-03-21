@@ -18,6 +18,7 @@ require("dotenv").config();
 const Level = require("discord.js-leveling");
 const { add } = require("./serveradd");
 const { Economy } = require("../economy/base");
+const { execute } = require("./guildDelete");
 
 function client(client, app) {
   client.on("ready", async () => {
@@ -107,20 +108,7 @@ function client(client, app) {
   });
 
   client.on("guildDelete", guild => {
-    console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`);
-    // remove the server from the database
-    serverSchema.findOneAndDelete(
-      {
-        guildID: guild.id,
-      },
-      (err, data) => {
-        if (err) throw err;
-        if (data) {
-          console.log(`Server ${guild.name} has been removed from the database.`);
-        }
-      }
-    );
-
+    execute(guild, client);
     client.emit("Update", guild);
   });
 
