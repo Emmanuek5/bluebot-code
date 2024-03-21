@@ -1,5 +1,6 @@
 const { AutoPoster } = require("topgg-autoposter");
 const { WebSocket } = require("ws");
+const { ActivityType } = require("discord.js");
 
 module.exports = {
   async execute(client) {
@@ -18,6 +19,21 @@ module.exports = {
 
       websocket.on("error", err => {
         console.log("WebSocket error:", err);
+      });
+
+      const options = {
+        type: ActivityType.Watching,
+        name: `${client.guilds.cache.size} servers and /help`,
+      };
+
+      client.user.setPresence({ status: "idle", activities: [options] });
+
+      client.on("Update", () => {
+        const options = {
+          type: ActivityType.Watching,
+          name: `${client.guilds.cache.size} servers and /help`,
+        };
+        client.user.setPresence({ status: "idle", activities: [options] });
       });
 
       websocket.on("open", () => {
