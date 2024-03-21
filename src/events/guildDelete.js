@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, Colors } = require("discord.js");
 
 module.exports = {
   async execute(guild, client) {
@@ -6,7 +6,7 @@ module.exports = {
     const channel = client.channels.cache.get(config.leave_channel);
     const owner = await guild.members.fetch(guild.ownerId);
     const embed = new EmbedBuilder()
-      .setColor(0x00ae86)
+      .setColor(Colors.Red)
       .setAuthor({ name: "Blue Bot", iconURL: process.env.BOT_AVATAR })
       .setTimestamp()
       .setDescription(`**${guild.name}** has removed me from thier server`)
