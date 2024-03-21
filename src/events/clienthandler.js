@@ -82,22 +82,10 @@ function client(client, app) {
     let channelCount = client.channels.cache.size;
     process.env.CHANNEL_COUNT = channelCount;
     //set the bot status to Playing with {usercount} users
-    const options = {
-      type: ActivityType.Watching,
-      name: `${process.env.SERVER_COUNT} servers and /help`,
-    };
-
-    setInterval(() => {
-      client.user.setPresence({ status: "idle", activities: [options] });
-    }, 10000);
   });
 
   client.on("guildCreate", async guild => {
     add(guild, client);
-
-    console.log(
-      `New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`
-    );
 
     const server = await serverSchema.findOne({
       guildID: guild.id,
@@ -115,28 +103,7 @@ function client(client, app) {
       await newServer.save();
     }
 
-    let botName = client.user.username;
-    botName = botName.replace(/#[0-9]{4}/, "");
-    process.env.BOT_NAME = botName;
-
-    let serverCount = client.guilds.cache.size;
-    process.env.SERVER_COUNT = serverCount;
-
-    let userCount = client.users.cache.size;
-    process.env.USER_COUNT = userCount;
-
-    let channelCount = client.channels.cache.size;
-    process.env.CHANNEL_COUNT = channelCount;
-    const options = {
-      type: ActivityType.Watching,
-      name: `${process.env.SERVER_COUNT} servers and /help`,
-    };
-    client.user.setPresence({ status: "idle", activities: [options] });
-    const axios = require("axios");
-    const qs = require("qs");
-    let data = qs.stringify({
-      server_count: process.env.SERVER_COUNT,
-    });
+    client.emit("Update", guild);
   });
 
   client.on("guildDelete", guild => {
@@ -154,19 +121,7 @@ function client(client, app) {
       }
     );
 
-    let serverCount = client.guilds.cache.size;
-    process.env.SERVER_COUNT = serverCount;
-
-    let userCount = client.users.cache.size;
-    process.env.USER_COUNT = userCount;
-
-    let channelCount = client.channels.cache.size;
-    process.env.CHANNEL_COUNT = channelCount;
-    const options = {
-      type: ActivityType.Watching,
-      name: `${process.env.SERVER_COUNT} servers and /help`,
-    };
-    client.user.setPresence({ status: "idle", activities: [options] });
+    client.emit("Update", guild);
   });
 
   client.on("guildUpdate", async (oldGuild, newGuild) => {
@@ -181,14 +136,7 @@ function client(client, app) {
       (data.guildIcon = newGuild.iconURL()),
       await data.save();
   });
-  client.emotes = {
-    play: "▶️",
-    stop: "⏹️",
-    queue: "📄",
-    success: "☑️",
-    repeat: "🔁",
-    error: "❌",
-  };
+
   client.on("raw", d => client.manager.updateVoiceState(d));
   const nodes = require("../../nodes.json");
 
