@@ -139,6 +139,18 @@ function client(client, app) {
       if (guild) guild.shard.send(payload);
     },
   });
+
+  client.manager.on("nodeConnect", node => {
+    console.log(`Node ${node.options.identifier} connected`);
+  });
+
+  client.manager.on("nodeError", (node, error) => {
+    console.log(`Node ${node.options.identifier} error: ${error.message}`);
+  });
+
+  client.manager.on("trackStart", (player, track) => {
+    console.log(`Now playing: ${track.title} from ${player.guild.name}`);
+  });
 }
 module.exports = {
   client: client,
