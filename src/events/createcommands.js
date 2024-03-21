@@ -164,7 +164,7 @@ function createcommands(client) {
           await command.execute(interaction, client);
         } catch (error) {
           const config = require("../../config.json");
-          const config = require("../../config.json");
+
           const channel = client.channels.cache.get(config.error_channel);
 
           // Include the error stack
