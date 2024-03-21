@@ -164,18 +164,20 @@ function createcommands(client) {
           await command.execute(interaction, client);
         } catch (error) {
           const config = require("../../config.json");
+          const config = require("../../config.json");
           const channel = client.channels.cache.get(config.error_channel);
-          //include the error stack
-          const embed = new EmbedBuilder()
+
+          // Include the error stack
+          const embed = new EmbedBuilder();
+          embed.setTitle(`There was an error while executing ${interaction.command}  command!`);
+          embed
+            .setDescription(`${error.name}: ${error.message}\n\n${error.stack}`)
             .setColor(Colors.Red)
             .setAuthor({ name: "Error" })
             .setTimestamp()
-            .setDescription(
-              `**Error:** \` ${error.message} ${error.stack || error}\`\n**Command:** \`${
-                interaction.commandName
-              }\``
-            )
+
             .setFooter({ text: interaction.guild.name });
+
           channel.send({ embeds: [embed] });
         }
       }
