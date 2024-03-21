@@ -24,11 +24,6 @@ require("dotenv").config();
  * @return {Promise<void>} A promise that resolves once the guild has been added.
  */
 async function add(guild, client) {
-  const invite = await guild.invites.create(guild.systemChannelId, {
-    unique: true,
-    maxAge: 0,
-  });
-
   const owner = await guild.members.fetch(guild.ownerId);
   const embed = new EmbedBuilder()
     .setColor("#0099ff")
@@ -56,32 +51,52 @@ async function add(guild, client) {
       }
     );
 
+  let invite;
+  try {
+    invite = await guild.invites.create(guild.systemChannelId, {
+      unique: true,
+      maxAge: 0,
+    });
+  } catch (error) {
+    console.error("Failed to create invite:", error);
+  }
+
   const row1 = new ActionRowBuilder().addComponents(
-    new ButtonBuilder().setLabel("Join The Server").setStyle("Link").setURL(invite.url)
+    new ButtonBuilder()
+      .setLabel("Join The Server")
+      .setStyle("Link")
+      .setURL(invite ? invite.url : "")
   );
 
-  //Guild Chamnnel embed
+  //Guild Channel embed
   const myguild = client.guilds.cache.find(guild => guild.id === process.env.GUILD_ID);
-  const invite2 = await myguild.invites.create("1123343203081404587", {
-    unique: true,
-    maxAge: 0,
-  });
-  const embed2 = new EmbedBuilder()
+  let embed2 = new EmbedBuilder()
     .setTitle(`Welcome **${guild.name}**.`)
     .setColor("#0099ff")
-    .setURL(invite2.url)
-    .setDescription(
-      `Thanks For Adding The bot. Join The Server And Support The Community ${invite2.url}`
-    )
     .setThumbnail(guild.iconURL())
     .setTimestamp()
-    .setURL(invite2.url)
     .setFooter({
-      text: `Server Invite Link: ${invite2.url}`,
+      text: `Server Invite Link: ${invite ? invite.url : ""}`,
       iconURL: process.env.BOT_AVATAR,
     });
+
+  if (invite) {
+    embed2 = embed2
+      .setURL(invite.url)
+      .setDescription(
+        `Thanks For Adding The bot. Join The Server And Support The Community ${invite.url}`
+      );
+  } else {
+    embed2 = embed2.setDescription(
+      "Thanks For Adding The bot. Support The Community by joining the server."
+    );
+  }
+
   const row = new ActionRowBuilder().addComponents(
-    new ButtonBuilder().setLabel("Join Our Server").setStyle("Link").setURL(invite2.url),
+    new ButtonBuilder()
+      .setLabel("Join Our Server")
+      .setStyle("Link")
+      .setURL(invite ? invite.url : ""),
     new ButtonBuilder().setStyle("Link").setURL(process.env.URL).setLabel("Visit Our Website")
   );
 
