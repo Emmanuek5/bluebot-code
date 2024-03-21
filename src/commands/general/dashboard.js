@@ -36,10 +36,10 @@ module.exports = {
       await interaction.reply({ embeds: [embed] });
       return;
     }
-    const url = require("../../../config.json").details.website + "/dashboard";
+    const url = require("../../../config.json").details.website;
     const guildid = interaction.guildId;
     const userid = interaction.user.id;
-    const dashboard = `${url}/dashboard/server/${guildid}`;
+    const dashboard = `${url}dashboard/server/${guildid}`;
     const embed = new EmbedBuilder()
       .setTitle("Dashboard")
       .setDescription(`[Click Here](${dashboard}) to open the Dashboard`)
