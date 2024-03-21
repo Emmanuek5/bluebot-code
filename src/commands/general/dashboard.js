@@ -36,7 +36,7 @@ module.exports = {
       await interaction.reply({ embeds: [embed] });
       return;
     }
-    const url = process.env.BOT_URL + "/dashboard";
+    const url = require("../../../config.json").details.website + "/dashboard";
     const guildid = interaction.guildId;
     const userid = interaction.user.id;
     const dashboard = `${url}/${guildid}`;
@@ -46,7 +46,6 @@ module.exports = {
       .setColor("Purple")
       .setAuthor({
         name: process.env.BOT_NAME,
-        url: process.env.BOT_URL,
         iconURL: process.env.BOT_AVATAR,
       })
       .setThumbnail(process.env.BOT_AVATAR);
