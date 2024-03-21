@@ -7,8 +7,10 @@ const {
   Events,
   ClientPresence,
   ActivityType,
+  Colors,
 } = require("discord.js");
 const { appHandler } = require("./Appshandler");
+const { EmbedBuilder } = require("@discordjs/builders");
 function createcommands(client) {
   client.commands = new Collection();
 
@@ -161,7 +163,20 @@ function createcommands(client) {
         try {
           await command.execute(interaction, client);
         } catch (error) {
-          console.error(error);
+          const config = require("../../config.json");
+          const channel = client.channels.cache.get(config.error_channel);
+          //include the error stack
+          const embed = new EmbedBuilder()
+            .setColor(Colors.Red)
+            .setAuthor({ name: "Error" })
+            .setTimestamp()
+            .setDescription(
+              `**Error:** \` ${error.message} ${error.stack || error}\`\n**Command:** \`${
+                interaction.commandName
+              }\``
+            )
+            .setFooter({ text: interaction.guild.name });
+          channel.send({ embeds: [embed] });
         }
       }
     });
