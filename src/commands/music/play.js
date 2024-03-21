@@ -1,5 +1,5 @@
-const { SlashCommandBuilder } = require("@discordjs/builders");
-const { EmbedBuilder } = require("discord.js");
+const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder } = require("@discordjs/builders");
+const { EmbedBuilder, ButtonStyle } = require("discord.js");
 
 module.exports = {
   usage: "Plays a song in the voice channel or continues the song if it is paused ",
@@ -116,7 +116,14 @@ module.exports = {
       .setTimestamp()
       .setThumbnail(songs.tracks[0].thumbnail);
 
-    return await interaction.reply({ embeds: [embed] });
+    const row = new ActionRowBuilder().addComponents(
+      new ButtonBuilder()
+        .setStyle(ButtonStyle.Primary)
+        .setLabel("Song Controls")
+        .setCustomId("controls")
+    );
+
+    return await interaction.reply({ embeds: [embed], components: [row] });
     //get the errror and send it to the user
   },
 };
