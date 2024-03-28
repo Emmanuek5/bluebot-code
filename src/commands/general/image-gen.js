@@ -24,7 +24,7 @@ module.exports = {
         n: 1,
         size: "1024x1024",
       });
-      const image_url = response.data.data[0].url;
+      const image_url = response.data[0].url;
       const result = await download(image_url);
       const attachment = new AttachmentBuilder(result, { name: `${prompt}${rand(0, 19999)}.png` });
       await interaction.editReply({ content: `${prompt}`, files: [attachment] });

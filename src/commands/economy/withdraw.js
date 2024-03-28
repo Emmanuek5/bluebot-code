@@ -9,7 +9,7 @@ module.exports = {
     .addNumberOption(option =>
       option.setName("amount").setDescription("The amount of money to withdraw").setRequired(true)
     ),
-  async execute(interaction) {
+  async execute(interaction, client) {
     const { user, guild } = interaction;
     const amount = interaction.options.getNumber("amount");
     const eco = client.economy;
