@@ -55,6 +55,15 @@ for (const file of moderationFiles) {
   const command = require(`./src/commands/moderation//roles/${file}`);
   commands.push(command.data.toJSON());
 }
+
+const moderationFiles1 = fs
+  .readdirSync("src/commands/moderation/channels")
+  .filter(file => file.endsWith(".js"));
+for (const file of moderationFiles1) {
+  const command = require(`./src/commands/moderation/channels/${file}`);
+  commands.push(command.data.toJSON());
+}
+
 const rest = new REST({ version: "10" }).setToken(process.env.TOKEN);
 (async () => {
   try {
