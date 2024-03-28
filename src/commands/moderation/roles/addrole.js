@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { EmbedBuilder, PermissionFlagsBits, PermissionsBitField } = require("discord.js");
+const ReactionRoleSchema = require("../../../models/roles.js");
 
 module.exports = {
   usage: "addrole",
@@ -21,7 +22,7 @@ module.exports = {
 
   async execute(interaction, client) {
     await interaction.deferReply();
-    const ReactionRoleSchema = require("../../../models/roles.js");
+
     const { options, guildId, member } = interaction;
     const role = options.getRole("role");
     const description = options.getString("description");
