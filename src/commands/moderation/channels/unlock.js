@@ -29,13 +29,6 @@ module.exports = {
       const { options, guild } = interaction;
       const channel = options.getChannel("channel");
 
-      if (!channel || channel.type !== ChannelType.GUILD_TEXT) {
-        return await interaction.reply({
-          content: "Please provide a valid text channel",
-          ephemeral: true,
-        });
-      }
-
       const everyoneRole = guild.roles.cache.find(role => role.name === "@everyone");
       if (!everyoneRole) {
         return await interaction.reply({
@@ -44,7 +37,7 @@ module.exports = {
         });
       }
 
-      if (channel.permissionsFor(everyoneRole).has(PermissionsBitField.FLAGS.SEND_MESSAGES)) {
+      if (channel.permissionsFor(everyoneRole).has(PermissionsBitField.Flags.SendMessages)) {
         return await interaction.reply({
           content: "This channel is already unlocked",
           ephemeral: true,
@@ -52,7 +45,7 @@ module.exports = {
       }
 
       await channel.permissionOverwrites.edit(everyoneRole, {
-        SEND_MESSAGES: true,
+        SendMessages: true,
       });
 
       await interaction.reply({
