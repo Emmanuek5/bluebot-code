@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require("discord.js");
 const { Economy } = require("../../economy/base");
 
 // Constants
-const WEEKLY_MONEY_AMOUNT = 1900; // Amount of weekly money
+const WEEKLY_MONEY_AMOUNT = 500; // Amount of weekly money
 const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000; // Milliseconds in 7 days
 
 module.exports = {
@@ -40,7 +40,7 @@ module.exports = {
         await ecoUser.save();
 
         return interaction.reply({
-          content: `You have claimed your weekly money of ${WEEKLY_MONEY_AMOUNT} units.`,
+          content: `You have claimed your weekly pocket money of $${WEEKLY_MONEY_AMOUNT} `,
           ephemeral: true,
         });
       }

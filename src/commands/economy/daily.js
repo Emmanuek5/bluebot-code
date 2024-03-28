@@ -39,8 +39,7 @@ module.exports = {
         await ecoUser.save();
 
         return interaction.reply({
-          content: `You have claimed your daily money of ${DAILY_MONEY_AMOUNT} units.`,
-          ephemeral: true,
+          content: `You have claimed your daily pocket money of $${DAILY_MONEY_AMOUNT}`,
         });
       }
     } catch (error) {
