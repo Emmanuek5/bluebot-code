@@ -35,6 +35,7 @@ module.exports = {
         .setTimestamp();
 
       await interaction.reply({ embeds: [embed] });
+      return;
     }
 
     let player = client.manager.players.get(guild.id);
