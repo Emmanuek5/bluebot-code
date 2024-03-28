@@ -88,12 +88,16 @@ async function messages(client, message) {
       return;
     } else {
       //lets make it so that only the owner of the channel can use the channel
-      const isOwner = message.channel.name.endsWith(message.author.username);
+      const SpecialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+      let username = message.author.username.replace(SpecialChars, "");
+      const isOwner = message.channel.name.includes(username);
       if (!isOwner) {
-        message.delete();
-        message.reply("Only the owner of the channel can talk to me");
+        message.reply(
+          "Only the owner of the channel can talk to me. Run /gpt-channel for your own chat "
+        );
         return;
       }
+
       createPrompt(message, client);
     }
   }
