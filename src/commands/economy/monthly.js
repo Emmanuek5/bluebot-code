@@ -24,25 +24,38 @@ module.exports = {
       }
 
       if (ecoUser.lastMonthly && ecoUser.lastMonthly + THIRTY_DAYS > Date.now()) {
-        // If less than 30 days have passed since the last monthly collection
         const remainingTime = ecoUser.lastMonthly + THIRTY_DAYS - Date.now();
         const days = Math.floor(remainingTime / (24 * 60 * 60 * 1000));
         const hours = Math.floor((remainingTime % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
         const minutes = Math.floor((remainingTime % (60 * 60 * 1000)) / (60 * 1000));
         const seconds = Math.floor((remainingTime % (60 * 1000)) / 1000);
-        return interaction.reply({
-          content: `You can claim your monthly money again in ${days}d ${hours}h ${minutes}m ${seconds}s`,
-          ephemeral: true,
-        });
-      } else {
-        ecoUser.lastMonthly = Date.now();
-        ecoUser.Wallet += MONTHLY_MONEY_AMOUNT;
-        await ecoUser.save();
+
+        let timeString = "";
+        if (days > 0) {
+          timeString += `${days}d `;
+        }
+        if (hours > 0) {
+          timeString += `${hours}h `;
+        }
+        if (minutes > 0) {
+          timeString += `${minutes}m `;
+        }
+        if (seconds > 0 || (days === 0 && hours === 0 && minutes === 0)) {
+          timeString += `${seconds}s`;
+        }
 
         return interaction.reply({
-          content: `You have claimed your monthly pocket money of $${MONTHLY_MONEY_AMOUNT}`,
+          content: `You can claim your monthly money again in ${timeString}`,
+          ephemeral: true,
         });
       }
+      ecoUser.lastMonthly = Date.now();
+      ecoUser.Wallet += MONTHLY_MONEY_AMOUNT;
+      await ecoUser.save();
+
+      return interaction.reply({
+        content: `You have claimed your monthly pocket money of $${MONTHLY_MONEY_AMOUNT}`,
+      });
     } catch (error) {
       console.error("Error occurred while executing monthly command:", error);
       return interaction.reply({
