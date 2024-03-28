@@ -50,7 +50,6 @@ module.exports = {
 
       await interaction.reply({
         content: `✅ ${channel} has been unlocked successfully.`,
-        ephemeral: true,
       });
     } catch (error) {
       console.error("Error occurred while executing unlock command:", error);
