@@ -62,6 +62,16 @@ module.exports = {
 
     const songs = await client.manager.search(song);
 
+    if (songs.tracks.length === 0) {
+      console.log(songs);
+      embed
+        .setTitle("No results were found")
+        .setColor("Red")
+        .setAuthor({ name: "Blue Bot", iconURL: process.env.BOT_AVATAR })
+        .setTimestamp();
+      return await interaction.reply({ embeds: [embed] });
+    }
+
     player.connect();
 
     player.queue.add(songs.tracks[0]);
