@@ -85,6 +85,9 @@ class Economy {
       user.Wallet = data.Wallet;
       user.Bank = data.Bank;
       user.total = data.Wallet + data.Bank;
+      user.lastDaily = data.lastDaily;
+      user.lastWeekly = data.lastWeekly;
+      user.lastMonthly = data.lastMonthly;
       user.inventory = await this.getUserItems(user.id);
       user.MongoData = data;
 

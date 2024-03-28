@@ -13,6 +13,7 @@ const {
   RoleManager,
   Colors,
   AttachmentBuilder,
+  Message,
 } = require("discord.js");
 const fs = require("fs");
 const openai = new OpenAI({
@@ -38,6 +39,11 @@ const { findSwearWordsAI, findSwearWords } = require("../../utils/swearfinder");
 const path = require("path");
 
 const aimodel = process.env.AIMODEL;
+/**
+ *
+ * @param {Message} message
+ * @param {*} client
+ */
 async function createPrompt(message, client) {
   const channel = message.channel;
   const content = message.content;
@@ -93,6 +99,23 @@ async function createPrompt(message, client) {
     success: "✅",
     error: "❌",
   };
+
+  const userinfochace = await client.users.cache.get(author.id);
+  const userinfo = {
+    username: userinfochace.username,
+    globalName: userinfochace.globalName,
+    id: userinfochace.id,
+    avatar: userinfochace.avatar,
+    avatarURL: userinfochace.avatarURL(),
+    isbot: userinfochace.bot,
+    createdAt: userinfochace.createdAt,
+    createdTimestamp: userinfochace.createdTimestamp,
+    defaultAvatarURL: userinfochace.defaultAvatarURL,
+  };
+  const system_msg =
+    `Your name is ${process.env.BOT_NAME}, You are made by the blue obsidian. You are a chill bot meant to entertain users or help them with tasks.` +
+    `\n${JSON.stringify(userinfo)}`;
+
   const selectedReply = ReplyOptions[Math.floor(Math.random() * ReplyOptions.length)];
   channel
     .send(selectedReply)
@@ -167,21 +190,22 @@ async function createPrompt(message, client) {
           msg.edit(`Downloading the file... ${emojis.loading}`);
           const url = await downloadfile(file);
 
+          const prompt = message.content;
+
           // Read the file content
           msg.edit(`Reading the file... ${emojis.loading}`);
           const filecontent = fs.readFileSync(url, "utf-8");
-          if (filecontent.length > 16000) filecontent.slice(0, 15999);
+          if (filecontent.length > 20000) filecontent.slice(0, 15999);
           // Generate response using AI model
           msg.edit(`Generating response... ${emojis.loading}`);
 
           const channel = message.channel;
-          let messages = logGptMessage("user", filecontent, channel.id);
-          const system_msg = `Your name is ${process.env.BOT_NAME}, You are made by the blue obsidian. You are a chill bot meant to entertain users or help them with tasks.`;
-          messages.push({ role: "system", content: system_msg });
+          let parsedPrompt = "";
+          parsedPrompt += filecontent;
+          parsedPrompt += "\n" + prompt;
+          let messages = logGptMessage("user", parsedPrompt, channel.id);
 
-          if (messages.length > 30) {
-            deletefirst20Messages(channel.id);
-          }
+          messages.push({ role: "system", content: system_msg });
 
           const res = await openai.chat.completions.create({
             model: aimodel,
@@ -232,23 +256,7 @@ async function createPrompt(message, client) {
           const channel = message.channel;
           let messages = logGptMessage("user", content, channel.id);
           const userinfochace = await client.users.cache.get(author.id);
-          const userinfo = {
-            username: userinfochace.username,
-            globalName: userinfochace.globalName,
-            id: userinfochace.id,
-            avatar: userinfochace.avatar,
-            avatarURL: userinfochace.avatarURL(),
-            isbot: userinfochace.bot,
-            createdAt: userinfochace.createdAt,
-            createdTimestamp: userinfochace.createdTimestamp,
-            defaultAvatarURL: userinfochace.defaultAvatarURL,
-          };
-          if (messages.length > 16000) {
-            messages.slice(0, 15999);
-          }
-          const system_msg =
-            `Your name is ${process.env.BOT_NAME}, You are made by the blue obsidian. You are a chill bot meant to entertain users or help them with tasks.` +
-            `\n${JSON.stringify(userinfo)}`;
+
           messages.unshift({ role: "system", content: system_msg });
 
           const res = await openai.chat.completions.create({

@@ -37,7 +37,12 @@ const client = require("../..");
 const rateSchema = require("../models/messages-rate");
 const { filterResponseForSwearWords, humanFilter } = require("../utils/filter");
 const { createPrompt } = require("./Utils/AiHandler");
-
+/**
+ *
+ * @param {*} client
+ * @param {discord.Message} message
+ * @returns
+ */
 async function messages(client, message) {
   const { guild, member, content, channel, author } = message;
   let serverInfo = await serverSchema.findOne({
@@ -82,8 +87,14 @@ async function messages(client, message) {
       channel.delete();
       return;
     } else {
+      //lets make it so that only the owner of the channel can use the channel
+      const isOwner = message.channel.name.endsWith(message.author.username);
+      if (!isOwner) {
+        message.delete();
+        message.reply("Only the owner of the channel can talk to me");
+        return;
+      }
       createPrompt(message, client);
-      return;
     }
   }
   serverInfo.bullyMeChannel = serverInfo.bullyMeChannel || "";
