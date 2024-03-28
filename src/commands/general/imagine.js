@@ -23,6 +23,7 @@ module.exports = {
         prompt: prompt,
         n: 1,
         size: "1024x1024",
+        model: "dall-e-3",
       });
       const image_url = response.data[0].url;
       const result = await download(image_url);
