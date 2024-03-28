@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require("discord.js");
 const { Economy } = require("../../economy/base");
 
 // Constants
-const MONTHLY_MONEY_AMOUNT = 10000; // Amount of monthly money
+const MONTHLY_MONEY_AMOUNT = 1000; // Amount of monthly money
 const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000; // Milliseconds in 30 days
 
 module.exports = {
@@ -40,8 +40,7 @@ module.exports = {
         await ecoUser.save();
 
         return interaction.reply({
-          content: `You have claimed your monthly money of ${MONTHLY_MONEY_AMOUNT} units.`,
-          ephemeral: true,
+          content: `You have claimed your monthly pocket money of $${MONTHLY_MONEY_AMOUNT}`,
         });
       }
     } catch (error) {
