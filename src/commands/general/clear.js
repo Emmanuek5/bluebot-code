@@ -9,23 +9,20 @@ module.exports = {
     const { channel } = interaction;
 
     try {
-      let totalMessages = 0;
-      let fetchedMessages;
-
       // Get the total number of messages in the channel
-      await channel.messages.fetch({ limit: 1 }).then(messages => {
-        totalMessages = messages.size;
-      });
+      const totalMessages = (await channel.messages.fetch({ limit: 100 })).size;
 
       if (totalMessages === 0) {
-        return interaction.editReply({ content: "There are no messages to clear." });
+        return interaction.reply({ content: "There are no messages to clear." });
       }
 
-      // Delete messages in batches of 100 until all messages are deleted
-      while (totalMessages > 0) {
-        fetchedMessages = await channel.messages.fetch({ limit: Math.min(totalMessages, 100) });
-        await channel.bulkDelete(fetchedMessages); // Delete the fetched messages
-        totalMessages -= fetchedMessages.size;
+      // Calculate the number of batches required to clear all messages
+      const batchCount = Math.ceil(totalMessages / 100);
+
+      // Delete messages in batches of 100
+      for (let i = 0; i < batchCount; i++) {
+        const fetchedMessages = await channel.messages.fetch({ limit: 100 });
+        await channel.bulkDelete(fetchedMessages);
       }
 
       interaction.reply({ content: "All messages have been cleared." });
