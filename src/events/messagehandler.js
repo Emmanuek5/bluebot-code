@@ -86,20 +86,8 @@ async function messages(client, message) {
     if (content.toLowerCase() == "close conversation") {
       channel.delete();
       return;
-    } else {
-      //lets make it so that only the owner of the channel can use the channel
-      const SpecialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-      let username = message.author.username.replace(SpecialChars, "");
-      const isOwner = message.channel.name.includes(username);
-      if (!isOwner) {
-        message.reply(
-          "Only the owner of the channel can talk to me. Run /gpt-channel for your own chat "
-        );
-        return;
-      }
-
-      createPrompt(message, client);
     }
+    createPrompt(message, client);
   }
   serverInfo.bullyMeChannel = serverInfo.bullyMeChannel || "";
   if (message.channel.name === "bully-me" || message.channel.id == serverInfo.bullyMeChannel) {
