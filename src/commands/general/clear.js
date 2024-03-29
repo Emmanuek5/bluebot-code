@@ -6,7 +6,6 @@ module.exports = {
     .setDescription("Clear All The Messages In A Channel")
     .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator),
   async execute(interaction, client) {
-    await interaction.deferReply();
     const { channel } = interaction;
 
     try {
@@ -29,10 +28,10 @@ module.exports = {
         totalMessages -= fetchedMessages.size;
       }
 
-      await interaction.editReply({ content: "All messages have been cleared." });
+      interaction.reply({ content: "All messages have been cleared." });
     } catch (error) {
       console.error("Error occurred while clearing messages:", error);
-      await interaction.editReply({ content: "An error occurred while clearing messages." });
+      await interaction.reply({ content: "An error occurred while clearing messages." });
     }
   },
 };
