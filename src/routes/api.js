@@ -25,7 +25,7 @@ router.get("/server/:id", async (req, res) => {
       res.status(404).json({ error: "Guild not found" });
       return;
     }
-    const dbData = await serverSchema.findOne({ guildID: guild.id }).exec();
+    const dbData = await serverSchema.findOne({ guildID: guild.id });
 
     const data = {
       id,
@@ -35,6 +35,10 @@ router.get("/server/:id", async (req, res) => {
       settings: {
         botName: dbData.botName,
         prefix: dbData.prefix,
+        leveling: {
+          enabled: dbData.leveling,
+          channel: dbData.levelingChannel,
+        },
         welcome: {
           enabled: dbData.welcomeMessage.enabled,
           type: dbData.welcomeMessage.type,
@@ -94,14 +98,27 @@ router.post("/server/:id/", async (req, res) => {
     const { settings } = req.body;
 
     if (settings.botName || settings.prefix) {
-      const { botName, prefix } = settings;
+      const { botName, prefix, leveling } = settings;
       // Update server settings
       const guild = await router.client.guilds.cache.get(id);
       const user = await guild.members.cache.find(member => member.id === router.client.user.id);
       user.setNickname(botName);
       await serverSchema.findOneAndUpdate({ guildID: guild.id }, { botName, prefix });
       res.status(200).json({ message: "Server settings updated" });
-    } else if (settings.welcome) {
+      return;
+    }
+
+    if (settings.leveling) {
+      const { enabled, channel } = settings.leveling;
+      await serverSchema.findOneAndUpdate(
+        { guildID: guild.id },
+        { leveling: { enabled, channel } }
+      );
+      res.status(200).json({ message: "Leveling settings updated" });
+      return;
+    }
+
+    if (settings.welcome) {
       // Update welcome message settings
       const { enabled, type, channelId, role, text } = settings.welcome;
 
@@ -113,7 +130,10 @@ router.post("/server/:id/", async (req, res) => {
         }
       );
       res.status(200).json({ message: "Welcome message settings updated" });
-    } else if (settings.leave) {
+      return;
+    }
+
+    if (settings.leave) {
       const { enabled, type, channelId, text } = settings.leave;
       await serverSchema.findOneAndUpdate(
         { guildID: guild.id },
@@ -123,9 +143,10 @@ router.post("/server/:id/", async (req, res) => {
         }
       );
       res.status(200).json({ message: "Leave message settings updated" });
-    } else {
-      res.status(400).json({ error: "Invalid request body" });
+      return;
     }
+
+    res.status(400).json({ error: "Invalid request body" });
   } catch (error) {
     res.status(500).json({ error: "An error occurred" });
     console.log(error);
